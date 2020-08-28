@@ -36,12 +36,8 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
-  - UpdateRoomCustomProperty
-  - LoadScene
   - RPC_SendAnchorId
-  - ReadState
-  - ReadyState
-  - InstantePlayer
+  - UpdateRoomCustomProperty
   DisableAutoOpenWizard: 1
-  ShowSettings: 0
+  ShowSettings: 1
   DevRegionSetOnce: 0
