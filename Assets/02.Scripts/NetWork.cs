@@ -484,6 +484,14 @@ public class NetWork : MonoBehaviourPunCallbacks
         PlayFabClientAPI.GetCatalogItems(new PlayFab.ClientModels.GetCatalogItemsRequest() { CatalogVersion = storeName }, (result) =>
         {
             Debug.Log("상점 불러오기 성공");
+            for(int i=0; i<result.Catalog.Count;i++)
+            {
+                var catalog = result.Catalog[i];
+                Debug.Log("아이템 아이디 "+catalog.ItemId);
+                Debug.Log("아이템 이름"+catalog.DisplayName);
+                Debug.Log("아이템 설명"+catalog.Description);
+                Debug.Log("가상화폐 가격"+catalog.VirtualCurrencyPrices);
+            }
             //상점 불러오기 성공하면 동작해야할것 작성.....
         },
         (error) => Debug.Log("상점 불러오기 실패"));
