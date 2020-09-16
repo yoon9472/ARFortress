@@ -311,7 +311,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     public Userinfo userinfo;
     public string loginMsg;
     string playfabid;
-
+    public List<CatalogItem> itemList = new List<CatalogItem>();
 
     /// <summary>
     /// 구글 로그인 하는 함수
@@ -484,7 +484,8 @@ public class NetWork : MonoBehaviourPunCallbacks
         PlayFabClientAPI.GetCatalogItems(new PlayFab.ClientModels.GetCatalogItemsRequest() { CatalogVersion = storeName }, (result) =>
         {
             Debug.Log("상점 불러오기 성공");
-            for(int i=0; i<result.Catalog.Count;i++)
+            itemList = result.Catalog;
+            for (int i=0; i<result.Catalog.Count;i++)
             {
                 var catalog = result.Catalog[i];
                 Debug.Log("아이템 아이디 "+catalog.ItemId);
