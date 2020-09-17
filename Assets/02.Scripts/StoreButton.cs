@@ -23,7 +23,6 @@ public class StoreButton : MonoBehaviour
     */
     StoreInstantiate StIn;
 
-    public GameObject noCoin;
     // Start is called before the first frame update
     void Start()
     {
@@ -302,11 +301,5 @@ public class StoreButton : MonoBehaviour
             PlayFabClientAPI.ConfirmPurchase(request, LogSuccess, LogFailure);
         }
         */
-        //만일 logFailure이 된다면
-        //noCoin.gameObject.SetActive(true);
-    }
-    public void BacktoStore()
-    {
-        noCoin.gameObject.SetActive(false);
     }
 }
