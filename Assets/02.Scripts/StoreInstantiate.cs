@@ -39,6 +39,7 @@ public class StoreInstantiate : MonoBehaviour
     public GameObject weapon7;
 
     string store="Store";
+    List<CatalogItem> listofitem = new List<CatalogItem>();
     // Start is called before the first frame update
     void Start()
     {
@@ -56,8 +57,15 @@ public class StoreInstantiate : MonoBehaviour
     //저거로 가져오려고 하지만 어떻게 리스트에 저장을 할까?읭?? 어떤 형식으로 저장이 될 것인가?
     public void StoreItemList()
     {
-        NetWork.Get.GetCatalogItem(store);
-        
+        listofitem = NetWork.Get.itemList;        
+        for (int i=0; i<listofitem.Count;i++)
+            {
+                var catalog = listofitem[i];
+                Debug.Log("아이템 아이디 "+catalog.ItemId);
+                Debug.Log("아이템 이름"+catalog.DisplayName);
+                Debug.Log("아이템 설명"+catalog.Description);
+                Debug.Log("가상화폐 가격"+catalog.VirtualCurrencyPrices);
+            }
     }
     //얘를 껐다 킬 수 있는 것일까?
     GameObject item1;
@@ -73,7 +81,7 @@ public class StoreInstantiate : MonoBehaviour
             break;
 
             case 2 :
-
+                //title1.text = listofitem.itemid;
             break;
         }
         //이것으로 할지
@@ -101,12 +109,10 @@ public class StoreInstantiate : MonoBehaviour
                     Destroy(item3);
                 }
                 //1번부터 생성시킬 것임
-                title1.text = "아모건";
+                title1.text = listofitem[0].ItemId ;
                 item1 = Instantiate(weapon1, pos1.transform.position, Quaternion.identity);
-                introduction1.text =  "무게 : 35 " +"\r\n"
-                                    + "공격 : 120 " +"\r\n"
-                                    + "사정거리 : 15";
-                cost1.text = "0";
+                introduction1.text = listofitem[0].Description;
+                cost1.text = listofitem[0].VirtualCurrencyPrices.ToString();
 
                 //2번 생성
                 title2.text = "머신건";
