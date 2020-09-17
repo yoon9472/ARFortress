@@ -30,15 +30,7 @@ public class NetWork : MonoBehaviourPunCallbacks
         }
         PhotonNetwork.AutomaticallySyncScene = true;
         DontDestroyOnLoad(gameObject);
-#if GOOGLEGAMES
-        PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
-            .AddOauthScope("profile")
-            .RequestServerAuthCode(false)
-            .Build();
-        PlayGamesPlatform.InitializeInstance(config);
-        PlayGamesPlatform.DebugLogEnabled = true;
-        PlayGamesPlatform.Activate();
-#endif
+
     }
     #region PhotonNetwork
     [Header("포톤 관련 변수")]
@@ -62,6 +54,15 @@ public class NetWork : MonoBehaviourPunCallbacks
         {
             Connect();//연결하고
         }
+#if GOOGLEGAMES
+        PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()
+    .AddOauthScope("profile")
+    .RequestServerAuthCode(false)
+    .Build();
+        PlayGamesPlatform.InitializeInstance(config);
+        PlayGamesPlatform.DebugLogEnabled = true;
+        PlayGamesPlatform.Activate();
+#endif
     }
     private void Update()
     {
@@ -309,7 +310,6 @@ public class NetWork : MonoBehaviourPunCallbacks
     public string userName;//입력받은 사용자 이름
     public string nickName;//입력받은 닉네임
     public Userinfo userinfo;
-    public string loginMsg;
     string playfabid;
     public List<CatalogItem> itemList = new List<CatalogItem>();
 
@@ -319,11 +319,10 @@ public class NetWork : MonoBehaviourPunCallbacks
     public void GoogleLogin()
     {
         print("GoogleLogin");
-        Social.localUser.Authenticate((bool success) => {
+        Social.localUser.Authenticate((bool success, string msg) => {
             Debug.Log("Social.localUser.Authenticate : " +success);
             if (success)
             {
-                loginMsg = "Google Signed In";
                 var serverAuthCode = PlayGamesPlatform.Instance.GetServerAuthCode();
                 Debug.Log("Server Auth Code: " + serverAuthCode);
 
@@ -335,8 +334,7 @@ public class NetWork : MonoBehaviourPunCallbacks
                 }, (result) =>
                 {
                     //로그인 성공시 콜백 부분
-                    loginMsg = "Signed In as " + result.PlayFabId;//플레이팹 아이디를 받아옴 결과로 
-                    Debug.Log(loginMsg);
+                    Debug.Log(result.PlayFabId);
                     playfabid = result.PlayFabId;
                     JoinLobby();
 
@@ -345,8 +343,7 @@ public class NetWork : MonoBehaviourPunCallbacks
             else
             {
                 Debug.Log("Social.localUser.Authenticate : " + success);
-                loginMsg = "Google Failed to Authorize your login";
-                Debug.Log(loginMsg);
+                Debug.Log(msg);
             }
 
         });
@@ -391,6 +388,11 @@ public class NetWork : MonoBehaviourPunCallbacks
         var request = new PlayFab.ClientModels.LoginWithEmailAddressRequest { Email = email, Password = password };
         PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnLoginFail);
     }
+    public void TestLogin()
+    {
+        var request = new LoginWithCustomIDRequest { CustomId = "GettingStartedGuide", CreateAccount = true };
+        PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFail);
+    }
     /// <summary>
     /// 로그인 실패시 호출됨
     /// </summary>
@@ -407,7 +409,8 @@ public class NetWork : MonoBehaviourPunCallbacks
     {
         Debug.Log("로그인 성공");
         //로그인 성공하면 앞으로 유저의 정보가 수정될수 있으니 유저의 정보를 불러와서 userinfo에 담아서 가지고 있는다
-        Getdata(obj.PlayFabId);
+        JoinLobby();
+        //Getdata(obj.PlayFabId);
     }
 
     /// <summary>
@@ -457,6 +460,7 @@ public class NetWork : MonoBehaviourPunCallbacks
         Debug.Log("가져오기 성공");
         var yourObject = JsonUtility.FromJson<Userinfo>(obj.Data["Info"].Value);
         userinfo = yourObject;
+        
     }
 
     /// <summary>
