@@ -238,7 +238,9 @@ public class NetWork : MonoBehaviourPunCallbacks
             SceneManager.LoadScene("05.Room");
         }
     }
-
+    /// <summary>
+    /// 방에서 나가면 콜백으로 호출됨
+    /// </summary>
     public override void OnLeftRoom()
     {
         base.OnLeftRoom();
@@ -485,7 +487,18 @@ public class NetWork : MonoBehaviourPunCallbacks
         {
             Debug.Log("인벤토리 불러오기 성공");
             //인벤토리 불러오기 성공하면 동작해야할것 작성....
-            Debug.Log(result.VirtualCurrency);//가상화폐 종류별로  잔액불러오기(배열) 
+            Debug.Log(result.VirtualCurrency);//가상화폐 종류별로  내가 가지고있는 잔액불러오기(배열) 
+            for(int i=0; i<result.Inventory.Count;i++)
+            {
+                //인벤토리 리스트에 있는 아이템들의 각정보들
+                var inventory = result.Inventory[i];
+                Debug.Log(inventory.DisplayName);
+                Debug.Log(inventory.ItemId);
+                Debug.Log(inventory.ItemInstanceId);
+                Debug.Log(inventory.UnitCurrency);
+                Debug.Log(inventory.CustomData);
+                Debug.Log(inventory.PurchaseDate);
+            }
         },
         (error) => Debug.Log("인벤토리 불러오기 실패"));
     }
@@ -509,6 +522,9 @@ public class NetWork : MonoBehaviourPunCallbacks
                 Debug.Log("아이템 이름"+catalog.DisplayName);
                 Debug.Log("아이템 설명"+catalog.Description);
                 Debug.Log("가상화폐 가격"+catalog.VirtualCurrencyPrices);
+                Debug.Log(catalog.ItemClass);
+                Debug.Log(catalog.Tags);
+                Debug.Log(catalog.CustomData);
             }
             //상점 불러오기 성공하면 동작해야할것 작성.....
         },

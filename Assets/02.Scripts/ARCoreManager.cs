@@ -20,6 +20,8 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     public bool firstAnchor = false;
     public bool timeCheck = false;
     public float time = 0;
+
+
     private void Start()
     {
         ARCamera = GameObject.Find("First Person Camera").GetComponent<Camera>();
