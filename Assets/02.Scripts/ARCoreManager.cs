@@ -16,7 +16,7 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     Camera ARCamera;
     public GameObject character;
     public GameObject centerObject;
-    public Text text;
+    //public Text text;
     public bool firstAnchor = false;
     public bool timeCheck = false;
     public float time = 0;

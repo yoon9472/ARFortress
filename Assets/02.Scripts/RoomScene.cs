@@ -10,6 +10,7 @@ public class RoomScene : MonoBehaviour
     }
     public void ToLobby()
     {
-        SceneManager.LoadScene("03.Lobby");
+        //SceneManager.LoadScene("03.Lobby");
+        NetWork.Get.LeaveRoom();
     }
 }
