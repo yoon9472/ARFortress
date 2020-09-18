@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 694254906378017312}
   - component: {fileID: 694254906385446358}
   m_Layer: 0
-  m_Name: Croller 1
-  m_TagString: Untagged
+  m_Name: Croller[Tank]
+  m_TagString: Leg
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
