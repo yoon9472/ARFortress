@@ -6,7 +6,6 @@ TagManager:
   tags:
   - Ground
   - Tonado
-  - Leg
   layers:
   - Default
   - TransparentFX
