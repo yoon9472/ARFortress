@@ -1571,6 +1571,36 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 470939010}
   m_CullTransparentMesh: 0
+--- !u!1 &567941958
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 567941959}
+  m_Layer: 0
+  m_Name: RobotBone
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &567941959
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 567941958}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 518, y: 231, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &654377151
 GameObject:
   m_ObjectHideFlags: 0
@@ -3353,6 +3383,73 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1223022426}
   m_CullTransparentMesh: 0
+--- !u!1 &1281705586
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1281705588}
+  - component: {fileID: 1281705587}
+  m_Layer: 0
+  m_Name: RobotManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1281705587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281705586}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9f4e7d47e5d3c046a50fd1bd1739aa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leg:
+  - {fileID: 1824890378168588114, guid: cce6d8f7d622b7748ab56fd15335a2ae, type: 3}
+  - {fileID: 2950528478706126127, guid: b517fca7400bf154dae322b91eecade2, type: 3}
+  - {fileID: 8661062170499044573, guid: 9e223f783f9516848b01dbf18a766e98, type: 3}
+  - {fileID: 2574281945385147685, guid: 861ab4a2fff86ee45ad1f6900dbc32ca, type: 3}
+  - {fileID: 694254906378044928, guid: 7846a509b843f6247a97a338d273ab7a, type: 3}
+  - {fileID: 8594962452010275476, guid: f9c25392b1ea0ac4ba36d3bc62bd53e5, type: 3}
+  - {fileID: 4447745970632717541, guid: 75b4e44c3ec336a40a447b20caa70183, type: 3}
+  bodie:
+  - {fileID: 8140274638533087748, guid: ef263eaa5c574a74794fa511a97a129b, type: 3}
+  - {fileID: 7809043716374652436, guid: 8a99df3b4dcc05547ac58e93973c3d09, type: 3}
+  - {fileID: 6748149272389563458, guid: 9a29e911b0900f441ab9d535a6e3a091, type: 3}
+  - {fileID: 6699886688474704649, guid: 1b2d939841bf03049b18c3d13cdcea17, type: 3}
+  - {fileID: 6221337353564407505, guid: 5282895db36e3434cb8d846bbcac9644, type: 3}
+  - {fileID: 7703673572468673671, guid: 35ef436439e8ea344a0d33703306c209, type: 3}
+  - {fileID: 2773990705258760346, guid: ab1efb2f8ee1df541bf733db66d9d248, type: 3}
+  weapon:
+  - {fileID: 3226659660002069801, guid: 25c8197ed9fcb304d996ef06c201a83e, type: 3}
+  - {fileID: 6355820459829327779, guid: 954c7eeadbd7fb844a9020cdd7151b4a, type: 3}
+  - {fileID: 6893631372544652284, guid: f8ae599af17a7d24e99c6efa1953825c, type: 3}
+  - {fileID: 1853319003745177896, guid: 3783dbebfd798294d87d4ae614e08829, type: 3}
+  - {fileID: 1418793801132315879, guid: 82c056ccb2c904d43b4e8c22344e20a5, type: 3}
+  - {fileID: 4196701966243764343, guid: f672491e66ee056458a24423e9960950, type: 3}
+  - {fileID: 5909164659314919414, guid: 01ad89528860e8e4296dfca0b56ee2d4, type: 3}
+--- !u!4 &1281705588
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1281705586}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 443.39398, y: 212.83209, z: 27.823944}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1291004974
 GameObject:
   m_ObjectHideFlags: 0
