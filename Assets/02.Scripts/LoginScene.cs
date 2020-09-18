@@ -10,9 +10,13 @@ public class LoginScene : MonoBehaviour
     public void Login()
     {
         //버튼 클리갛면 로그인 처리후 로비로 입장
+#if GOOGLEGAMES
         NetWork.Get.GoogleLogin(); //구글 로그인 되면 이거 사용한다.
+#endif
         //NetWork.Get.TestLogin();
-        //NetWork.Get.JoinLobby();
+#if UNITY_EDITOR
 
+        NetWork.Get.JoinLobby();//에디터에서 구글로그인 빼고 테스트용
+#endif
     }
 }

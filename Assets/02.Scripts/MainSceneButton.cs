@@ -24,9 +24,12 @@ public class MainSceneButton : MonoBehaviour
     {
         SceneManager.LoadScene("TestStore");
     }
+    /// <summary>
+    /// 방이생성 씬으로 이동
+    /// </summary>
     public void ToPlayGame()
     {
-        SceneManager.LoadScene("03.Lobby");
+        SceneManager.LoadScene("04.MakeRoom");
     }
     public void ToOption()
     {

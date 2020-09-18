@@ -52,6 +52,10 @@ public class NetWork : MonoBehaviourPunCallbacks
     {
         if (!PhotonNetwork.IsConnected && inIntro == true)//인트로 상태에서 시작하고 연결안되있으면->처음 시작이면
         {
+            inIntro = false;
+            inLogin = true;
+            inLobby = false;
+            inRoom = false;
             Connect();//연결하고
         }
 #if GOOGLEGAMES
@@ -94,10 +98,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     public override void OnConnectedToMaster()
     {
         Debug.Log("마스터 서버 연결됨");
-        inIntro = false;
-        inLogin = true;
-        inLobby = false;
-        inRoom = false;
+
         Debug.Log("마스터 서버 연결상태 : " + inLogin);
         //로그인 화면으로 전환
         if (inLogin == true)
@@ -182,6 +183,7 @@ public class NetWork : MonoBehaviourPunCallbacks
             roomOptions.CleanupCacheOnLeave = true;
             //커스텀 프로퍼티 생성 엑터넘버를 저장할 배열
             roomOptions.CustomRoomProperties = new Hashtable() { { "roomMember", userArr }, { "actors", actornums }, { "userReady", userReady } };
+            
             PhotonNetwork.CreateRoom(m_Roomname, roomOptions);
 
         }
@@ -233,8 +235,17 @@ public class NetWork : MonoBehaviourPunCallbacks
         photonView.RPC("UpdateRoomCustomProperty", RpcTarget.All, userArr, actornums, userReady);
         if (inRoom == true)
         {
-            SceneManager.LoadScene("04.Room");
+            SceneManager.LoadScene("05.Room");
         }
+    }
+
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+        print("OnLeftRoom");
+        inRoom = false;
+        SceneManager.LoadScene("03.Lobby");
+
     }
     //룸에 입장해서 커스텀 프로퍼티 변경을 요청하는 함수
     [PunRPC]
@@ -264,12 +275,14 @@ public class NetWork : MonoBehaviourPunCallbacks
             {
                 userArr[i] = "empty";
                 actornums[i] = -1;
+                userReady[i] = false;
             }
         }
         //변경된 배열을 방사용자에게 RPC로 변경하도록 명령하고
-        photonView.RPC("UpdateRoomCustomProperty", RpcTarget.All, userArr, actornums);
+        photonView.RPC("UpdateRoomCustomProperty", RpcTarget.All, userArr, actornums, userReady);
         //퇴장
         PhotonNetwork.LeaveRoom();//방퇴장 ->로비로 돌아감
+        //SceneManager.LoadScene("03.Lobby");
     }
     /// <summary>
     /// 방장이 시작을 누르면 다른 사용자와 함께 씬이동 autosynce를 사용할지 rpc로 사용할지 정해야함 아직 미정
@@ -278,7 +291,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     {
         if (PhotonNetwork.IsMasterClient)
         {
-            PhotonNetwork.LoadLevel("05.PlayArcore");
+            PhotonNetwork.LoadLevel("06.PlayArcore");
         }
     }
     /// <summary>
