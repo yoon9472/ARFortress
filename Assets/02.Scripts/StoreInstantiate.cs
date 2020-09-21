@@ -60,11 +60,15 @@ public class StoreInstantiate : MonoBehaviour
         listofitem = NetWork.Get.itemList;        
         for (int i=0; i<listofitem.Count;i++)
             {
-                var catalog = listofitem[i];
+                print("아이템 아이디 "+listofitem[i].ItemId);
+                print("아이템 이름 "+listofitem[i].DisplayName);
+                print("아이템 설명 "+listofitem[i].Description);
+                print("가상화폐 가격 "+listofitem[i].VirtualCurrencyPrices);
+                /*var catalog = listofitem[i];
                 Debug.Log("아이템 아이디 "+catalog.ItemId);
-                Debug.Log("아이템 이름"+catalog.DisplayName);
-                Debug.Log("아이템 설명"+catalog.Description);
-                Debug.Log("가상화폐 가격"+catalog.VirtualCurrencyPrices);
+                Debug.Log("아이템 이름 "+catalog.DisplayName);
+                Debug.Log("아이템 설명 "+catalog.Description);
+                Debug.Log("가상화폐 가격 "+catalog.VirtualCurrencyPrices);*/
             }
     }
     //얘를 껐다 킬 수 있는 것일까?
