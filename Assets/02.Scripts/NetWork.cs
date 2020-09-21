@@ -8,6 +8,8 @@ using PlayFab.ClientModels;
 using PlayFab;
 using UnityEngine.SceneManagement;
 using System;
+using Newtonsoft.Json;
+using UnityEditor;
 #if GOOGLEGAMES
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -409,6 +411,9 @@ public class NetWork : MonoBehaviourPunCallbacks
         var request = new PlayFab.ClientModels.LoginWithEmailAddressRequest { Email = email, Password = password };
         PlayFabClientAPI.LoginWithEmailAddress(request, OnLoginSuccess, OnLoginFail);
     }
+    /// <summary>
+    /// 유니티 에디터에서 로그인되도록 테스트용으로 만들어 놓음
+    /// </summary>
     public void TestLogin()
     {
         var request = new LoginWithCustomIDRequest { CustomId = "GettingStartedGuide", CreateAccount = true };
@@ -521,7 +526,8 @@ public class NetWork : MonoBehaviourPunCallbacks
         {
             Debug.Log("상점 불러오기 성공");
             itemList = result.Catalog;
-
+            //리스트 낮은 가격순으로 정렬
+            //SortItemByPrice(itemList);
             for (int i=0; i<result.Catalog.Count;i++)
             {
                 var catalog = result.Catalog[i];
@@ -529,6 +535,8 @@ public class NetWork : MonoBehaviourPunCallbacks
                 if(catalog.Tags[0] =="Weapon")
                 {
                     weaponList.Add(catalog);//무기는 무기리스트에 추가
+                    //아이템의 customData 불러오는 부분
+                    //GetCustomIteminfo(catalog);
                 }
                 else if(catalog.Tags[0]=="LowerBody")
                 {
@@ -556,11 +564,60 @@ public class NetWork : MonoBehaviourPunCallbacks
         (error) => Debug.Log("상점 불러오기 실패"));
     }
     /// <summary>
-    /// 리스트에서 각 아이템의 능력치 가져오기
+    /// 리스트에서 각 아이템의 상세 능력치 딕셔너리로 가져오기
     /// </summary>
-    public void GetIteminfo(List<CatalogItem> list)
+    public void GetCustomIteminfo(CatalogItem item)
     {
+        var iteminfo = JsonConvert.DeserializeObject<Dictionary<string, string>>(item.CustomData);
+        if(item.Tags[0]== "Weapon")
+        {
+            Debug.Log(item.DisplayName+"의 무게: " + iteminfo["weight"]);
+            Debug.Log(item.DisplayName+"의 공격력:" + iteminfo["attack"]);
+            Debug.Log(item.DisplayName+"의 사거리: " + iteminfo["lange"]);
+        }
+        else if(item.Tags[0]== "LowerBody")
+        {
+            Debug.Log(item.DisplayName+"의 이동속도: " + iteminfo["speed"]);
+            Debug.Log(item.DisplayName+"의 총 하중: " + iteminfo["totalweight"]);
+            Debug.Log(item.DisplayName+"의 방어력: " + iteminfo["amor"]);
+        }
+        else
+        {
+            Debug.Log(item.DisplayName+"의 무게: " + iteminfo["weight"]);
+            Debug.Log(item.DisplayName+"의 체력: " + iteminfo["hp"]);
+            Debug.Log(item.DisplayName+"의 방어력: " + iteminfo["amor"]);
+        }
+       
+    }
+    /// <summary>
+    /// 아이템 리스트를 받아와서 가격에 따라 낮은 가격부터 정렬하기
+    /// </summary>
+    /// <param name="list"></param>
+    public void SortItemByPrice(List<CatalogItem> list)
+    {
+#if UNITY_EDITOR
+        Debug.Log("---정렬전 리스트---");
+        for (int i = 0; i < list.Count; i++)
+        {
+            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
+        }
+        Debug.Log("------");
+#endif
+        list.Sort(delegate (CatalogItem A, CatalogItem B)
+        {
 
+            if (A.VirtualCurrencyPrices["GD"] > B.VirtualCurrencyPrices["GD"]) return 1;
+            else if (A.VirtualCurrencyPrices["GD"] < B.VirtualCurrencyPrices["GD"]) return -1;
+            return 0;
+        });
+#if UNITY_EDITOR
+        Debug.Log("---정렬후---");
+        for (int i = 0; i < list.Count; i++)
+        {
+            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
+        }
+        Debug.Log("------");
+#endif
     }
     /// <summary>
     /// 상점에서 아이텝 구입
