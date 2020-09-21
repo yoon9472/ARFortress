@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LobbyScene : MonoBehaviour
 {
@@ -21,5 +22,10 @@ public class LobbyScene : MonoBehaviour
     public void JoinRoom()
     {
         NetWork.Get.JoinRoom(roomName.text);
+    }
+    //뒤로 로비씬으로 가기.
+    public void ToBackToLobby()
+    {
+        SceneManager.LoadScene("03.Lobby");
     }
 }
