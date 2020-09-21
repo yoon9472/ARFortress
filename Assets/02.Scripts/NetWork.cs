@@ -327,6 +327,12 @@ public class NetWork : MonoBehaviourPunCallbacks
     public Userinfo userinfo;
     string playfabid;
     public List<CatalogItem> itemList = new List<CatalogItem>();
+    //무기 리스트
+    public List<CatalogItem> weaponList = new List<CatalogItem>();
+    //몸통 리스트
+    public List<CatalogItem> bodyList = new List<CatalogItem>();
+    //다리 리스트
+    public List<CatalogItem> legList = new List<CatalogItem>();
 
     /// <summary>
     /// 구글 로그인 하는 함수
@@ -515,22 +521,47 @@ public class NetWork : MonoBehaviourPunCallbacks
         {
             Debug.Log("상점 불러오기 성공");
             itemList = result.Catalog;
+
             for (int i=0; i<result.Catalog.Count;i++)
             {
                 var catalog = result.Catalog[i];
-                Debug.Log("아이템 아이디 "+catalog.ItemId);
-                Debug.Log("아이템 이름"+catalog.DisplayName);
-                Debug.Log("아이템 설명"+catalog.Description);
-                Debug.Log("가상화폐 가격"+catalog.VirtualCurrencyPrices);
-                Debug.Log(catalog.ItemClass);
-                Debug.Log(catalog.Tags);
-                Debug.Log(catalog.CustomData);
+                //태그로 비교한다.
+                if(catalog.Tags[0] =="Weapon")
+                {
+                    weaponList.Add(catalog);//무기는 무기리스트에 추가
+                }
+                else if(catalog.Tags[0]=="LowerBody")
+                {
+                    legList.Add(catalog);//다리는 다리 리스트에 추가
+                }
+                else
+                {
+                    bodyList.Add(catalog);//그외에 것들은 몸통 리스트에 추가
+                }
+                //Debug.Log("아이템 아이디 "+catalog.ItemId);
+                //Debug.Log("아이템 이름 "+catalog.DisplayName);
+                //Debug.Log("아이템 설명 "+catalog.Description);
+                //Debug.Log("가상화폐 가격 "+catalog.VirtualCurrencyPrices["GD"]);
+                //Debug.Log("아이템 클래스 " + catalog.ItemClass);
+                //Debug.Log("아이템 태그 " + catalog.Tags[0]);
+                //Debug.Log("아이템 정보 "+catalog.CustomData);
+                //var info = catalog.CustomData;
+                //if(catalog.Tags[0]=="Weapon")
+                //{
+                //    Debug.Log(info[0]);
+                //}
             }
             //상점 불러오기 성공하면 동작해야할것 작성.....
         },
         (error) => Debug.Log("상점 불러오기 실패"));
     }
+    /// <summary>
+    /// 리스트에서 각 아이템의 능력치 가져오기
+    /// </summary>
+    public void GetIteminfo(List<CatalogItem> list)
+    {
 
+    }
     /// <summary>
     /// 상점에서 아이텝 구입
     /// </summary>
@@ -569,4 +600,5 @@ public class Userinfo
     public string nickName;
     public bool firstLogin = true;
 }
+
 

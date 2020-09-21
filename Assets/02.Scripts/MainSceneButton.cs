@@ -39,4 +39,11 @@ public class MainSceneButton : MonoBehaviour
     {
         option.gameObject.SetActive(false);
     }
+    /// <summary>
+    /// 상점 정보 가져오기
+    /// </summary>
+    public void OpneStore()
+    {
+        NetWork.Get.GetCatalogItem("Store");
+    }
 }
