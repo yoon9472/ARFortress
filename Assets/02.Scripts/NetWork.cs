@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 using System;
 using Newtonsoft.Json;
 using UnityEditor;
+using Unity.Collections.LowLevel.Unsafe;
 #if GOOGLEGAMES
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -335,7 +336,6 @@ public class NetWork : MonoBehaviourPunCallbacks
     public List<CatalogItem> bodyList = new List<CatalogItem>();
     //다리 리스트
     public List<CatalogItem> legList = new List<CatalogItem>();
-
     /// <summary>
     /// 구글 로그인 하는 함수
     /// </summary>
@@ -434,8 +434,9 @@ public class NetWork : MonoBehaviourPunCallbacks
     private void OnLoginSuccess(LoginResult obj)
     {
         Debug.Log("로그인 성공");
+        StartCoroutine(LoadItemList());
         //로그인 성공하면 앞으로 유저의 정보가 수정될수 있으니 유저의 정보를 불러와서 userinfo에 담아서 가지고 있는다
-        JoinLobby();
+        //JoinLobby();
         //Getdata(obj.PlayFabId);
     }
 
@@ -516,6 +517,7 @@ public class NetWork : MonoBehaviourPunCallbacks
 
 /// <summary>
 /// 상점 불러오기 상점의 내용은 Playfab 홈페이지에서 설정할수 있다(아이템 가격 중첩여부 기간 등..)
+/// itemList에 정체 리스트가 담긴다
 /// </summary>
 /// <param name="storeName"></param>
     public void GetCatalogItem(string storeName)
@@ -525,6 +527,7 @@ public class NetWork : MonoBehaviourPunCallbacks
         PlayFabClientAPI.GetCatalogItems(new PlayFab.ClientModels.GetCatalogItemsRequest() { CatalogVersion = storeName }, (result) =>
         {
             Debug.Log("상점 불러오기 성공");
+            
             itemList = result.Catalog;
             //리스트 낮은 가격순으로 정렬
             //SortItemByPrice(itemList);
@@ -546,46 +549,57 @@ public class NetWork : MonoBehaviourPunCallbacks
                 {
                     bodyList.Add(catalog);//그외에 것들은 몸통 리스트에 추가
                 }
-                //Debug.Log("아이템 아이디 "+catalog.ItemId);
-                //Debug.Log("아이템 이름 "+catalog.DisplayName);
-                //Debug.Log("아이템 설명 "+catalog.Description);
-                //Debug.Log("가상화폐 가격 "+catalog.VirtualCurrencyPrices["GD"]);
-                //Debug.Log("아이템 클래스 " + catalog.ItemClass);
-                //Debug.Log("아이템 태그 " + catalog.Tags[0]);
-                //Debug.Log("아이템 정보 "+catalog.CustomData);
-                //var info = catalog.CustomData;
-                //if(catalog.Tags[0]=="Weapon")
-                //{
-                //    Debug.Log(info[0]);
-                //}
             }
-            //상점 불러오기 성공하면 동작해야할것 작성.....
+            StartCoroutine("OrganizeItem_2");
         },
         (error) => Debug.Log("상점 불러오기 실패"));
     }
     /// <summary>
-    /// 리스트에서 각 아이템의 상세 능력치 딕셔너리로 가져오기
+    /// 리스트에서 각 아이템의 상세 능력치 딕셔너리로 가져오기 + GameManager에 있는 아이템 상세정보리스트에 정보 넣어주기
     /// </summary>
     public void GetCustomIteminfo(CatalogItem item)
     {
+        Debug.Log("아이템 세부 정보 받기");
         var iteminfo = JsonConvert.DeserializeObject<Dictionary<string, string>>(item.CustomData);
-        if(item.Tags[0]== "Weapon")
+       
+        if (item.Tags[0]== "Weapon")
         {
-            Debug.Log(item.DisplayName+"의 무게: " + iteminfo["weight"]);
-            Debug.Log(item.DisplayName+"의 공격력:" + iteminfo["attack"]);
-            Debug.Log(item.DisplayName+"의 사거리: " + iteminfo["lange"]);
+            WeaponInfo info = new WeaponInfo();
+            info.partName = item.DisplayName;//이름 넣기
+            info.partType = item.Tags[0];//무기인지 몸인지 다리인지 널기
+            info.weapontype = iteminfo["type"]; //무기가 어깨형인지 탑형인지 팔형인지
+            info.attack = int.Parse(iteminfo["attack"]);
+            info.weight = int.Parse(iteminfo["weight"]);
+            info.lange = int.Parse(iteminfo["lange"]);
+            GameManager.Get.weaponInfo_List.Add(info);
+            Debug.Log("무기 정보 추가");
         }
         else if(item.Tags[0]== "LowerBody")
         {
+            LegInfo info = new LegInfo();
             Debug.Log(item.DisplayName+"의 이동속도: " + iteminfo["speed"]);
             Debug.Log(item.DisplayName+"의 총 하중: " + iteminfo["totalweight"]);
             Debug.Log(item.DisplayName+"의 방어력: " + iteminfo["amor"]);
+            info.partName = item.DisplayName;
+            info.partType = item.Tags[0];
+            info.totalweight = int.Parse(iteminfo["totalweight"]);
+            info.speed = int.Parse(iteminfo["speed"]);
+            info.amor = int.Parse(iteminfo["amor"]);
+            GameManager.Get.legInfo_List.Add(info);
+            Debug.Log("다리 정보 추가");
+
         }
         else
         {
-            Debug.Log(item.DisplayName+"의 무게: " + iteminfo["weight"]);
-            Debug.Log(item.DisplayName+"의 체력: " + iteminfo["hp"]);
-            Debug.Log(item.DisplayName+"의 방어력: " + iteminfo["amor"]);
+            BodyInfo info = new BodyInfo();
+            info.partName = item.DisplayName;//이름 넣기
+            info.partType = item.Tags[0]; //무기인지 몸인지 다리인지 넣기
+            info.bodytype = iteminfo["type"];//몸통이 어깨인지 탑형인지 팔형인지
+            info.weight = int.Parse(iteminfo["weight"]);//무게
+            info.hp = int.Parse(iteminfo["hp"]);//체력
+            info.amor = int.Parse(iteminfo["amor"]);//방어력
+            GameManager.Get.bodyInfo_List.Add(info);
+            Debug.Log("몸통 정보 추가");
         }
        
     }
@@ -640,6 +654,73 @@ public class NetWork : MonoBehaviourPunCallbacks
     private void BuyOk(PurchaseItemResult obj)
     {
         Debug.Log("구입 성공");
+    }
+    #endregion
+
+    #region 상점아이템 받아오기 -> 아이템 가격순 정렬->아이템별 상세 정보 담아서 리스트 만들기
+    public IEnumerator LoadItemList()
+    {
+        Debug.Log("LoadItemList");
+        yield return StartCoroutine("OrganizeItem_1");
+    }
+    /// <summary>
+    /// 상점 목록을 불러와 태그별로 구분해서 3개의 리스트에 나눠서 담는다.
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator OrganizeItem_1()
+    {
+        yield return null;
+        Debug.Log("OrganizeItem_1");
+        GetCatalogItem("Store");
+       
+    }
+    /// <summary>
+    /// 부위별로 정리된 리스트 3개를 가격에 따라 낮은순서대로 정렬하기
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator OrganizeItem_2()
+    {
+        yield return null;
+        Debug.Log("OrganizeItem_2");
+        //List<CatalogItem> list 형태 리스트가 매개변수로 사용됨
+        SortItemByPrice(itemList); //전체아이템 리스트 가격 낮은 순으로 정렬
+        SortItemByPrice(weaponList);//무기리스트 가격낮은 순으로 정렬
+        SortItemByPrice(bodyList);//몸통 리스트 가격낮은 순으로 정렬
+        SortItemByPrice(legList);//다리 리스트 가격낮은 순으로 정렬
+
+        StartCoroutine("OrganizeItem_3");
+    }
+    /// <summary>
+    /// 각 아이템별 상세 정보를 담는다.
+    /// GameManaget 스크립트의 weaponInfo_List ,bodyInfo_List, legInfo_Listdp 에 정보를 담기 위함
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator OrganizeItem_3()
+    {
+        yield return null;
+        Debug.Log("OrganizeItem_3");
+        //GetCustomIteminfo 함수는 리스트에 있는 아이템들의 이름 타입 커스텀 데이터를 받아와서
+        //GameManager에 있는 무기.몸,다리 상세정보리스트에 정보를 담는다.
+        for (int i = 0; i < weaponList.Count; i++)
+        {
+            GetCustomIteminfo(weaponList[i]);
+        }
+        for (int i = 0; i < bodyList.Count; i++)
+        {
+            GetCustomIteminfo(bodyList[i]);
+        }
+        for (int i = 0; i < legList.Count; i++)
+        {
+            GetCustomIteminfo(legList[i]);
+        }
+
+        StartCoroutine("MoveToLobby");
+    }
+    public IEnumerator MoveToLobby()
+    {
+        yield return null;
+        JoinLobby();
+
     }
     #endregion
 }

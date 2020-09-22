@@ -1,12 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
 
 public class LoginScene : MonoBehaviour
 {
-
     public void Login()
     {
         //버튼 클리갛면 로그인 처리후 로비로 입장
