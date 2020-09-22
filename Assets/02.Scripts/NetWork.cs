@@ -565,9 +565,6 @@ public class NetWork : MonoBehaviourPunCallbacks
         if (item.Tags[0]== "Weapon")
         {
             WeaponInfo info = new WeaponInfo();
-            //Debug.Log(item.DisplayName+"의 무게: " + iteminfo["weight"]);
-            //Debug.Log(item.DisplayName+"의 공격력:" + iteminfo["attack"]);
-            //Debug.Log(item.DisplayName+"의 사거리: " + iteminfo["lange"]);
             info.partName = item.DisplayName;//이름 넣기
             info.partType = item.Tags[0];//무기인지 몸인지 다리인지 널기
             info.weapontype = iteminfo["type"]; //무기가 어깨형인지 탑형인지 팔형인지
@@ -595,9 +592,6 @@ public class NetWork : MonoBehaviourPunCallbacks
         else
         {
             BodyInfo info = new BodyInfo();
-            //Debug.Log(item.DisplayName+"의 무게: " + iteminfo["weight"]);
-            //Debug.Log(item.DisplayName+"의 체력: " + iteminfo["hp"]);
-            //Debug.Log(item.DisplayName+"의 방어력: " + iteminfo["amor"]);
             info.partName = item.DisplayName;//이름 넣기
             info.partType = item.Tags[0]; //무기인지 몸인지 다리인지 넣기
             info.bodytype = iteminfo["type"];//몸통이 어깨인지 탑형인지 팔형인지
@@ -615,14 +609,14 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// <param name="list"></param>
     public void SortItemByPrice(List<CatalogItem> list)
     {
-//#if UNITY_EDITOR
-//        Debug.Log("---정렬전 리스트---");
-//        for (int i = 0; i < list.Count; i++)
-//        {
-//            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
-//        }
-//        Debug.Log("------");
-//#endif
+#if UNITY_EDITOR
+        Debug.Log("---정렬전 리스트---");
+        for (int i = 0; i < list.Count; i++)
+        {
+            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
+        }
+        Debug.Log("------");
+#endif
         list.Sort(delegate (CatalogItem A, CatalogItem B)
         {
 
@@ -630,14 +624,14 @@ public class NetWork : MonoBehaviourPunCallbacks
             else if (A.VirtualCurrencyPrices["GD"] < B.VirtualCurrencyPrices["GD"]) return -1;
             return 0;
         });
-//#if UNITY_EDITOR
-//        Debug.Log("---정렬후---");
-//        for (int i = 0; i < list.Count; i++)
-//        {
-//            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
-//        }
-//        Debug.Log("------");
-//#endif
+#if UNITY_EDITOR
+        Debug.Log("---정렬후---");
+        for (int i = 0; i < list.Count; i++)
+        {
+            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
+        }
+        Debug.Log("------");
+#endif
     }
     /// <summary>
     /// 상점에서 아이텝 구입

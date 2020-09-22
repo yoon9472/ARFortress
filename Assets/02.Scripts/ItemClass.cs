@@ -13,6 +13,7 @@ public class WeaponInfo
     public int weight;//무게
     public int attack;//공격력
     public int lange;//사거리
+
 }
 
 [System.Serializable]
@@ -24,6 +25,7 @@ public class BodyInfo
     public int weight;//무게
     public int hp;//체력
     public int amor;//방어력
+
 }
 
 [System.Serializable]
@@ -34,4 +36,5 @@ public class LegInfo
     public int totalweight;//총 견딜수 있는 하중량
     public int speed;//속도
     public int amor;//방어력
+
 }
