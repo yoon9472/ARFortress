@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/01.Scene/03.Lobby.unity
     guid: 6bdf90d3bf97e2c42af9035b5ecbcbcd
   - enabled: 1
+    path: Assets/01.Scene/TestLabUI.unity
+    guid: ded903ce3ebc52548951edf190ad3e8a
+  - enabled: 1
     path: Assets/01.Scene/04.MakeRoom.unity
     guid: ccbd9dcfbbf83ed419127a33bd0b2263
   - enabled: 1
