@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    [Header("무기 상세정보 담은 리스트")]
+    public List<WeaponInfo> weaponInfo_List = new List<WeaponInfo>();    //무기의 상세 정보를 담을 리스트
+    [Header("몸통 상세정보 담은 리스트")]
+    public List<BodyInfo> bodyInfo_List = new List<BodyInfo>();    //몸통의 상세 정보를 담을 리스트
+    [Header("다리 상세정보 담은 리스트")]
+    public List<LegInfo> legInfo_List = new List<LegInfo>();    //다리의 상세 정보를 담을 리스트
     [Header("랩실에서 조립할려고 현재 선택한 무기")]
     public GameObject selectLeg;//선택한 다리
     public GameObject selectBody;//선택한 몸통
