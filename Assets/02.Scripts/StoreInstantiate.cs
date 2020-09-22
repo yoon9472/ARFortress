@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using PlayFab;
 using PlayFab.ClientModels;
+using System.Linq;
 
 public class StoreInstantiate : MonoBehaviour
 {
@@ -40,13 +41,19 @@ public class StoreInstantiate : MonoBehaviour
 
     string store="Store";
     List<CatalogItem> listofitem = new List<CatalogItem>();
+    //무기 리스트
+    public List<CatalogItem> listWeapon = new List<CatalogItem>();
+    //몸통 리스트
+    public List<CatalogItem> listUpperBody = new List<CatalogItem>();
+    //다리 리스트
+    public List<CatalogItem> listLowerBody = new List<CatalogItem>();
     // Start is called before the first frame update
     void Start()
     {
         cost1 = costparent1.GetComponentInChildren<Text>();
         cost2 = costparent2.GetComponentInChildren<Text>();
         cost3 = costparent3.GetComponentInChildren<Text>();
-        StoreItemList();
+        
     }
 
     // Update is called once per frame
@@ -57,19 +64,117 @@ public class StoreInstantiate : MonoBehaviour
     //저거로 가져오려고 하지만 어떻게 리스트에 저장을 할까?읭?? 어떤 형식으로 저장이 될 것인가?
     public void StoreItemList()
     {
-        listofitem = NetWork.Get.itemList;        
-        for (int i=0; i<listofitem.Count;i++)
+        Debug.Log("아이템 리스트 가져오기");
+        //무기 코스트 순서대로 정렬하기
+        //NetWork.Get.GetCatalogItem("Store");
+        //var forsortweapon = new Dictionary<string, uint>(); 노필요
+        //listofitem = NetWork.Get.itemList; 
+        Debug.Log("무기 정렬 시작");
+        listWeapon = NetWork.Get.weaponList;
+        for(int i = 0; i <listWeapon.Count; i++)
+        {
+            //forsortweapon = listWeapon[i].VirtualCurrencyPrices;노필요 
+            //forsortweapon.OrderBy(x => x.value);
+            //print("정렬순서 key : {0}, value : {1}",forsortweapon.Keys , forsortweapon.Values);
+            Debug.Log(i +"번째 "+listWeapon[i].VirtualCurrencyPrices["GD"]);
+        }
+        Debug.Log("Dictionary 정렬 중");
+
+        listWeapon.Sort(delegate (CatalogItem A, CatalogItem B)
+        {
+            if (A.VirtualCurrencyPrices["GD"]>B.VirtualCurrencyPrices["GD"]) return 1;
+            else if(A.VirtualCurrencyPrices["GD"]<B.VirtualCurrencyPrices["GD"]) return -1;
+            else return 0;
+        }
+        );
+        Debug.Log("Dictionary 정렬 후");
+        
+        for (int i = 0; i < listWeapon.Count; i++)
+        {
+            Debug.Log(i +"번째 "+ listWeapon[i].VirtualCurrencyPrices["GD"]);
+        }
+
+        //몸통 정렬하기
+        Debug.Log("몸통 정렬 시작");
+        listUpperBody = NetWork.Get.bodyList;
+        //var forsortUpper = new Dictionary<string, uint>();할 필요 없었음.
+        for(int i  = 0; i < listUpperBody.Count; i++)
+        {
+            //forsortUpper = listUpperBody[i].VirtualCurrencyPrices; 필요 없음
+            Debug.Log(i +"번째 "+ listUpperBody[i].VirtualCurrencyPrices["GD"]);
+            //Debug.Log(i+ "번째 " + forsortUpper.Values.ToString());
+        }
+        Debug.Log("Dictionary 정렬 중");
+
+        listUpperBody.Sort(delegate (CatalogItem A, CatalogItem B)
+        {
+            if (A.VirtualCurrencyPrices["GD"]>B.VirtualCurrencyPrices["GD"]) return 1;
+            else if(A.VirtualCurrencyPrices["GD"]<B.VirtualCurrencyPrices["GD"]) return -1;
+            else return 0;
+        }
+        );
+        Debug.Log("Dictionary 정렬 후");
+        
+        for (int i = 0; i < listUpperBody.Count; i++)
+        {
+            Debug.Log(i +"번째 "+ listUpperBody[i].VirtualCurrencyPrices["GD"]);
+        }
+
+        //forsortUpper.OrderBy(Item =>Item.Key); 이것도 모두 5000으로 됨.
+        //listUpperBody.Sort(); 이 함수부터 작동을 안함.
+        /*var upperItem = from pair in forsortUpper
+                    orderby pair.Value ascending
+                    select pair;
+        foreach (KeyValuePair<string, uint> pair in upperItem)
+        {
+            Debug.Log(pair.Key+"와 "+pair.Value);
+        }
+        foreach (var i in upperItem) { Debug.Log(i.ToString()); }
+        */
+        /*1. 실패 Debug.Log(i +"번째 "+ forsortUpper["GD"])가 모두 (i 번째 5000)으로 나옴.
+        SortedDictionary<string,uint> sortedDictionary = new SortedDictionary<string,uint>(forsortUpper);
+        for(int i  = 0; i < listUpperBody.Count; i++)
+        {
+            Debug.Log(i +"번째 "+ forsortUpper["GD"]);
+        } 
+        */
+        //다리 코스트 순으로 정렬하기
+        Debug.Log("다리 정렬 시작");
+        listLowerBody = NetWork.Get.legList;      
+        for(int i  = 0; i < listLowerBody.Count; i++)
+        {
+            //forsortUpper = listUpperBody[i].VirtualCurrencyPrices; 필요 없음
+            Debug.Log(i +"번째 "+ listLowerBody[i].VirtualCurrencyPrices["GD"]);
+            //Debug.Log(i+ "번째 " + forsortUpper.Values.ToString());
+        }
+        Debug.Log("Dictionary 정렬 중");
+
+        listLowerBody.Sort(delegate (CatalogItem A, CatalogItem B)
+        {
+            if (A.VirtualCurrencyPrices["GD"]>B.VirtualCurrencyPrices["GD"]) return 1;
+            else if(A.VirtualCurrencyPrices["GD"]<B.VirtualCurrencyPrices["GD"]) return -1;
+            else return 0;
+        }
+        );
+        Debug.Log("Dictionary 정렬 후");
+        
+        for (int i = 0; i < listLowerBody.Count; i++)
+        {
+            Debug.Log(i +"번째 "+ listLowerBody[i].VirtualCurrencyPrices["GD"]);
+        }
+        /*for (int i=0; i<listofitem.Count;i++)
             {
                 print("아이템 아이디 "+listofitem[i].ItemId);
                 print("아이템 이름 "+listofitem[i].DisplayName);
                 print("아이템 설명 "+listofitem[i].Description);
                 print("가상화폐 가격 "+listofitem[i].VirtualCurrencyPrices);
-                /*var catalog = listofitem[i];
+                var catalog = listofitem[i];
                 Debug.Log("아이템 아이디 "+catalog.ItemId);
                 Debug.Log("아이템 이름 "+catalog.DisplayName);
                 Debug.Log("아이템 설명 "+catalog.Description);
-                Debug.Log("가상화폐 가격 "+catalog.VirtualCurrencyPrices);*/
-            }
+                Debug.Log("가상화폐 가격 "+catalog.VirtualCurrencyPrices);
+            }*/
+
     }
     //얘를 껐다 킬 수 있는 것일까?
     GameObject item1;
@@ -113,10 +218,10 @@ public class StoreInstantiate : MonoBehaviour
                     Destroy(item3);
                 }
                 //1번부터 생성시킬 것임
-                title1.text = listofitem[0].ItemId ;
-                item1 = Instantiate(weapon1, pos1.transform.position, Quaternion.identity);
-                introduction1.text = listofitem[0].Description;
-                cost1.text = listofitem[0].VirtualCurrencyPrices.ToString();
+                //title1.text = listofitem[0].ItemId ;
+                //item1 = Instantiate(weapon1, pos1.transform.position, Quaternion.identity);
+                //introduction1.text = listofitem[0].Description;
+                //cost1.text = listofitem[0].VirtualCurrencyPrices.ToString();
 
                 //2번 생성
                 title2.text = "머신건";
