@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using PlayFab;
 using PlayFab.ClientModels;
+using UnityEngine.UI;
 
 public class StoreButton : MonoBehaviour
 {
@@ -22,11 +23,46 @@ public class StoreButton : MonoBehaviour
     public bool lowerBodyItem = false;
     */
     StoreInstantiate StIn;
+    List<CatalogItem> listAll = new List<CatalogItem>();
+    //무기 리스트
+    public List<CatalogItem> listWeapon = new List<CatalogItem>();
+    //몸통 리스트
+    public List<CatalogItem> listUpperBody = new List<CatalogItem>();
+    //다리 리스트
+    public List<CatalogItem> listLowerBody = new List<CatalogItem>();
 
+    GameObject item1;
+    public GameObject instantiatePrefab;
+    public GameObject pos;
+
+    Text title1;
+    Text introduction1;
+    Text cost1;
+    public Transform contents;
     // Start is called before the first frame update
     void Start()
     {
-        WhatItemWillBeShowed(1);
+        StoreItemList();
+        WhatItemWillBeShowed(2);
+    }
+    public void MakePanel()
+    {
+        item1= Instantiate(instantiatePrefab , pos.transform.position, Quaternion.identity,contents);
+        //item1.transform.parent = this.transform ;
+
+    }
+    public void StoreItemList()
+    {
+        Debug.Log("리스트 만들기");
+        NetWork.Get.GetCatalogItem("store");
+        listAll = NetWork.Get.itemList;
+        NetWork.Get.SortItemByPrice(listAll);
+        listWeapon = NetWork.Get.weaponList;
+        NetWork.Get.SortItemByPrice(listWeapon);
+        listUpperBody = NetWork.Get.bodyList;
+        NetWork.Get.SortItemByPrice(listUpperBody);
+        listLowerBody = NetWork.Get.legList;
+        NetWork.Get.SortItemByPrice(listLowerBody);
     }
 
     // Update is called once per frame
@@ -47,22 +83,27 @@ public class StoreButton : MonoBehaviour
     //그렇다면 처음이면 상관 없지만 만약 전에 생성 된 것이 있었다면? 어떻게 해야 할까?
     public void WhatItemWillBeShowed(int k)
     {
+        Debug.Log("이제 아이템보여줄 것임");
         switch(k)
         {
             case 1:
-                StIn.ShowAllItem(allCount);
+                Debug.Log("음.");
+                ShowAllItem();
             break;
 
             case 2:
-                StIn.ShowWeaponItem(weaponCount);
+                Debug.Log("음..");
+                ShowWeaponItem();
             break;
 
             case 3:
-                StIn.ShowUpperBodyItem(upperBodyCount);
+                Debug.Log("음...");
+                ShowUpperBodyItem();
             break;
 
             case 4:
-                StIn.ShowLowerBodyItem(lowerBodyCount);
+                Debug.Log("음....");
+                ShowLowerBodyItem();
             break;
         }
     }
@@ -76,19 +117,19 @@ public class StoreButton : MonoBehaviour
     public void WeaponItem()
     {
         whatItem = 2;
-        WhatItemWillBeShowed(whatItem);
+        WhatItemWillBeShowed(2);
     }
     //UpperBody 버튼을 눌렀을 때 상체 아이템들을 보일 수 있도록 한다.
     public void UpperBodyItem()
     {
         whatItem = 3;
-        WhatItemWillBeShowed(whatItem);
+        WhatItemWillBeShowed(3);
     }
     //LowerBody 버튼을 눌렀을 때 하체 아이템들을 보일 수 있도록 한다.
     public void LowerBodyItem()
     {
         whatItem = 4;
-        WhatItemWillBeShowed(whatItem);
+        WhatItemWillBeShowed(4);
     }
     //이렇게 하는게 맞는지 의문이 든다. 아랫것은 그 아랫것으로 대체하기로 하자.
     /*public void AllItemNext()
@@ -175,7 +216,7 @@ public class StoreButton : MonoBehaviour
         StIn.ShowAllItem(lowerBodyCount);
     }*/
     //오른쪽으로 넘어갈때!
-    public void PlusClick()
+    /*public void PlusClick()
     {
         switch(whatItem)
         {
@@ -249,7 +290,7 @@ public class StoreButton : MonoBehaviour
                 StIn.ShowLowerBodyItem(lowerBodyCount);
             break;
         }
-    }
+    }*/
     public void BuyItem()
     {
         /* 이것들은 예시이다!!! 맨 아래것 빼고 어디서 처리를 해야 하는 것일까?
@@ -301,5 +342,74 @@ public class StoreButton : MonoBehaviour
             PlayFabClientAPI.ConfirmPurchase(request, LogSuccess, LogFailure);
         }
         */
+    }
+    
+    PrefabPanel pp;
+    
+    public void ShowAllItem()
+    {
+        for (int i =0 ; i < listAll.Count; i++ )
+        {
+            Debug.Log("아이템 스크롤뷰 시작");
+            item1 = Instantiate(instantiatePrefab);
+            item1.transform.parent = this.transform ;
+            title1.text = listAll[i].DisplayName;
+            introduction1.text = listAll[i].Description;
+            //cost1.text = listAll[i].VirtualCurrencyPrices.ToString();
+        }
+    }
+    public void ShowWeaponItem()
+    {
+        
+        /*Transform[] childList = GetComponentsInChildren<Transform>(true);
+        if(childList != null)
+        {
+            for(int i=0;i<childList.Length;i++)
+            {
+                if(childList[i] != transform)
+                    Destroy(childList[i].gameObject);
+            }
+        }*/
+        Debug.Log("아이템 스크롤뷰 시작");
+        for (int i =0 ; i < listWeapon.Count; i++ )
+        {
+        
+            Debug.Log("Item 이름은 : "+ listWeapon[i].DisplayName+ " 가격은 : "+ listWeapon[i].VirtualCurrencyPrices.ToString());
+            MakePanel();
+            //item1.transform.parent = this.transform ;
+            //item1.transform.localScale=new Vector3(1,1,1);
+            //title1.text = listWeapon[i].DisplayName;
+            //introduction1.text = listWeapon[i].Description;
+            //cost1.text = listWeapon[i].VirtualCurrencyPrices["GD"].ToString();
+            Debug.Log(i);
+        }
+    }
+    public void ShowUpperBodyItem()
+    {
+        Debug.Log("다음 여기는?");
+        for (int i =0 ; i < listUpperBody.Count; i++ )
+        {
+            Debug.Log("Item 이름은 : "+ listUpperBody[i].DisplayName+ " 가격은 : "+ listUpperBody[i].VirtualCurrencyPrices.ToString());
+            MakePanel();
+            // item1.transform.parent = this.transform ;
+            // item1.transform.localScale=new Vector3(1,1,1);
+            // title1.text = listUpperBody[i].DisplayName;
+            // introduction1.text = listUpperBody[i].Description;
+            // cost1.text = listUpperBody[i].VirtualCurrencyPrices["GD"].ToString();
+        }
+    }
+    public void ShowLowerBodyItem()
+    {
+        Debug.Log("다음 여기는?");
+        for (int i =0 ; i < listLowerBody.Count; i++ )
+        {
+            Debug.Log("Item 이름은 : "+ listLowerBody[i].DisplayName+ " 가격은 : "+ listLowerBody[i].VirtualCurrencyPrices.ToString());
+            MakePanel();
+            // item1.transform.parent = this.transform ;
+            // item1.transform.localScale=new Vector3(1,1,1);
+            // title1.text = listLowerBody[i].DisplayName;
+            // introduction1.text = listLowerBody[i].Description;
+            // cost1.text = listLowerBody[i].VirtualCurrencyPrices["GD"].ToString();
+        }
     }
 }

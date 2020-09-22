@@ -8,6 +8,7 @@ using System.Linq;
 
 public class StoreInstantiate : MonoBehaviour
 {
+    public GameObject instantiatePrefab;
     GameObject pos;
     public GameObject pos1;
     public GameObject pos2;
@@ -40,7 +41,7 @@ public class StoreInstantiate : MonoBehaviour
     public GameObject weapon7;
 
     string store="Store";
-    List<CatalogItem> listofitem = new List<CatalogItem>();
+    List<CatalogItem> listAll = new List<CatalogItem>();
     //무기 리스트
     public List<CatalogItem> listWeapon = new List<CatalogItem>();
     //몸통 리스트
@@ -53,7 +54,7 @@ public class StoreInstantiate : MonoBehaviour
         cost1 = costparent1.GetComponentInChildren<Text>();
         cost2 = costparent2.GetComponentInChildren<Text>();
         cost3 = costparent3.GetComponentInChildren<Text>();
-        
+        //StoreItemList();
     }
 
     // Update is called once per frame
@@ -64,6 +65,15 @@ public class StoreInstantiate : MonoBehaviour
     //저거로 가져오려고 하지만 어떻게 리스트에 저장을 할까?읭?? 어떤 형식으로 저장이 될 것인가?
     public void StoreItemList()
     {
+        listAll = NetWork.Get.itemList;
+        NetWork.Get.SortItemByPrice(listAll);
+        listWeapon = NetWork.Get.weaponList;
+        NetWork.Get.SortItemByPrice(listWeapon);
+        listUpperBody = NetWork.Get.bodyList;
+        NetWork.Get.SortItemByPrice(listUpperBody);
+        listLowerBody = NetWork.Get.legList;
+        NetWork.Get.SortItemByPrice(listLowerBody);
+        /*
         Debug.Log("아이템 리스트 가져오기");
         //무기 코스트 순서대로 정렬하기
         //NetWork.Get.GetCatalogItem("Store");
@@ -71,15 +81,14 @@ public class StoreInstantiate : MonoBehaviour
         //listofitem = NetWork.Get.itemList; 
         Debug.Log("무기 정렬 시작");
         listWeapon = NetWork.Get.weaponList;
-        for(int i = 0; i <listWeapon.Count; i++)
+        /*for(int i = 0; i <listWeapon.Count; i++)
         {
             //forsortweapon = listWeapon[i].VirtualCurrencyPrices;노필요 
             //forsortweapon.OrderBy(x => x.value);
             //print("정렬순서 key : {0}, value : {1}",forsortweapon.Keys , forsortweapon.Values);
             Debug.Log(i +"번째 "+listWeapon[i].VirtualCurrencyPrices["GD"]);
-        }
-        Debug.Log("Dictionary 정렬 중");
-
+        }*/
+        /*
         listWeapon.Sort(delegate (CatalogItem A, CatalogItem B)
         {
             if (A.VirtualCurrencyPrices["GD"]>B.VirtualCurrencyPrices["GD"]) return 1;
@@ -87,15 +96,15 @@ public class StoreInstantiate : MonoBehaviour
             else return 0;
         }
         );
-        Debug.Log("Dictionary 정렬 후");
+        Debug.Log("무기 정렬 후");
         
         for (int i = 0; i < listWeapon.Count; i++)
         {
             Debug.Log(i +"번째 "+ listWeapon[i].VirtualCurrencyPrices["GD"]);
         }
-
+        */
         //몸통 정렬하기
-        Debug.Log("몸통 정렬 시작");
+        /*Debug.Log("몸통 정렬 시작");
         listUpperBody = NetWork.Get.bodyList;
         //var forsortUpper = new Dictionary<string, uint>();할 필요 없었음.
         for(int i  = 0; i < listUpperBody.Count; i++)
@@ -139,7 +148,7 @@ public class StoreInstantiate : MonoBehaviour
         } 
         */
         //다리 코스트 순으로 정렬하기
-        Debug.Log("다리 정렬 시작");
+        /*Debug.Log("다리 정렬 시작");
         listLowerBody = NetWork.Get.legList;      
         for(int i  = 0; i < listLowerBody.Count; i++)
         {
@@ -174,16 +183,18 @@ public class StoreInstantiate : MonoBehaviour
                 Debug.Log("아이템 설명 "+catalog.Description);
                 Debug.Log("가상화폐 가격 "+catalog.VirtualCurrencyPrices);
             }*/
-
+        
     }
     //얘를 껐다 킬 수 있는 것일까?
     GameObject item1;
     GameObject item2;
     GameObject item3;
+    GameObject item4;
+    List<GameObject> scrollAll = new List<GameObject>();
     //음 하는데 밖으로 빼고 싶다...
     public void ShowAllItem(int count)
     {
-        switch (count)
+        /*switch (count)
         {
             case 1 :
                 
@@ -192,23 +203,28 @@ public class StoreInstantiate : MonoBehaviour
             case 2 :
                 //title1.text = listofitem.itemid;
             break;
-        }
-        //이것으로 할지
-        for (int i =0 ; i < 7; i++ )
+        }*/
+        //이것으로 할 것 같다.
+        for (int i =0 ; i < listAll.Count; i++ )
         {
-            if(count == i)
+            item1 = Instantiate<GameObject>(instantiatePrefab);
+            item1.transform.parent = this.transform ;
+            title1.text = listAll[i].DisplayName;
+            introduction1.text = listAll[i].Description;
+            cost1.text = listAll[i].VirtualCurrencyPrices.ToString();
+            /*if(count == i)
             {
                 // for (int j =0; j < 3; j++)
                 // {
                 //     Instantiate(tank+i, pos+j; Quaternion.identity);
                 // }요건 안된다고 하니 패스
-            }//이것으로 할지 고민중 하지만 둘 다 엄청난 노가다가 필요할 것이라는 것은 똑같음.
+            }//이것으로 할지 고민중 하지만 둘 다 엄청난 노가다가 필요할 것이라는 것은 똑같음.*/
         }
     }
 
     public void ShowWeaponItem(int count)
     {
-        switch (count)
+        /*switch (count)
         {
             case 1 :
                 if(item1 != null) 
@@ -306,7 +322,7 @@ public class StoreInstantiate : MonoBehaviour
                 item3 = null;
                 introduction3.text = " ";
             break;
-        }
+        }*/
         if(count == 1)
         {
             
@@ -315,7 +331,7 @@ public class StoreInstantiate : MonoBehaviour
     
     public void ShowUpperBodyItem(int count)
     {
-        switch (count)
+        /*switch (count)
         {
             case 1 :
 
@@ -324,7 +340,7 @@ public class StoreInstantiate : MonoBehaviour
             case 2 :
 
             break;
-        }
+        }*/
 
         if(count == 1)
         {
@@ -332,22 +348,4 @@ public class StoreInstantiate : MonoBehaviour
         }
     }
     
-    public void ShowLowerBodyItem(int count)
-    {
-        switch (count)
-        {
-            case 1 :
-
-            break;
-
-            case 2 :
-
-            break;
-        }
-
-        if(count == 1)
-        {
-
-        }
-    }
 }
