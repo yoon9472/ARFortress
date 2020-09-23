@@ -9,5 +9,10 @@ public class RobotManager : MonoBehaviour
     public List<GameObject> weapon = new List<GameObject>();
 
 
-    
+
+    public void Update()
+    {
+        
+    }
+
 }

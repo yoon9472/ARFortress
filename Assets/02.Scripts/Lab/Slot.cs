@@ -6,10 +6,16 @@ using UnityEngine.UI;
 
 public class Slot : MonoBehaviour
 {
+    //이 스크립트는 Panel_Leg,Panel_Weapon,Panel_Body 의 PartsSlot 안의 Slot 안에 각각 붙어있음.
+    //슬롯 테두리 img
     public Image img;
+    //슬롯테두리 안의 로봇파츠 이미지 
     public Image selectImage;
+    //select 이미지 안에있는 각각 Spider , Ammogun 등 파츠별 실제 이름= DB에서 불러오기 위해 이름을 정확하게써야됨.
     public string itemName;
+    //0 = 무기 1 = 바디  2 = 다리
     public int itemType;
+    //텍스트를 정렬하기 위해 그룹으로 만듦. 텍스트루트에 GetChild(0~5) 하여 하위 항목에 하나씩 아이템 설명을 받아오면됨. 
     public GameObject textRoot;
     //WeaponList 의 카운트만큼 for문 돌려서 string네임과 같은걸찾음
     void Start()
