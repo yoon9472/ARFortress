@@ -14,7 +14,7 @@ public class GameManager : MonoBehaviour
     public GameObject selectLeg;//선택한 다리
     public GameObject selectBody;//선택한 몸통
     public GameObject selectWeapon;//선택한 무기
-
+    public UserInfo userinfo;//타이틀 데이터에 저장될 플레이어 정보
     GameObject nowLeg;
     GameObject nowBody;
     GameObject nowWeapon;
