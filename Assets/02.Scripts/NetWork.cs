@@ -327,7 +327,6 @@ public class NetWork : MonoBehaviourPunCallbacks
     public string password;//입력받은 비밀번호
     public string userName;//입력받은 사용자 이름
     public string nickName;//입력받은 닉네임
-    public Userinfo userinfo;
     string playfabid;
     public List<CatalogItem> itemList = new List<CatalogItem>();
     //무기 리스트
@@ -357,9 +356,11 @@ public class NetWork : MonoBehaviourPunCallbacks
                 }, (result) =>
                 {
                     //로그인 성공시 콜백 부분
-                    Debug.Log(result.PlayFabId);
                     playfabid = result.PlayFabId;
-                    JoinLobby();
+                    Debug.Log("로그인 성공");
+                    StartCoroutine(LoadItemList());// 상점 리스트 불러와서 정리하고 완료되면 씬전환
+                    Getdata(playfabid);//타이틀데이터 불러오기->타이틀데이터가 없으면 새로 생성해서 기본값 넣어주기
+                    //JoinLobby();
 
                 }, PlayFab_GoogleLogin_Error);
             }
@@ -396,15 +397,12 @@ public class NetWork : MonoBehaviourPunCallbacks
     {
         Debug.Log("회원가입 성공");
         //회원가입성고앟면 생성된 플레이팹 고유의 아이디와 내가 입력한 이메일 패스워드 유저네임 닉네임을 클래스에 담기
-        userinfo.playfabId = obj.PlayFabId;
-        userinfo.email = email;
-        userinfo.password = password;
-        userinfo.userName = userName;
-        userinfo.nickName = nickName;
-        SetData(userinfo);//유저의 정보를 세팅하는 값 설정하기
+        GameManager.Get.userinfo.playfabId = obj.PlayFabId;
+        GameManager.Get.userinfo.nickName = nickName;
+        SetData(GameManager.Get.userinfo);//유저의 정보를 세팅하는 값 설정하기
     }
     /// <summary>
-    /// 로그인 할떄 호출할것
+    /// 커스텀 로그인 할떄 호출할것
     /// </summary>
     public void Login()
     {
@@ -437,7 +435,7 @@ public class NetWork : MonoBehaviourPunCallbacks
         StartCoroutine(LoadItemList());
         //로그인 성공하면 앞으로 유저의 정보가 수정될수 있으니 유저의 정보를 불러와서 userinfo에 담아서 가지고 있는다
         //JoinLobby();
-        //Getdata(obj.PlayFabId);
+        Getdata(obj.PlayFabId);
     }
 
     /// <summary>
@@ -445,7 +443,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// 변경된 클래스가 저장이 된다
     /// </summary>
     /// <param name="info"></param>
-    public void SetData(Userinfo info)
+    public void SetData(UserInfo info)
     {
         string json = JsonUtility.ToJson(info);
         var request = new PlayFab.ClientModels.UpdateUserDataRequest()
@@ -485,8 +483,19 @@ public class NetWork : MonoBehaviourPunCallbacks
     private void OnGetdataSuccess(PlayFab.ClientModels.GetUserDataResult obj)
     {
         Debug.Log("가져오기 성공");
-        var yourObject = JsonUtility.FromJson<Userinfo>(obj.Data["Info"].Value);
-        userinfo = yourObject;
+        if(obj.Data.ContainsKey("Info"))
+        {
+            //가져올 정보가 있을때
+            var yourObject = JsonUtility.FromJson<UserInfo>(obj.Data["Info"].Value);
+            GameManager.Get.userinfo = yourObject;
+        }
+        else
+        {
+            SetData(GameManager.Get.userinfo);
+            //가져올 정보가 없을때 -> 기본 데이터 세팅한다 최초 로그인한 회원인 상태이다.
+        }
+
+        //키가 없다고 에러가 뜨면 -> 기본 정보 세팅
         
     }
 
@@ -504,12 +513,14 @@ public class NetWork : MonoBehaviourPunCallbacks
             {
                 //인벤토리 리스트에 있는 아이템들의 각정보들
                 var inventory = result.Inventory[i];
-                Debug.Log(inventory.DisplayName);
+
+                GameManager.Get.ownedItem_List.Add(result.Inventory[i].DisplayName);
+              /*  Debug.Log(inventory.DisplayName);
                 Debug.Log(inventory.ItemId);
                 Debug.Log(inventory.ItemInstanceId);
                 Debug.Log(inventory.UnitCurrency);
                 Debug.Log(inventory.CustomData);
-                Debug.Log(inventory.PurchaseDate);
+                Debug.Log(inventory.PurchaseDate);*/
             }
         },
         (error) => Debug.Log("인벤토리 불러오기 실패"));
@@ -725,18 +736,6 @@ public class NetWork : MonoBehaviourPunCallbacks
     #endregion
 }
 
-/// <summary>
-/// 사용자 정보
-/// </summary>
-public class Userinfo
-{
-    //기본적인 사용자의 정보 필요에 따라 나중에 더 추가될수도 있음
-    public string email;
-    public string password;
-    public string playfabId;
-    public string userName;
-    public string nickName;
-    public bool firstLogin = true;
-}
+
 
 

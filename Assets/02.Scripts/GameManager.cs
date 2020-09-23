@@ -10,11 +10,13 @@ public class GameManager : MonoBehaviour
     public List<BodyInfo> bodyInfo_List = new List<BodyInfo>();    //몸통의 상세 정보를 담을 리스트
     [Header("다리 상세정보 담은 리스트")]
     public List<LegInfo> legInfo_List = new List<LegInfo>();    //다리의 상세 정보를 담을 리스트
+    [Header("보유한 아이템 리스트")]
+    public List<string> ownedItem_List = new List<string>();  //보유 아이템 리스트
     [Header("랩실에서 조립할려고 현재 선택한 무기")]
     public GameObject selectLeg;//선택한 다리
     public GameObject selectBody;//선택한 몸통
     public GameObject selectWeapon;//선택한 무기
-
+    public UserInfo userinfo;//타이틀 데이터에 저장될 플레이어 정보
     GameObject nowLeg;
     GameObject nowBody;
     GameObject nowWeapon;
