@@ -51,9 +51,9 @@ public class StoreInstantiate : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        cost1 = costparent1.GetComponentInChildren<Text>();
-        cost2 = costparent2.GetComponentInChildren<Text>();
-        cost3 = costparent3.GetComponentInChildren<Text>();
+        //cost1 = costparent1.GetComponentInChildren<Text>();
+        //cost2 = costparent2.GetComponentInChildren<Text>();
+        //cost3 = costparent3.GetComponentInChildren<Text>();
         //StoreItemList();
     }
 
