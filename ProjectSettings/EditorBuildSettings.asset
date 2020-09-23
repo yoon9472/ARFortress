@@ -26,6 +26,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/01.Scene/06.PlayArcore.unity
     guid: 9929fb724c00b4c44bdad92049e25c16
+  - enabled: 1
+    path: Assets/01.Scene/TestStore.unity
+    guid: 265da93739b124743b2e5b610c7db931
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 2c21afe110b0f1b4ab367229e68ee462,
       type: 2}
