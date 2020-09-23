@@ -504,12 +504,14 @@ public class NetWork : MonoBehaviourPunCallbacks
             {
                 //인벤토리 리스트에 있는 아이템들의 각정보들
                 var inventory = result.Inventory[i];
-                Debug.Log(inventory.DisplayName);
+
+                GameManager.Get.ownedItem_List.Add(result.Inventory[i].DisplayName);
+              /*  Debug.Log(inventory.DisplayName);
                 Debug.Log(inventory.ItemId);
                 Debug.Log(inventory.ItemInstanceId);
                 Debug.Log(inventory.UnitCurrency);
                 Debug.Log(inventory.CustomData);
-                Debug.Log(inventory.PurchaseDate);
+                Debug.Log(inventory.PurchaseDate);*/
             }
         },
         (error) => Debug.Log("인벤토리 불러오기 실패"));
