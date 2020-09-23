@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,7 +13,13 @@ public class GameManager : MonoBehaviour
     public List<LegInfo> legInfo_List = new List<LegInfo>();    //다리의 상세 정보를 담을 리스트
     [Header("보유한 아이템 리스트")]
     public List<string> ownedItem_List = new List<string>();  //보유 아이템 리스트
-    [Header("랩실에서 조립할려고 현재 선택한 무기")]
+    [Header("인트로에서 Prefab정보 담을 배열")]
+    public GameObject[] weaponPartsArr ;
+    [Header("인트로에서 Prefab정보 담을 배열")]
+    public GameObject[] bodyPartsArr ;
+    [Header("인트로에서 Prefab정보 담을 배열")]
+    public GameObject[] legPartsArr ;
+    [Header("랩실에서 조립할려고 현재 선택한 파츠")]
     public GameObject selectLeg;//선택한 다리
     public GameObject selectBody;//선택한 몸통
     public GameObject selectWeapon;//선택한 무기
@@ -20,6 +27,7 @@ public class GameManager : MonoBehaviour
     GameObject nowLeg;
     GameObject nowBody;
     GameObject nowWeapon;
+    public GameObject test;
     float nowLeftWeight;
     float nowWeight;
     private static GameManager m_Instance = null;
@@ -39,6 +47,10 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        Debug.Log("스타트함수");
+        weaponPartsArr = Resources.LoadAll<GameObject>("01.Weapon");
+        bodyPartsArr = Resources.LoadAll<GameObject>("02.Body");
+        legPartsArr = Resources.LoadAll<GameObject>("03.Leg");
         
     }
 

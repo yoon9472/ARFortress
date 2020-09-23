@@ -393,9 +393,34 @@ MonoBehaviour:
   weaponInfo_List: []
   bodyInfo_List: []
   legInfo_List: []
+  ownedItem_List: []
+  allPartsList:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   selectLeg: {fileID: 0}
   selectBody: {fileID: 0}
   selectWeapon: {fileID: 0}
+  userinfo: {fileID: 0}
+  test: {fileID: 0}
 --- !u!4 &526708557
 Transform:
   m_ObjectHideFlags: 0

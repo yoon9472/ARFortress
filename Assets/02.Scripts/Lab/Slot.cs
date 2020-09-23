@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.Tracing;
 using UnityEngine;
@@ -21,6 +22,8 @@ public class Slot : MonoBehaviour
     //잠금화면 이미지
     public Image lockitem;
     public bool activeSlot;
+
+    public Transform objectPivot;
     void Start()
     {
         activeSlot = false;
@@ -98,10 +101,58 @@ public class Slot : MonoBehaviour
                     }
                 }
             }
+        Assembly(itemName,itemType);    
 
         }
         //string itemName으로 입력한 이름이   게임매니저의 아이템List와 일치하면 아이템 생성
-        //if (this.itemName == GameManager.Get.legInfo_List[].partName)
-       //
+    }
+    //로봇 조립 함수
+    //string itemName 과 아이템
+    
+    public void Assembly(string itemName,int itemType)
+    {
+        //다리면 실행함 
+        if(itemType ==2 )
+        {
+            if (GameManager.Get.selectLeg != null)
+            {
+                Destroy(GameManager.Get.selectLeg);
+            }
+            for(int i=0; i < GameManager.Get.legPartsArr.Length; i++)
+            {
+                if(itemName == GameManager.Get.legPartsArr[i].name)
+                {
+                   GameManager.Get.selectLeg =Instantiate(GameManager.Get.legPartsArr[i], objectPivot.transform.position, Quaternion.identity);
+                }
+            }
+        }
+        else if(itemType ==1)
+        {
+            if (GameManager.Get.selectBody != null)
+            {
+                Destroy(GameManager.Get.selectBody);
+            }
+            for (int i = 0; i < GameManager.Get.bodyPartsArr.Length; i++)
+            {
+                if(itemName== GameManager.Get.bodyPartsArr[i].name)
+                {
+                    GameManager.Get.selectBody = Instantiate(GameManager.Get.bodyPartsArr[i], GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position, Quaternion.identity);
+                }
+            }
+        }
+        else
+        {
+            if (GameManager.Get.selectWeapon != null)
+            {
+                Destroy(GameManager.Get.selectWeapon);
+            }
+            for (int i = 0; i < GameManager.Get.weaponPartsArr.Length; i++)
+            {
+                if (itemName == GameManager.Get.weaponPartsArr[i].name)
+                {
+                    GameManager.Get.selectWeapon = Instantiate(GameManager.Get.weaponPartsArr[i], GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position, Quaternion.identity);
+                }
+            }
+        }
     }
 }
