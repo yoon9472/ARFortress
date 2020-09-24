@@ -8,6 +8,7 @@ using UnityEngine.UI;
 
 public class StoreButton : MonoBehaviour
 {
+    public GameObject noCoin;
     GameObject item1;
     public GameObject instantiatePrefab;
     Text title1;
@@ -19,6 +20,9 @@ public class StoreButton : MonoBehaviour
     int upperBodyNumber=3;
     int lowerBodyNumber=4;
     public int checkNumber;// 중복 버튼 눌러서 리소스 줄이기 위해서 이것을 넣음!
+
+    string itemIdForPay;
+    int itemPrice;
     // Start is called before the first frame update
     void Start()
     {
@@ -27,6 +31,11 @@ public class StoreButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+    }
+    //돈이 없어서 아이템을 못샀다고 한 창을 끌때!
+    public void CloseNoCoin()
+    {
+        noCoin.gameObject.SetActive(false);
     }
     //뒤로가기 버튼 넣음 됨!
     public void BacktoMainScene()
@@ -42,6 +51,10 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.itemList[i].DisplayName;
             item1.GetComponent<PrefabPanel>().description = NetWork.Get.itemList[i].Description;
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"].ToString();
+            item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.itemList[i].ItemId;
+            item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
+            //int imageNum = //서버에서 이미지 번호를 받아옴;
+            //Image img = imageManager.LoadImage(imageNum);
         }
     }
     //weapon 패널 생성하는 곳!
@@ -53,6 +66,8 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.weaponList[i].DisplayName;
             item1.GetComponent<PrefabPanel>().description = NetWork.Get.weaponList[i].Description;
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.weaponList[i].VirtualCurrencyPrices["GD"].ToString();
+            item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.weaponList[i].ItemId;
+            item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
         }
     }
     //upperbody 패널 생성하는 곳!
@@ -64,6 +79,8 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.bodyList[i].DisplayName;
             item1.GetComponent<PrefabPanel>().description = NetWork.Get.bodyList[i].Description;
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.bodyList[i].VirtualCurrencyPrices["GD"].ToString();
+            item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.bodyList[i].ItemId;
+            item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
         }
     }
     //lowerdody 패널 생성하는 곳!
@@ -75,6 +92,8 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.legList[i].DisplayName;
             item1.GetComponent<PrefabPanel>().description = NetWork.Get.legList[i].Description;
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.legList[i].VirtualCurrencyPrices["GD"].ToString();
+            item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.legList[i].ItemId;
+            item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
         }
     }
     //자식들 없애는 곳!
@@ -133,7 +152,7 @@ public class StoreButton : MonoBehaviour
             Debug.Log("중복은 앙대요!");
             return;
         }
-        Debug.Log("중복 실험 되는지 안되는지!");
+        //Debug.Log("중복 실험 되는지 안되는지!");
         DestroyChild();
         LowerBodyPanel();
         checkNumber = lowerBodyNumber;
