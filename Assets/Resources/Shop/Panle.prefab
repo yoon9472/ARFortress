@@ -138,7 +138,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: f2710cccd31f3264d8c8019d1f8b6c7f, type: 3}
+  m_Sprite: {fileID: 0}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -399,6 +399,7 @@ MonoBehaviour:
   title: {fileID: 6887908294702024299}
   introduction: {fileID: 2167665867969361253}
   buttonText: {fileID: 2271903871637142043}
+  buttonImage: {fileID: 1416905268049443458}
   displayname: 
   description: 
   itemcost: 

@@ -394,33 +394,30 @@ MonoBehaviour:
   bodyInfo_List: []
   legInfo_List: []
   ownedItem_List: []
-  allPartsList:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  weaponPartsArr: []
+  bodyPartsArr: []
+  legPartsArr: []
+  imgArr: []
   selectLeg: {fileID: 0}
   selectBody: {fileID: 0}
   selectWeapon: {fileID: 0}
   userinfo: {fileID: 0}
-  test: {fileID: 0}
+  legindex: 0
+  bodyindex: 0
+  weaponindex: 0
+  legtotalweight: 0
+  legspeed: 0
+  legamor: 0
+  bodyhp: 0
+  bodyamor: 0
+  bodytype: 
+  bodyweight: 0
+  weaponweight: 0
+  weapontype: 
+  weaponlange: 0
+  weaponattack: 0
+  isloadOver: 0
+  istypeNoeSame: 0
 --- !u!4 &526708557
 Transform:
   m_ObjectHideFlags: 0
@@ -1127,7 +1124,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: SCI-FI GAME NAME
+  m_Text: AR_FORTRESS
 --- !u!222 &1986771103
 CanvasRenderer:
   m_ObjectHideFlags: 0
