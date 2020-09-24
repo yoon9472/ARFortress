@@ -48,6 +48,9 @@ public class Slot : MonoBehaviour
     {
         
     }
+    /// <summary>
+    /// 슬롯클릭하면 아이템의 상세정보를 표시해준다.
+    /// </summary>
     public void GetSlotInfo()
     {
         //액티브 상태일때
@@ -101,13 +104,17 @@ public class Slot : MonoBehaviour
                     }
                 }
             }
-        Assembly(itemName,itemType);    
+        Assembly(itemName,itemType);
+       
 
         }
         //string itemName으로 입력한 이름이   게임매니저의 아이템List와 일치하면 아이템 생성
     }
-    //로봇 조립 함수
-    //string itemName 과 아이템
+/// <summary>
+/// 슬롯을 클릭하면 아이템을 실제로 생성해서 조립되는 모습을 보여준다.
+/// </summary>
+/// <param name="itemName"></param>
+/// <param name="itemType"></param>
     
     public void Assembly(string itemName,int itemType)
     {
@@ -154,5 +161,7 @@ public class Slot : MonoBehaviour
                 }
             }
         }
+        GameManager.Get.CurrentStats();
     }
+
 }
