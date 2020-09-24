@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Inventory : MonoBehaviour
 {
@@ -58,6 +59,10 @@ public class Inventory : MonoBehaviour
     public void Inven2Close()
     {
         inventory[2].SetActive(false);
+    }
+    public void BackToMainScene()
+    {
+        SceneManager.LoadScene("03.Lobby");
     }
 
 }
