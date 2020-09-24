@@ -53,8 +53,13 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"].ToString();
             item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.itemList[i].ItemId;
             item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
-            //int imageNum = //서버에서 이미지 번호를 받아옴;
-            //Image img = imageManager.LoadImage(imageNum);
+            for(int j =0; j < GameManager.Get.imgArr.Length; j++)
+            {
+                if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
+                {
+                    item1.GetComponent<PrefabPanel>().image.sprite = GameManager.Get.imgArr[j];
+                }
+            }
         }
     }
     //weapon 패널 생성하는 곳!
@@ -68,6 +73,13 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.weaponList[i].VirtualCurrencyPrices["GD"].ToString();
             item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.weaponList[i].ItemId;
             item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
+            for(int j =0; j < GameManager.Get.imgArr.Length; j++)
+            {
+                if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
+                {
+                    item1.GetComponent<PrefabPanel>().image.sprite = GameManager.Get.imgArr[j];
+                }
+            }
         }
     }
     //upperbody 패널 생성하는 곳!
@@ -81,6 +93,13 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.bodyList[i].VirtualCurrencyPrices["GD"].ToString();
             item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.bodyList[i].ItemId;
             item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
+            for(int j =0; j < GameManager.Get.imgArr.Length; j++)
+            {
+                if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
+                {
+                    item1.GetComponent<PrefabPanel>().image.sprite = GameManager.Get.imgArr[j];
+                }
+            }
         }
     }
     //lowerdody 패널 생성하는 곳!
@@ -94,6 +113,13 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.legList[i].VirtualCurrencyPrices["GD"].ToString();
             item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.legList[i].ItemId;
             item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
+            for(int j =0; j < GameManager.Get.imgArr.Length; j++)
+            {
+                if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
+                {
+                    item1.GetComponent<PrefabPanel>().image.sprite = GameManager.Get.imgArr[j];
+                }
+            }
         }
     }
     //자식들 없애는 곳!

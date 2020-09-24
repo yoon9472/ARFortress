@@ -31,7 +31,7 @@ public class PrefabPanel : MonoBehaviour
     public void Buy()
     {
         Debug.Log("나 이거 살꺼다!");
-        NetWork.Get.BuyItem("store", itemId ,"GD", price);
+        NetWork.Get.BuyItem("Store", itemId ,"GD", price);
         
     }
 }

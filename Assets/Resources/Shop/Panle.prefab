@@ -404,6 +404,7 @@ MonoBehaviour:
   itemcost: 
   itemId: 
   price: 0
+  image: {fileID: 6671485953964196268}
 --- !u!1 &2271903871637142043
 GameObject:
   m_ObjectHideFlags: 0
