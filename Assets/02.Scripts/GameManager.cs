@@ -19,6 +19,8 @@ public class GameManager : MonoBehaviour
     public GameObject[] bodyPartsArr ;
     [Header("인트로에서 Prefab정보 담을 배열")]
     public GameObject[] legPartsArr ;
+    [Header("상점에서 사용할 스프라이트 이미지")]
+    public Sprite[] imgArr;
     [Header("랩실에서 조립할려고 현재 선택한 파츠")]
     public GameObject selectLeg;//선택한 다리
     public GameObject selectBody;//선택한 몸통
@@ -62,6 +64,7 @@ public class GameManager : MonoBehaviour
     }
     void Start()
     {
+        imgArr = Resources.LoadAll<Sprite>("04.Img");
         Debug.Log("스타트함수");
         weaponPartsArr = Resources.LoadAll<GameObject>("01.Weapon");
         bodyPartsArr = Resources.LoadAll<GameObject>("02.Body");
