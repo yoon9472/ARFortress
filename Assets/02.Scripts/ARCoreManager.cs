@@ -48,10 +48,10 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     /// 앵커를 호스팅한다.
     /// 다음 사람은 리솔브한다?
     /// </summary>
-    TrackableHit hit;
-    Anchor anchor;
-    AsyncTask<CloudAnchorResult> task;
-    GameObject obj;
+    private TrackableHit hit;
+    public List<Anchor> localAnchor = new List<Anchor>(); //클라우드 앵커로 만들 로컬앵커들의 리스트를 담아둠
+    private AsyncTask<CloudAnchorResult> task;
+    private GameObject obj;
     public void MakeCloudAnchorMaster()
     {
         Touch touch = Input.GetTouch(0);
@@ -62,11 +62,17 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
             {
                 firstAnchor = true;
                 timeCheck = true;
-                anchor = hit.Trackable.CreateAnchor(hit.Pose);
-                Debug.Log("방장이 생성한 앵커의 위치 = " + anchor.transform.position);
+                //anchor = hit.Trackable.CreateAnchor(hit.Pose);
+                localAnchor.Add(hit.Trackable.CreateAnchor(hit.Pose));
+                //현재 방에 유저의 수만큼 반복문을 돌아서 앵커를 랜덤한 위치에 생성한다
+                for(int i=0; i<NetWork.Get.localPlayer;i++)
+                {
+                    
+                }
+                //Debug.Log("방장이 생성한 앵커의 위치 = " + anchor.transform.position);
                 //GameObject obj = PhotonNetwork.Instantiate("TestBot", hit.Pose.position, Quaternion.identity);
-                obj = Instantiate(centerObject, anchor.transform.position, Quaternion.identity);
-                obj.transform.SetParent(anchor.transform);
+                //obj = Instantiate(centerObject, anchor.transform.position, Quaternion.identity);
+                //obj.transform.SetParent(anchor.transform);
                 Debug.Log("앵커에 자식이된 표시 오브젝트의 위치 = " + obj.transform.position);
 
             }
@@ -81,15 +87,15 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
                 //AsyncTask<CloudAnchorResult> task = XPSession.CreateCloudAnchor(anchor);
                 if (firstAnchor == true && time > 5)//방장은 첫앵커 생성하고 5초후에 버튼 누르면 호스팅 동작함
                 {
-                    StartCoroutine(HostCloudAnchor(anchor));
+                    //StartCoroutine(HostCloudAnchor(anchor));
                 }
             }
             else
             {
                 if(NetWork.Get.receiveId==true) //앵커 아이디를 받았으면
                 {
-                Debug.Log(NetWork.Get.anchorId);
-                StartCoroutine(ResolveCloudAnchor(NetWork.Get.anchorId));//코루틴 실행
+                //Debug.Log(NetWork.Get.anchorId);
+                //StartCoroutine(ResolveCloudAnchor(NetWork.Get.anchorId));//코루틴 실행
                 }
             }
         

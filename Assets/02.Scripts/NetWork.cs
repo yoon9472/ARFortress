@@ -11,6 +11,7 @@ using System;
 using Newtonsoft.Json;
 using UnityEditor;
 using Unity.Collections.LowLevel.Unsafe;
+using GoogleARCore;
 #if GOOGLEGAMES
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -39,7 +40,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     [Header("포톤 관련 변수")]
     public int[] actornums = new int[4];//방에 입장한 유저의 엑터 넘버를 저장할 배열
     public string[] userArr = new string[4]; //유저 이름을 저장하기위한 배열
-    public bool[] userReady = new bool[4];//룸안에 유저가 학습이 됬는지 준비여부 체크
+    public bool[] userReady = new bool[4];//룸안에 유저가 게임 가능한 상태인지 여부 체크 false면 턴이 안돌아 온다(죽은 유저혹은 나간유저)
     public int readyCnt = 0;//방안에 몇명의 사용자가 클라우드 앵커를 생성 공유했는가 체크
     public int myOrder = 99;// 내 입장 순서 체크
     public bool inIntro = true;//시작은 인트로부터 니까 true로
@@ -50,7 +51,9 @@ public class NetWork : MonoBehaviourPunCallbacks
     public bool isMakeAnchor = false;//클라우드 앵커가 만들어 졌는지 확인
     public string anchorId;
     public bool receiveId = false;//클라우드 앵커 아이디를 받았는지 체크
-    public int localPlayer;
+    public int localPlayer; //현재 방에 입장해 있는 유저의 수
+    public List<Anchor> anchorList = new List<Anchor>(); //플레이 씬에서 앵커 위치를 담을 리스트
+    public List<string> anchorIdList = new List<string>(); //플에이 씬에서 앵커의 주소를 담을 리스트
     private void Start()
     {
         if (!PhotonNetwork.IsConnected && inIntro == true)//인트로 상태에서 시작하고 연결안되있으면->처음 시작이면
@@ -85,7 +88,7 @@ public class NetWork : MonoBehaviourPunCallbacks
             }
         }
         if (inRoom == true)
-        {
+        {   //방에 입장했을때 현재 방의 유저수를 업데이트 시킨다.
             localPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
         }
     }
@@ -139,7 +142,6 @@ public class NetWork : MonoBehaviourPunCallbacks
         isMaster = false;
         receiveId = false;
         isMakeAnchor = false;
-        anchorId = null;
         myOrder = 99;
         readyCnt = 0;
         localPlayer = 0;
@@ -231,6 +233,7 @@ public class NetWork : MonoBehaviourPunCallbacks
                 myOrder = i;
                 userArr[i] = "testUser";//플레이어의 이름 Playfab에서 받아온 DisplayName을 넣을 예정
                 actornums[i] = i;//나의 넘버 추가
+                userReady[i] = true;
                 break;
             }
         }
@@ -311,7 +314,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     [PunRPC]
     public void RPC_SendAnchorId(string anchorid)
     {
-        anchorId = anchorid;
+        //anchorId = anchorid;
         receiveId = true;//앵커 아이디 보낸거 확인
     }
 
@@ -327,6 +330,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     public string password;//입력받은 비밀번호
     public string userName;//입력받은 사용자 이름
     public string nickName;//입력받은 닉네임
+    public string buylastItem;//상점에서 방금 구입한 아이템 이름
     string playfabid;
     public List<CatalogItem> itemList = new List<CatalogItem>();
     //무기 리스트
@@ -358,8 +362,9 @@ public class NetWork : MonoBehaviourPunCallbacks
                     //로그인 성공시 콜백 부분
                     playfabid = result.PlayFabId;
                     Debug.Log("로그인 성공");
-                    StartCoroutine(LoadItemList());// 상점 리스트 불러와서 정리하고 완료되면 씬전환
+                    GetInventory(); //로그인 성공하고 유저의 인벤토리 정보 바로 호출
                     Getdata(playfabid);//타이틀데이터 불러오기->타이틀데이터가 없으면 새로 생성해서 기본값 넣어주기
+                    StartCoroutine(LoadItemList());// 상점 리스트 불러와서 정리하고 완료되면 씬전환
                     //JoinLobby();
 
                 }, PlayFab_GoogleLogin_Error);
@@ -435,6 +440,7 @@ public class NetWork : MonoBehaviourPunCallbacks
         StartCoroutine(LoadItemList());
         //로그인 성공하면 앞으로 유저의 정보가 수정될수 있으니 유저의 정보를 불러와서 userinfo에 담아서 가지고 있는다
         //JoinLobby();
+        GetInventory(); //로그인 성공하고 유저의 인벤토리 정보 바로 호출
         Getdata(obj.PlayFabId);
     }
 
@@ -653,6 +659,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// <param name="price"></param><= 100원? 200원? 얼마나 게임내 화페를 사용할지 
     public void BuyItem(string storeName,string itemid, string virtualCurrency,int price)
     {
+        buylastItem = itemid;
         var request = new PurchaseItemRequest() { CatalogVersion = storeName, ItemId = itemid, VirtualCurrency = virtualCurrency, Price = price };
         PlayFabClientAPI.PurchaseItem(request, BuyOk, BuyFail);
     }
@@ -665,6 +672,8 @@ public class NetWork : MonoBehaviourPunCallbacks
     private void BuyOk(PurchaseItemResult obj)
     {
         Debug.Log("구입 성공");
+        //GameManager의 보유 아이템 리스트(스트링타입)에 방금 구입한 아이템의 이름을 넣어준다
+        GameManager.Get.ownedItem_List.Add(buylastItem);
     }
     #endregion
 

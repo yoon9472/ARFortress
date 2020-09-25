@@ -9,8 +9,7 @@ public class MainSceneButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //메인씬에 올때마다 인벤토리 정보를 갱신한다. //추가해야될 사항 랩Scene으로 넘어가기전 로딩화면 추가 2020.09.23
-        NetWork.Get.GetInventory();
+       
     }
     // Update is called once per frame
     void Update()
