@@ -150,37 +150,55 @@ public class Slot : MonoBehaviour
         }
         else if(itemType ==1)
         {
-            if (GameManager.Get.selectBody != null)
+            //몸통 만 선택시 예외처리
+            if (GameManager.Get.selectLeg == null)
             {
-                Destroy(GameManager.Get.selectBody);
+                Debug.Log("Please choose the Leg parts first.");
             }
-            for (int i = 0; i < GameManager.Get.bodyPartsArr.Length; i++)
+            else
             {
-                //이름 과 일치하는 몸통을 찾는다.
-                if(itemName== GameManager.Get.bodyPartsArr[i].name)
+                if (GameManager.Get.selectBody != null)
                 {
-                    //몸통을 생성한다
-                    GameManager.Get.selectBody = Instantiate(GameManager.Get.bodyPartsArr[i], GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position, Quaternion.identity);
-                    //몸통을 생성했는데 이미 생성된 무기가 있다면?
-                    if(GameManager.Get.selectWeapon !=null)
+                    Destroy(GameManager.Get.selectBody);
+                }
+                for (int i = 0; i < GameManager.Get.bodyPartsArr.Length; i++)
+                {
+                    //이름 과 일치하는 몸통을 찾는다.
+                    if (itemName == GameManager.Get.bodyPartsArr[i].name)
                     {
-                        //새로 생긴 몸통의 위치에 따라 무기의 위치도 재조정한다.
-                        GameManager.Get.selectWeapon.transform.position = GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position;
+                        //몸통을 생성한다
+                        GameManager.Get.selectBody = Instantiate(GameManager.Get.bodyPartsArr[i], GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position, Quaternion.identity);
+                        //몸통을 생성했는데 이미 생성된 무기가 있다면?
+                        if (GameManager.Get.selectWeapon != null)
+                        {
+                            //새로 생긴 몸통의 위치에 따라 무기의 위치도 재조정한다.
+                            GameManager.Get.selectWeapon.transform.position = GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position;
+                        }
                     }
                 }
             }
         }
         else
         {
-            if (GameManager.Get.selectWeapon != null)
+            //무기만 선택시 예외처리
+            if (GameManager.Get.selectBody == null)
             {
-                Destroy(GameManager.Get.selectWeapon);
+                Debug.Log("Please choose the Body parts first.");
             }
-            for (int i = 0; i < GameManager.Get.weaponPartsArr.Length; i++)
+            else
             {
-                if (itemName == GameManager.Get.weaponPartsArr[i].name)
+
+
+                if (GameManager.Get.selectWeapon != null)
                 {
-                    GameManager.Get.selectWeapon = Instantiate(GameManager.Get.weaponPartsArr[i], GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position, Quaternion.identity);
+                    Destroy(GameManager.Get.selectWeapon);
+                }
+                for (int i = 0; i < GameManager.Get.weaponPartsArr.Length; i++)
+                {
+                    if (itemName == GameManager.Get.weaponPartsArr[i].name)
+                    {
+                        GameManager.Get.selectWeapon = Instantiate(GameManager.Get.weaponPartsArr[i], GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position, Quaternion.identity);
+                    }
                 }
             }
         }
