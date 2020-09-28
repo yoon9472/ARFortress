@@ -10,13 +10,14 @@ public class Inventory : MonoBehaviour
     public GameObject currItem;
     void Start()
     {
-        
+        currItem = inventory[2];
+        inventory[2].SetActive(true);
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        
     }
     public void Inven0Open()
     {
