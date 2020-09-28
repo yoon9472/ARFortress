@@ -1,7 +1,32 @@
-﻿using System.Collections;
+﻿using JetBrains.Annotations;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using UnityEngine;
+
+[System.Serializable]
+public class TestClass
+{
+    public int age;
+    public string name;
+
+    public TestClass()
+    {
+        age = 0;
+        name = "NoName";
+    }
+
+
+    public TestClass(int num, string str)
+    {
+        age = num;
+        name = str;
+    }
+}
+
+
+
 
 public class GameManager : MonoBehaviour
 {
@@ -25,8 +50,11 @@ public class GameManager : MonoBehaviour
     public GameObject selectLeg;//선택한 다리
     public GameObject selectBody;//선택한 몸통
     public GameObject selectWeapon;//선택한 무기
+    [Header("DB에 저장될 유저의 정보")]
     public UserInfo userinfo;//타이틀 데이터에 저장될 플레이어 정보
+
     //CurrentStats() 함수에서 현재 조립된 부품의 인덱스 정보를 기억한다.
+    [Header("현재 조립된 부품의 인덱스 정보")]
     public int legindex;
     public int bodyindex;
     public int weaponindex;
@@ -171,3 +199,4 @@ public class GameManager : MonoBehaviour
     }
 
 }
+

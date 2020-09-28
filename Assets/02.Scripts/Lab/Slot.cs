@@ -133,8 +133,10 @@ public class Slot : MonoBehaviour
                 {
                     //다리를 생성한다.
                    GameManager.Get.selectLeg =Instantiate(GameManager.Get.legPartsArr[i], objectPivot.transform.position, Quaternion.identity);
+                    //선택한 다리의 이름을 저장한다 DB에 올릴 이름
+                    GameManager.Get.userinfo.selectedLeg = GameManager.Get.legPartsArr[i].name;
                     //다리를 생성했는데 몸통이 이미 있다면?
-                    if(GameManager.Get.selectBody !=null)
+                    if (GameManager.Get.selectBody !=null)
                     {
                         //몸통의 위치는 다리의 높이에 따라 다시 설정한다.
                         GameManager.Get.selectBody.transform.position = GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position;
@@ -168,6 +170,8 @@ public class Slot : MonoBehaviour
                     {
                         //몸통을 생성한다
                         GameManager.Get.selectBody = Instantiate(GameManager.Get.bodyPartsArr[i], GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position, Quaternion.identity);
+                        //선택한 몸통의 이름을 담아놓는다 DB 저장용
+                        GameManager.Get.userinfo.selectedBody = GameManager.Get.bodyPartsArr[i].name;
                         //몸통을 생성했는데 이미 생성된 무기가 있다면?
                         if (GameManager.Get.selectWeapon != null)
                         {
@@ -198,6 +202,8 @@ public class Slot : MonoBehaviour
                     if (itemName == GameManager.Get.weaponPartsArr[i].name)
                     {
                         GameManager.Get.selectWeapon = Instantiate(GameManager.Get.weaponPartsArr[i], GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position, Quaternion.identity);
+                        //선택한 무기의 이름을 담아놓은다 DB 저장용
+                        GameManager.Get.userinfo.selectedWeapon = GameManager.Get.weaponPartsArr[i].name;
                     }
                 }
             }
