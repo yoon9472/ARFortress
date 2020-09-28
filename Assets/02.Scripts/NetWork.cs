@@ -342,6 +342,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     public string userName;//입력받은 사용자 이름
     public string nickName;//입력받은 닉네임
     public string buylastItem;//상점에서 방금 구입한 아이템 이름
+    public int myMoney;//현재 내가 가진돈
     string playfabid;
     public List<CatalogItem> itemList = new List<CatalogItem>();
     //무기 리스트
@@ -524,13 +525,13 @@ public class NetWork : MonoBehaviourPunCallbacks
         PlayFabClientAPI.GetUserInventory(new PlayFab.ClientModels.GetUserInventoryRequest(), (result) =>
         {
             Debug.Log("인벤토리 불러오기 성공");
+            myMoney = result.VirtualCurrency["GD"];
             //인벤토리 불러오기 성공하면 동작해야할것 작성....
             Debug.Log(result.VirtualCurrency);//가상화폐 종류별로  내가 가지고있는 잔액불러오기(배열) 
             for(int i=0; i<result.Inventory.Count;i++)
             {
                 //인벤토리 리스트에 있는 아이템들의 각정보들
                 var inventory = result.Inventory[i];
-
                 GameManager.Get.ownedItem_List.Add(result.Inventory[i].DisplayName);
               /*  Debug.Log(inventory.DisplayName);
                 Debug.Log(inventory.ItemId);
@@ -561,6 +562,7 @@ public class NetWork : MonoBehaviourPunCallbacks
             //SortItemByPrice(itemList);
             for (int i=0; i<result.Catalog.Count;i++)
             {
+                
                 var catalog = result.Catalog[i];
                 //태그로 비교한다.
                 if(catalog.Tags[0] =="Weapon")
