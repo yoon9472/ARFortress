@@ -121,15 +121,30 @@ public class Slot : MonoBehaviour
         //다리면 실행함 
         if(itemType ==2 )
         {
+            //이미 생성된 다리가 있으면 파괴한다.
             if (GameManager.Get.selectLeg != null)
             {
                 Destroy(GameManager.Get.selectLeg);
             }
             for(int i=0; i < GameManager.Get.legPartsArr.Length; i++)
             {
+                //이름과 일치하는 부품을 찾는다
                 if(itemName == GameManager.Get.legPartsArr[i].name)
                 {
+                    //다리를 생성한다.
                    GameManager.Get.selectLeg =Instantiate(GameManager.Get.legPartsArr[i], objectPivot.transform.position, Quaternion.identity);
+                    //다리를 생성했는데 몸통이 이미 있다면?
+                    if(GameManager.Get.selectBody !=null)
+                    {
+                        //몸통의 위치는 다리의 높이에 따라 다시 설정한다.
+                        GameManager.Get.selectBody.transform.position = GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position;
+                        //만약 선택된 무기도 있다면?
+                        if(GameManager.Get.selectWeapon !=null)
+                        {
+                            //무기의 위치는 다시 조정된 몸통의 위치에 따라 새로 조정한다.
+                            GameManager.Get.selectWeapon.transform.position = GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position;
+                        }
+                    }
                 }
             }
         }
@@ -141,9 +156,17 @@ public class Slot : MonoBehaviour
             }
             for (int i = 0; i < GameManager.Get.bodyPartsArr.Length; i++)
             {
+                //이름 과 일치하는 몸통을 찾는다.
                 if(itemName== GameManager.Get.bodyPartsArr[i].name)
                 {
+                    //몸통을 생성한다
                     GameManager.Get.selectBody = Instantiate(GameManager.Get.bodyPartsArr[i], GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position, Quaternion.identity);
+                    //몸통을 생성했는데 이미 생성된 무기가 있다면?
+                    if(GameManager.Get.selectWeapon !=null)
+                    {
+                        //새로 생긴 몸통의 위치에 따라 무기의 위치도 재조정한다.
+                        GameManager.Get.selectWeapon.transform.position = GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position;
+                    }
                 }
             }
         }
