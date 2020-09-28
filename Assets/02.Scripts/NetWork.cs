@@ -516,7 +516,35 @@ public class NetWork : MonoBehaviourPunCallbacks
         //키가 없다고 에러가 뜨면 -> 기본 정보 세팅
         
     }
-
+    /// <summary>
+    /// 가상화폐 얻기 한번 호출될때마다 100씩
+    /// </summary>
+    public void GetMoney(int amount)
+    {
+        PlayFabClientAPI.AddUserVirtualCurrency(new AddUserVirtualCurrencyRequest { Amount = amount, VirtualCurrency = "GD" }, (result) =>
+           {
+               Debug.Log("돈 추가");
+               myMoney = result.Balance;//현재 돈 변경
+           },
+        (error) => Debug.Log("돈 얻기 실패"));
+    }
+    /// <summary>
+    /// 가상화폐 감소시키기 매개변수로 감소 시키고 싶은 양
+    /// </summary>
+    /// <param name="amount"></param>
+    public void SubMoney(int amount)
+    {
+        PlayFabClientAPI.SubtractUserVirtualCurrency(new SubtractUserVirtualCurrencyRequest { Amount = amount, VirtualCurrency = "GD" }, (result) =>
+           {
+               Debug.Log("돈 감소");
+               myMoney = result.Balance;//현재 돈 변경
+               if(myMoney <0)
+               {
+                   myMoney = 0;
+               }
+           },
+        (error) => Debug.Log("돈 감소 실패"));
+    }
     /// <summary>
     /// 인벤토리 정보 불러오기
     /// </summary>
