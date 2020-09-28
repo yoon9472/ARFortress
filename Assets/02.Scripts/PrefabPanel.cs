@@ -33,7 +33,6 @@ public class PrefabPanel : MonoBehaviour
                 buttonImage.gameObject.SetActive(false);
             }
         }
-
     }
 
     // Update is called once per frame
@@ -49,7 +48,7 @@ public class PrefabPanel : MonoBehaviour
         //아이템 구매 함수 호출하고 해당 슬롯의 구입 버튼을 막는다.
         canBuy = false; //false로 바꿔줌
         cost.text = "Owned";
-                buttonImage.gameObject.SetActive(false);
+        buttonImage.gameObject.SetActive(false);
         
     }
 }

@@ -19,10 +19,19 @@ public class StoreButton : MonoBehaviour
     int weaponNumber=2;
     int upperBodyNumber=3;
     int lowerBodyNumber=4;
-    public int checkNumber;// 중복 버튼 눌러서 리소스 줄이기 위해서 이것을 넣음!
+    public int checkNumber = 0;// 중복 버튼 눌러서 리소스 줄이기 위해서 이것을 넣음!
+    
+    public GameObject allButton;
+    public GameObject weaponButton;
+    public GameObject upperButton;
+    public GameObject lowerButton;
+    Image allImage;
+    Image weaponImage;
+    Image upperImage;
+    Image lowerImage;
+    public Sprite highlightImage;
+    public Sprite normalImage;
 
-    string itemIdForPay;
-    int itemPrice;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,6 +40,41 @@ public class StoreButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+    }
+    //checknumber에 따른 이미지 바꿈!
+    void checkImage(int k)
+    {
+        switch(k)
+        {
+            case 1 :
+                Debug.Log("하이");
+                allButton.GetComponent<Image>().sprite = highlightImage;
+                weaponButton.GetComponent<Image>().sprite = normalImage;
+                upperButton.GetComponent<Image>().sprite = normalImage;
+                lowerButton.GetComponent<Image>().sprite = normalImage;
+            break;
+            case 2 :
+                Debug.Log("되라!");
+                allButton.GetComponent<Image>().sprite = normalImage;
+                weaponButton.GetComponent<Image>().sprite = highlightImage;
+                upperButton.GetComponent<Image>().sprite = normalImage;
+                lowerButton.GetComponent<Image>().sprite = normalImage;
+            break;
+            case 3 :
+                Debug.Log("제발!");
+                allButton.GetComponent<Image>().sprite = normalImage;
+                weaponButton.GetComponent<Image>().sprite = normalImage;
+                upperButton.GetComponent<Image>().sprite = highlightImage;
+                lowerButton.GetComponent<Image>().sprite = normalImage;
+            break;
+            case 4 :
+                allButton.GetComponent<Image>().sprite = normalImage;
+                weaponButton.GetComponent<Image>().sprite = normalImage;
+                upperButton.GetComponent<Image>().sprite = normalImage;
+                lowerButton.GetComponent<Image>().sprite = highlightImage;
+            break;
+        
+        }
     }
     //돈이 없어서 아이템을 못샀다고 한 창을 끌때!
     public void CloseNoCoin()
@@ -143,6 +187,7 @@ public class StoreButton : MonoBehaviour
         DestroyChild();
         AllPanel();
         checkNumber = allNumber;
+        checkImage(checkNumber);
     }
     //weapon 버튼에 넣는 것!
     public void WeaponItem()
@@ -156,6 +201,7 @@ public class StoreButton : MonoBehaviour
         DestroyChild();
         WeaponPanel();
         checkNumber= weaponNumber;
+        checkImage(checkNumber);
     }
     //upperbody버튼에 넣는 것!
     public void UpperBodyItem()
@@ -169,6 +215,7 @@ public class StoreButton : MonoBehaviour
         DestroyChild();
         UpperBodyPanel();
         checkNumber = upperBodyNumber;
+        checkImage(checkNumber);
     }
     //lowerbody에 넣는 것!
     public void LowerBodyItem()
@@ -182,5 +229,6 @@ public class StoreButton : MonoBehaviour
         DestroyChild();
         LowerBodyPanel();
         checkNumber = lowerBodyNumber;
+        checkImage(checkNumber);
     }
 }
