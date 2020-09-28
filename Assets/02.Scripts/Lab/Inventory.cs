@@ -10,6 +10,8 @@ public class Inventory : MonoBehaviour
     public GameObject currItem;
     void Start()
     {
+        //시작할때 curritem에 다리 인벤토리를 담아둠 - 인벤토리 켠상태로 시작시 curritem에 안담겨서 아래코드 대로할시 버그생김
+        //[09.28] 피드백 -  시작할떄 default 인벤토리 [먼저 조립되야하는 다리부분을] 켜놔야 좋을것 같다고 해서 수정
         currItem = inventory[2];
         inventory[2].SetActive(true);
        
@@ -19,6 +21,8 @@ public class Inventory : MonoBehaviour
     void Update()
     {
     }
+    // Leg, Weapon , body 해당 메뉴마다 Onclick 시 해당 인벤토리 활성화 해놓음
+    // inventory[0] = Weapon , [1] = Body [2] = Weapon   curritem = 현재 선택된 인벤토리
     public void Inven0Open()
     {
         if(currItem != null)
@@ -61,6 +65,7 @@ public class Inventory : MonoBehaviour
     {
         inventory[2].SetActive(false);
     }
+    //좌 상단 Back Key  클릭시 로비씬으로 이동
     public void BackToMainScene()
     {
         SceneManager.LoadScene("03.Lobby");
