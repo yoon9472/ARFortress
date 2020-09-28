@@ -13,6 +13,7 @@ using UnityEditor;
 using Unity.Collections.LowLevel.Unsafe;
 using GoogleARCore;
 using GoogleARCore.CrossPlatform;
+using System.Linq;
 #if GOOGLEGAMES
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -56,6 +57,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     //public List<Anchor> anchorList = new List<Anchor>(); //플레이 씬에서 앵커 위치를 담을 리스트
     public List<AsyncTask<CloudAnchorResult>> hostingResultList = new List<AsyncTask<CloudAnchorResult>>();//클라우드 앵커 호스팅 된 결과가 담길 리스트
     public List<string> anchorIdList = new List<string>(); //플에이 씬에서 앵커의 주소를 담을 리스트
+    //public string[] anchorIdArr;//앵커의 주소를 담을 배열
     private void Start()
     {
         if (!PhotonNetwork.IsConnected && inIntro == true)//인트로 상태에서 시작하고 연결안되있으면->처음 시작이면
@@ -310,7 +312,8 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// <param name="anchorid"></param>
     public void SendAnchorId(List<string> anchorIdList)
     {
-        photonView.RPC("RPC_SendAnchorId", RpcTarget.All, anchorIdList);
+        //리스트를 배열로 바꿔서 보낸다 -> 오브젝트화해서 보내야 배열 전체가 넘어간다 안그러면 시작 주소만 넘어간다
+        photonView.RPC("RPC_SendAnchorId", RpcTarget.All, (object)anchorIdList.ToArray());
         isMakeAnchor = true;//클라우드 앵커가 호스팅 됬다는거 체크
     }
     /// <summary>
@@ -318,10 +321,11 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// </summary>
     /// <param name="anchorid"></param>
     [PunRPC]
-    public void RPC_SendAnchorId(List<string> IdList)
+    public void RPC_SendAnchorId(string[] IdList)
     {
+        //배열로 받은것을 다시 리스트로 변환해서 받는다.
         //anchorId = anchorid;
-        anchorIdList = IdList;
+        anchorIdList = IdList.ToList<string>();
         receiveId = true;//앵커 아이디 보낸거 확인
     }
 

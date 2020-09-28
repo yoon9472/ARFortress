@@ -64,11 +64,13 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
         {
             if (touch.phase == TouchPhase.Began && Frame.Raycast(touch.position.x, touch.position.y, racastFilter, out hit))
             {
+
                 firstAnchor = true;//값을 true 로 해서 이함수가 2번 실행되지 않게 한다?
                 timeCheck = true;
                 pos = hit.Pose;
                 //anchor = hit.Trackable.CreateAnchor(hit.Pose);
                 localAnchor.Add(hit.Trackable.CreateAnchor(pos));
+                Debug.Log("중심점 설정");
                 //유저수 +1 만큼 앵커를 만들고 싶음
                
                 for(int i=0; i<NetWork.Get.localPlayer;i++)
@@ -77,21 +79,25 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
                     {
                         pos.position += new Vector3(DistanceFromCenter, 0, 0);
                         localAnchor.Add(Session.CreateAnchor(pos));
+                        Debug.Log("1번 플레이어 위치 설정");
                     }
                     else if(i ==1) //2번 사용자의 위치
                     {
                         pos.position += new Vector3(-DistanceFromCenter, 0, 0);
                         localAnchor.Add(Session.CreateAnchor(pos));
+                        Debug.Log("2번 플레이어 위치 설정");
                     }
                     else if(i==2)//3번 사용자의 위치
                     {
                         pos.position += new Vector3(0, 0, DistanceFromCenter);
                         localAnchor.Add(Session.CreateAnchor(pos));
+                        Debug.Log("3번 플레이어 위치 설정");
                     }
                     else//4번 사용자의 위치
                     {
                         pos.position += new Vector3(0, 0, -DistanceFromCenter);
                         localAnchor.Add(Session.CreateAnchor(pos));
+                        Debug.Log("4번 플레이어 위치 설정");
                     }
                 }
                 //Debug.Log("방장이 생성한 앵커의 위치 = " + anchor.transform.position);
