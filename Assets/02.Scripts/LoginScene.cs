@@ -11,7 +11,8 @@ public class LoginScene : MonoBehaviour
     {
         //버튼 클리갛면 로그인 처리후 로비로 입장
 #if GOOGLEGAMES
-        NetWork.Get.GoogleLogin(); //구글 로그인 되면 이거 사용한다.
+        //NetWork.Get.GoogleLogin(); //구글 로그인 되면 이거 사용한다.
+        NetWork.Get.JoinLobby();// DB 없이 arcore 테스트 해볼때만 사용한다
 #endif
 
 #if UNITY_EDITOR

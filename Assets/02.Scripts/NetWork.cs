@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using UnityEditor;
 using Unity.Collections.LowLevel.Unsafe;
 using GoogleARCore;
+using GoogleARCore.CrossPlatform;
 #if GOOGLEGAMES
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -49,10 +50,11 @@ public class NetWork : MonoBehaviourPunCallbacks
     public bool inRoom = false;//룸 입장 상태
     public bool isMaster = false;//방장인지 확인
     public bool isMakeAnchor = false;//클라우드 앵커가 만들어 졌는지 확인
-    public string anchorId;
+    //public string anchorId;
     public bool receiveId = false;//클라우드 앵커 아이디를 받았는지 체크
     public int localPlayer; //현재 방에 입장해 있는 유저의 수
-    public List<Anchor> anchorList = new List<Anchor>(); //플레이 씬에서 앵커 위치를 담을 리스트
+    //public List<Anchor> anchorList = new List<Anchor>(); //플레이 씬에서 앵커 위치를 담을 리스트
+    public List<AsyncTask<CloudAnchorResult>> hostingResultList = new List<AsyncTask<CloudAnchorResult>>();//클라우드 앵커 호스팅 된 결과가 담길 리스트
     public List<string> anchorIdList = new List<string>(); //플에이 씬에서 앵커의 주소를 담을 리스트
     private void Start()
     {
@@ -306,15 +308,20 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// string 앵커 아이디를 룸안에 다른 사용자에게 보내기위한 rpc 함수를 호출함
     /// </summary>
     /// <param name="anchorid"></param>
-    public void SendAnchorId(string id)
+    public void SendAnchorId(List<string> anchorIdList)
     {
-        photonView.RPC("RPC_SendAnchorId", RpcTarget.All, id);
+        photonView.RPC("RPC_SendAnchorId", RpcTarget.All, anchorIdList);
         isMakeAnchor = true;//클라우드 앵커가 호스팅 됬다는거 체크
     }
+    /// <summary>
+    /// 클라우드 앵커 아이디가 담긴 리스트 보내기
+    /// </summary>
+    /// <param name="anchorid"></param>
     [PunRPC]
-    public void RPC_SendAnchorId(string anchorid)
+    public void RPC_SendAnchorId(List<string> IdList)
     {
         //anchorId = anchorid;
+        anchorIdList = IdList;
         receiveId = true;//앵커 아이디 보낸거 확인
     }
 
