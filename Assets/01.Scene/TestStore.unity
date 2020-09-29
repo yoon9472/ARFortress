@@ -249,6 +249,7 @@ MonoBehaviour:
   lowerButton: {fileID: 1237680943264870}
   highlightImage: {fileID: 21300000, guid: 1000ffd94ffa8f74ab1abd839fec31d1, type: 3}
   normalImage: {fileID: 21300000, guid: e8c1078cf3fbef041a21142a46feb996, type: 3}
+  mymoney: {fileID: 1371321151074956}
 --- !u!1 &241290570
 GameObject:
   m_ObjectHideFlags: 0

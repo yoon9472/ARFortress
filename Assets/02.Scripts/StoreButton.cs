@@ -15,12 +15,15 @@ public class StoreButton : MonoBehaviour
     Text introduction1;
     Text cost1;
     public Transform contents;
+    
+    //이것은 버튼을 누르면 중복을 줄이기 위한 변수들
     int allNumber=1;
     int weaponNumber=2;
     int upperBodyNumber=3;
     int lowerBodyNumber=4;
     public int checkNumber = 0;// 중복 버튼 눌러서 리소스 줄이기 위해서 이것을 넣음!
     
+    //이것은 버튼이 선택되면 선택 되어있도록 하기 위한 변수
     public GameObject allButton;
     public GameObject weaponButton;
     public GameObject upperButton;
@@ -32,6 +35,9 @@ public class StoreButton : MonoBehaviour
     public Sprite highlightImage;
     public Sprite normalImage;
 
+    //내 돈 표시.
+    public GameObject mymoney;
+    Text money;
     // Start is called before the first frame update
     void Start()
     {
@@ -40,6 +46,12 @@ public class StoreButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Mymoney();
+    }
+    public void Mymoney()
+    {
+        money = mymoney.GetComponentInChildren<Text>();
+        money.text = NetWork.Get.myMoney.ToString();
     }
     //checknumber에 따른 이미지 바꿈!
     void checkImage(int k)
@@ -95,6 +107,7 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.itemList[i].DisplayName;
             item1.GetComponent<PrefabPanel>().description = NetWork.Get.itemList[i].Description;
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"].ToString();
+            item1.GetComponent<PrefabPanel>().zz = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
             item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.itemList[i].ItemId;
             item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
             for(int j =0; j < GameManager.Get.imgArr.Length; j++)

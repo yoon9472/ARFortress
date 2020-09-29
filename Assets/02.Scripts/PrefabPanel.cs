@@ -9,6 +9,7 @@ public class PrefabPanel : MonoBehaviour
     public Text introduction;
     public GameObject buttonText;
     Text cost;
+    public int zz;
     public GameObject buttonImage;
     public string displayname;
     public string description;
@@ -42,13 +43,17 @@ public class PrefabPanel : MonoBehaviour
     public void Buy()
     {
         //아이템이 구입되어 있는 상태면 바로 함수 종료하고 아래부분 미실행
-        if(canBuy == false) return;
+        if(canBuy == false || NetWork.Get.myMoney < int.Parse(itemcost)) 
+        {
+            Debug.Log("너 이거 못삼.");
+            return;
+        }
+
         Debug.Log("나 이거 살꺼다!");
         NetWork.Get.BuyItem("Store", itemId ,"GD", price);
         //아이템 구매 함수 호출하고 해당 슬롯의 구입 버튼을 막는다.
         canBuy = false; //false로 바꿔줌
         cost.text = "Owned";
         buttonImage.gameObject.SetActive(false);
-        
     }
 }
