@@ -2,22 +2,29 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class Inventory : MonoBehaviour
 {
     public List<GameObject> inventory = new List<GameObject>();
 
     public GameObject currItem;
+
+    //시작시 레그 인벤토리가 켜져있으므로 Leg 메뉴를 Selected 상태로 시작. 
+    public bool buttonDown; 
     void Start()
     {
         //시작할때 curritem에 다리 인벤토리를 담아둠 - 인벤토리 켠상태로 시작시 curritem에 안담겨서 아래코드 대로할시 버그생김
         //[09.28] 피드백 -  시작할떄 default 인벤토리 [먼저 조립되야하는 다리부분을] 켜놔야 좋을것 같다고 해서 수정
         currItem = inventory[2];
         inventory[2].SetActive(true);
-       
-    }
 
-    // Update is called once per frame
+    }
+/*    public void SelectedButton()
+    {
+        //레그 인벤토리 의 selected 가켜지게
+        buttonDown = true;
+    }*/
     void Update()
     {
     }
