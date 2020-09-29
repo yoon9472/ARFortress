@@ -15,9 +15,9 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
 {
     
     Camera ARCamera;
-    public GameObject character;
     //public GameObject centerObject;
     //public Text text;
+    public GameObject firstTouch;
     public bool firstAnchor = false;
     public bool timeCheck = false;
     public float time = 0;
@@ -68,6 +68,7 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
                 firstAnchor = true;//값을 true 로 해서 이함수가 2번 실행되지 않게 한다?
                 timeCheck = true;
                 pos = hit.Pose;
+                Instantiate(firstTouch, pos.position, Quaternion.identity);
                 //anchor = hit.Trackable.CreateAnchor(hit.Pose);
                 localAnchor.Add(hit.Trackable.CreateAnchor(pos));
                 Debug.Log("중심점 설정");
@@ -200,23 +201,23 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
         //Debug.Log("localPosition = " + obj.GetComponent<StartPos>().startPos[NetWork.Get.myOrder].transform.localPosition);
         if(NetWork.Get.myOrder ==0)
         {
-            obj = PhotonNetwork.Instantiate("TestBot", tasklist[1].Result.Anchor.transform.position, Quaternion.identity);
-            obj.transform.forward = tasklist[0].Result.Anchor.transform.position-obj.transform.position;//생성하고 0번앵커의 위치로 바라보게한다
+            obj = PhotonNetwork.Instantiate("Player", tasklist[1].Result.Anchor.transform.position, Quaternion.identity);
+           
         }
         else if(NetWork.Get.myOrder == 1)
         {
-            obj = PhotonNetwork.Instantiate("TestBot", tasklist[2].Result.Anchor.transform.position, Quaternion.identity);
-            obj.transform.forward = tasklist[0].Result.Anchor.transform.position - obj.transform.position;
+            obj = PhotonNetwork.Instantiate("Player", tasklist[2].Result.Anchor.transform.position, Quaternion.identity);
+           
         }
         else if(NetWork.Get.myOrder == 2)
         {
-            obj = PhotonNetwork.Instantiate("TestBot", tasklist[3].Result.Anchor.transform.position, Quaternion.identity);
-            obj.transform.forward = tasklist[0].Result.Anchor.transform.position - obj.transform.position;
+            obj = PhotonNetwork.Instantiate("Player", tasklist[3].Result.Anchor.transform.position, Quaternion.identity);
+            
         }
         else
         {
-            obj = PhotonNetwork.Instantiate("TestBot", tasklist[4].Result.Anchor.transform.position, Quaternion.identity);
-            obj.transform.forward = tasklist[0].Result.Anchor.transform.position - obj.transform.position;
+            obj = PhotonNetwork.Instantiate("Player", tasklist[4].Result.Anchor.transform.position, Quaternion.identity);
+            
         }
         //GameObject obj_ = obj.GetComponent<StartPos>().startPos[NetWork.Get.myOrder];
         //Debug.Log(NetWork.Get.myOrder +"번 플레이어의 생성위치 = "+obj_.transform.position);
