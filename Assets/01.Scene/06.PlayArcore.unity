@@ -1495,14 +1495,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d644cddb12e45044795018b734283843, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  character: {fileID: 799937352128352444, guid: a05152cadb0802a40a9d8159d1f086c8,
-    type: 3}
-  centerObject: {fileID: 1930613698465500, guid: d7e51cffc46904f65957fa3aeb255467,
-    type: 3}
+  firstTouch: {fileID: 1930613698465500, guid: d7e51cffc46904f65957fa3aeb255467, type: 3}
   firstAnchor: 0
   timeCheck: 0
   time: 0
   localAnchor: []
+  DistanceFromCenter: 0
 --- !u!114 &1114533804
 MonoBehaviour:
   m_ObjectHideFlags: 0
