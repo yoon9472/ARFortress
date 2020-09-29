@@ -23,6 +23,8 @@ public class Slot : MonoBehaviour
     public Image lockitem;
     public bool activeSlot;
 
+
+
     public Transform objectPivot;
     void Start()
     {
@@ -135,6 +137,8 @@ public class Slot : MonoBehaviour
                    GameManager.Get.selectLeg =Instantiate(GameManager.Get.legPartsArr[i], objectPivot.transform.position, Quaternion.identity);
                     //선택한 다리의 이름을 저장한다 DB에 올릴 이름
                     GameManager.Get.userinfo.selectedLeg = GameManager.Get.legPartsArr[i].name;
+                    //변경된 프리팹도 기억한다.
+                    GameManager.Get.legPrefab = GameManager.Get.legPartsArr[i];
                     //다리를 생성했는데 몸통이 이미 있다면?
                     if (GameManager.Get.selectBody !=null)
                     {
@@ -172,6 +176,8 @@ public class Slot : MonoBehaviour
                         GameManager.Get.selectBody = Instantiate(GameManager.Get.bodyPartsArr[i], GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position, Quaternion.identity);
                         //선택한 몸통의 이름을 담아놓는다 DB 저장용
                         GameManager.Get.userinfo.selectedBody = GameManager.Get.bodyPartsArr[i].name;
+                        //변경된 프리팹을 기억한다.
+                        GameManager.Get.bodyPrefab = GameManager.Get.bodyPartsArr[i];
                         //몸통을 생성했는데 이미 생성된 무기가 있다면?
                         if (GameManager.Get.selectWeapon != null)
                         {
@@ -191,8 +197,6 @@ public class Slot : MonoBehaviour
             }
             else
             {
-
-
                 if (GameManager.Get.selectWeapon != null)
                 {
                     Destroy(GameManager.Get.selectWeapon);
@@ -204,6 +208,8 @@ public class Slot : MonoBehaviour
                         GameManager.Get.selectWeapon = Instantiate(GameManager.Get.weaponPartsArr[i], GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position, Quaternion.identity);
                         //선택한 무기의 이름을 담아놓은다 DB 저장용
                         GameManager.Get.userinfo.selectedWeapon = GameManager.Get.weaponPartsArr[i].name;
+                        //변경된 프리팹으로 기억한다.
+                        GameManager.Get.weaponPrefab = GameManager.Get.weaponPartsArr[i];
                     }
                 }
             }

@@ -342,6 +342,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     public string userName;//입력받은 사용자 이름
     public string nickName;//입력받은 닉네임
     public string buylastItem;//상점에서 방금 구입한 아이템 이름
+    public int buyItemPice;//방금 구입한 아이템의 가격
     public int myMoney;//현재 내가 가진돈
     string playfabid;
     public List<CatalogItem> itemList = new List<CatalogItem>();
@@ -506,6 +507,8 @@ public class NetWork : MonoBehaviourPunCallbacks
             //가져올 정보가 있을때
             var yourObject = JsonUtility.FromJson<UserInfo>(obj.Data["Info"].Value);
             GameManager.Get.userinfo = yourObject;
+            //선택된 부품 프리팹 가져오기
+            GameManager.Get.SelecPrefabs();
         }
         else
         {
@@ -553,7 +556,14 @@ public class NetWork : MonoBehaviourPunCallbacks
         PlayFabClientAPI.GetUserInventory(new PlayFab.ClientModels.GetUserInventoryRequest(), (result) =>
         {
             Debug.Log("인벤토리 불러오기 성공");
+            if(result.VirtualCurrency["GD"]<0)
+            {
+                myMoney = 0;
+            }
+            else
+            {
             myMoney = result.VirtualCurrency["GD"];
+            }
             //인벤토리 불러오기 성공하면 동작해야할것 작성....
             Debug.Log(result.VirtualCurrency);//가상화폐 종류별로  내가 가지고있는 잔액불러오기(배열) 
             for(int i=0; i<result.Inventory.Count;i++)
@@ -667,14 +677,14 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// <param name="list"></param>
     public void SortItemByPrice(List<CatalogItem> list)
     {
-#if UNITY_EDITOR
-        Debug.Log("---정렬전 리스트---");
-        for (int i = 0; i < list.Count; i++)
-        {
-            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
-        }
-        Debug.Log("------");
-#endif
+//#if UNITY_EDITOR
+//        Debug.Log("---정렬전 리스트---");
+//        for (int i = 0; i < list.Count; i++)
+//        {
+//            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
+//        }
+//        Debug.Log("------");
+//#endif
         list.Sort(delegate (CatalogItem A, CatalogItem B)
         {
 
@@ -682,14 +692,14 @@ public class NetWork : MonoBehaviourPunCallbacks
             else if (A.VirtualCurrencyPrices["GD"] < B.VirtualCurrencyPrices["GD"]) return -1;
             return 0;
         });
-#if UNITY_EDITOR
-        Debug.Log("---정렬후---");
-        for (int i = 0; i < list.Count; i++)
-        {
-            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
-        }
-        Debug.Log("------");
-#endif
+//#if UNITY_EDITOR
+//        Debug.Log("---정렬후---");
+//        for (int i = 0; i < list.Count; i++)
+//        {
+//            Debug.Log(list[i].VirtualCurrencyPrices["GD"]);
+//        }
+//        Debug.Log("------");
+//#endif
     }
     /// <summary>
     /// 상점에서 아이텝 구입
@@ -701,6 +711,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     public void BuyItem(string storeName,string itemid, string virtualCurrency,int price)
     {
         buylastItem = itemid;
+        buyItemPice = price;
         var request = new PurchaseItemRequest() { CatalogVersion = storeName, ItemId = itemid, VirtualCurrency = virtualCurrency, Price = price };
         PlayFabClientAPI.PurchaseItem(request, BuyOk, BuyFail);
     }
@@ -715,6 +726,7 @@ public class NetWork : MonoBehaviourPunCallbacks
         Debug.Log("구입 성공");
         //GameManager의 보유 아이템 리스트(스트링타입)에 방금 구입한 아이템의 이름을 넣어준다
         GameManager.Get.ownedItem_List.Add(buylastItem);
+        myMoney -= buyItemPice;//방금 구입한 아이템의 가격만큼 현재 가진돈을 빼준다
     }
     #endregion
 
@@ -774,7 +786,9 @@ public class NetWork : MonoBehaviourPunCallbacks
         {
             GetCustomIteminfo(legList[i]);
         }
-
+        yield return new WaitUntil (()=>GameManager.Get.legInfo_List.Count == 7);
+        //무기 정보 리스트가 차면->기존에 조립된 것이 있다면 바로 정보를 찾아서 불러온다
+        GameManager.Get.BeforeStats();
         StartCoroutine("MoveToLobby");
     }
     public IEnumerator MoveToLobby()
