@@ -38,6 +38,10 @@ MonoBehaviour:
   - RespawnSpaceship
   - RPC_SendAnchorId
   - UpdateRoomCustomProperty
+  - CheckResolve
+  - InstantePlayer
+  - ResolveRpc
+  - ReceiveId
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

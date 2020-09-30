@@ -9,11 +9,11 @@ using PlayFab;
 using UnityEngine.SceneManagement;
 using System;
 using Newtonsoft.Json;
-using UnityEditor;
-using Unity.Collections.LowLevel.Unsafe;
 using GoogleARCore;
 using GoogleARCore.CrossPlatform;
+using GoogleARCore.Examples.CloudAnchors;
 using System.Linq;
+using PlayFab.GroupsModels;
 #if GOOGLEGAMES
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -43,20 +43,21 @@ public class NetWork : MonoBehaviourPunCallbacks
     public int[] actornums = new int[4];//방에 입장한 유저의 엑터 넘버를 저장할 배열
     public string[] userArr = new string[4]; //유저 이름을 저장하기위한 배열
     public bool[] userReady = new bool[4];//룸안에 유저가 게임 가능한 상태인지 여부 체크 false면 턴이 안돌아 온다(죽은 유저혹은 나간유저)
-    public int readyCnt = 0;//방안에 몇명의 사용자가 클라우드 앵커를 생성 공유했는가 체크
     public int myOrder = 99;// 내 입장 순서 체크
     public bool inIntro = true;//시작은 인트로부터 니까 true로
     public bool inLogin = false; //로그인 창 상태
     public bool inLobby = false;//로비 입장  상태
     public bool inRoom = false;//룸 입장 상태
     public bool isMaster = false;//방장인지 확인
-    public bool isMakeAnchor = false;//클라우드 앵커가 만들어 졌는지 확인
     //public string anchorId;
-    public bool receiveId = false;//클라우드 앵커 아이디를 받았는지 체크
+    //public bool receiveId = false;//클라우드 앵커 아이디를 받았는지 체크
+    public int readyCnt = 0;//방안에 몇명의 사용자가 클라우드 앵커를 생성 공유했는가 체크 방장제외최대 3까지 카운트
+    public int receiveCnt;// 몇명이 클라우드 앵커 아이디를 전달받았는지 체크 방장제외최대 3까지 카운트
     public int localPlayer; //현재 방에 입장해 있는 유저의 수
     //public List<Anchor> anchorList = new List<Anchor>(); //플레이 씬에서 앵커 위치를 담을 리스트
     public List<AsyncTask<CloudAnchorResult>> hostingResultList = new List<AsyncTask<CloudAnchorResult>>();//클라우드 앵커 호스팅 된 결과가 담길 리스트
-    public List<string> anchorIdList = new List<string>(); //플에이 씬에서 앵커의 주소를 담을 리스트
+    public string anchorId;//앵커 아이디를 담을 변수
+    private AsyncTask<CloudAnchorResult> task;//리졸브한 앵커의 결과를담을 변수
     //public string[] anchorIdArr;//앵커의 주소를 담을 배열
     private void Start()
     {
@@ -144,8 +145,8 @@ public class NetWork : MonoBehaviourPunCallbacks
         inLobby = true;
         inRoom = false;
         isMaster = false;
-        receiveId = false;
-        isMakeAnchor = false;
+        //receiveId = false;
+        receiveCnt = 0;
         myOrder = 99;
         readyCnt = 0;
         localPlayer = 0;
@@ -160,7 +161,8 @@ public class NetWork : MonoBehaviourPunCallbacks
         {
             SceneManager.LoadScene("03.Lobby");
         }
-        receiveId = false;
+        //receiveId = false;
+        receiveCnt = 0;
     }
     /// <summary>
     /// 방이름으로 방에 참가하기
@@ -310,25 +312,132 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// string 앵커 아이디를 룸안에 다른 사용자에게 보내기위한 rpc 함수를 호출함
     /// </summary>
     /// <param name="anchorid"></param>
-    public void SendAnchorId(List<string> anchorIdList)
+    public void SendAnchorId(string anchorId)
     {
-        //리스트를 배열로 바꿔서 보낸다 -> 오브젝트화해서 보내야 배열 전체가 넘어간다 안그러면 시작 주소만 넘어간다
-        photonView.RPC("RPC_SendAnchorId", RpcTarget.All, (object)anchorIdList.ToArray());
-        isMakeAnchor = true;//클라우드 앵커가 호스팅 됬다는거 체크
+        photonView.RPC("RPC_SendAnchorId", RpcTarget.Others,anchorId);
     }
     /// <summary>
     /// 클라우드 앵커 아이디가 담긴 리스트 보내기
     /// </summary>
     /// <param name="anchorid"></param>
     [PunRPC]
-    public void RPC_SendAnchorId(string[] IdList)
+    public void RPC_SendAnchorId(string Id)
     {
-        //배열로 받은것을 다시 리스트로 변환해서 받는다.
-        //anchorId = anchorid;
-        anchorIdList = IdList.ToList<string>();
-        receiveId = true;//앵커 아이디 보낸거 확인
+        Debug.Log("방장한테 앵커 아이디 받음");
+        anchorId = Id;
+        Debug.Log("앵커아이디 = " + Id);
+        //receiveId = true;//앵커 아이디 보낸거 확인
+        //아이디를 전달받고 마스터 클라이언트한테 받은것을 확인시켜주기위하여 receiveCnt 를 1증가하라는 명령을 내린다
+        Call_ReceiveId();
+    }
+    /// <summary>
+    /// 방장에게 receiveCnt 1증가하라고 시키는 rpc 함수 앵커 아이디를 전달 받앗을때 호출한다
+    /// </summary>
+    public void Call_ReceiveId()
+    {
+        photonView.RPC("ReceiveId", RpcTarget.MasterClient,myOrder);
+    }
+    [PunRPC]
+    public void ReceiveId(int myorder)
+    {
+        //Debug.Log("방장한테 앵커아이디 받앗다고 알림");
+        Debug.Log(myorder + "번째 플레이어가 앵커 아이디를 받았다고 알림");
+        receiveCnt++;
+    }
+    /// <summary>
+    /// 리졸브 한거를 체크해서 마스터 클라이언트한테 보내줌
+    /// 마스터 클라이언트가 아닌 플레이어가 리졸브가 끝나면 호출함
+    /// </summary>
+    public void Call_CheckResolve(int myoder,int i)
+    {
+        //readyCnt++; 하는 함수
+        photonView.RPC("CheckResolve", RpcTarget.MasterClient,myoder,i);
+    }
+    [PunRPC]
+    public void CheckResolve(int myorder,int i)
+    {
+        Debug.Log(myorder+"번째플레이어가"+i + "번쨰 앵커 리졸브 했다고 알림");
+        readyCnt++;
+    }
+    /// <summary>
+    /// 방장이 아닌 사용자에게 리졸브를 하라고 rpc로 명령을 내린다
+    /// </summary>
+    /// <param name="id"></param>
+    public void Call_ResolveRpc(int i)
+    {
+        //리졸브 명령은 방장말고 다른 사람만 하느거니까 알피씨 타겟 other
+        //앵커 아이디는 NetWork 스크립트의 anchorId에 rpc로 받아 놓음
+        photonView.RPC("ResolveRpc", RpcTarget.Others,i);
     }
 
+    [PunRPC]
+    public void ResolveRpc(int i)
+    {
+        StartCoroutine(ResolveCloudAnchor(i));
+    }
+    IEnumerator ResolveCloudAnchor(int i)
+    {
+        //Debug.Log(id);
+        //task = XPSession.ResolveCloudAnchor(id);
+        Debug.Log("전달 받은 앵커 아이디 = " + anchorId);
+        Debug.Log(i+" 번째 앵커 리졸브중..");
+        task = XPSession.ResolveCloudAnchor(anchorId);
+        Debug.Log(task.Result.Response);
+        yield return new WaitUntil(() => task.Result.Response == CloudServiceResponse.Success);
+        yield return new WaitUntil(() => task.IsComplete == true);
+        hostingResultList.Add(task);//결과를 담는다
+        Debug.Log(task.Result.Response);
+        Debug.Log(task.Result.Anchor);
+        Debug.Log(task.Result.Anchor.CloudId);
+        Debug.Log(" 전달받은 클라우드 앵커 위치 = " + task.Result.Anchor.transform.position);
+        //다른사용자한테 클라우드 앵커를 생성했다고 알림
+        Call_CheckResolve(myOrder,i);
+        //yield return new WaitUntil(() => task.IsComplete);
+        //obj = Instantiate(centerObject, task.Result.Anchor.transform.position, Quaternion.identity);//앵커위치에 생성하고
+        //obj.transform.SetParent(task.Result.Anchor.transform);//부모로 설정
+        //InstantePlayer(NetWork.Get.hostingResultList);
+    }
+
+    /// <summary>
+    /// 플레이어를 각자 자기 위치에 생성하라고 명령을 내리는 rpc 함수 all로 호출해서 방장 자신도 포함해서 명령을 내린다
+    /// </summary>
+    public void Call_InstantePlayer()
+    {
+        photonView.RPC("InstantePlayer", RpcTarget.All);
+    }
+    [PunRPC]
+    public void InstantePlayer()
+    {
+        Debug.Log("나의 입장 순서는 = " + myOrder);
+        if (myOrder == 0)
+        {
+            Debug.Log("1번플레이어 생성");
+            PhotonNetwork.Instantiate("TestBot", hostingResultList[1].Result.Anchor.transform.position, Quaternion.identity);
+
+        }
+        else if (myOrder == 1)
+        {
+            Debug.Log("2번플레이어 생성");
+            PhotonNetwork.Instantiate("TestBot", hostingResultList[2].Result.Anchor.transform.position, Quaternion.identity);
+
+        }
+        else if (myOrder == 2)
+        {
+            Debug.Log("3번플레이어 생성");
+            PhotonNetwork.Instantiate("TestBot", hostingResultList[3].Result.Anchor.transform.position, Quaternion.identity);
+        }
+        else
+        {
+            Debug.Log("4번플레이어 생성");
+            PhotonNetwork.Instantiate("TestBot", hostingResultList[4].Result.Anchor.transform.position, Quaternion.identity);
+
+        }
+        for(int i=0;i< hostingResultList.Count;i++)
+        {
+            Debug.Log(i + "번째 앵커의 위치 " + hostingResultList[i].Result.Anchor.transform.position);
+        }
+        Debug.Log("생성된 앵커의 숫자" + hostingResultList.Count);
+    }
     #endregion
 
 
