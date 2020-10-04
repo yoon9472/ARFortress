@@ -401,7 +401,19 @@ MonoBehaviour:
   selectLeg: {fileID: 0}
   selectBody: {fileID: 0}
   selectWeapon: {fileID: 0}
-  userinfo: {fileID: 0}
+  userinfo:
+    playfabId: 
+    nickName: 
+    firstLogin: 1
+    selectedWeapon: 
+    selectedBody: 
+    selectedLeg: 
+  weaponPrefab: {fileID: 0}
+  bodyPrefab: {fileID: 0}
+  legPrefab: {fileID: 0}
+  beforeLeg: {fileID: 0}
+  beforeBody: {fileID: 0}
+  beforeWeapon: {fileID: 0}
   legindex: 0
   bodyindex: 0
   weaponindex: 0
@@ -418,6 +430,7 @@ MonoBehaviour:
   weaponattack: 0
   isloadOver: 0
   istypeNoeSame: 0
+  Msg: 
 --- !u!4 &526708557
 Transform:
   m_ObjectHideFlags: 0
@@ -653,24 +666,25 @@ MonoBehaviour:
   - 
   - 
   userReady: 00000000
-  readyCnt: 0
   myOrder: 99
   inIntro: 1
   inLogin: 0
   inLobby: 0
   inRoom: 0
   isMaster: 0
-  isMakeAnchor: 0
-  anchorId: 
-  receiveId: 0
+  robtObj: {fileID: 7544266215859932968, guid: 0a3b5ca9a6dfb4643abbe67c0881f03e, type: 3}
+  testBot: {fileID: 799937352128352444, guid: a05152cadb0802a40a9d8159d1f086c8, type: 3}
+  readyCnt: 0
+  receiveCnt: 0
   localPlayer: 0
-  anchorList: []
-  anchorIdList: []
+  anchorId: 
   email: 
   password: 
   userName: 
   nickName: 
   buylastItem: 
+  buyItemPice: 0
+  myMoney: 0
   itemList: []
   weaponList: []
   bodyList: []

@@ -49,6 +49,8 @@ public class NetWork : MonoBehaviourPunCallbacks
     public bool inLobby = false;//로비 입장  상태
     public bool inRoom = false;//룸 입장 상태
     public bool isMaster = false;//방장인지 확인
+    public GameObject robtObj;//로봇객체가될 프리팹
+    public GameObject testBot;//테스트용 로봇
     //public string anchorId;
     //public bool receiveId = false;//클라우드 앵커 아이디를 받았는지 체크
     public int readyCnt = 0;//방안에 몇명의 사용자가 클라우드 앵커를 생성 공유했는가 체크 방장제외최대 3까지 카운트
@@ -403,40 +405,45 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// </summary>
     public void Call_InstantePlayer()
     {
+        //룸안의 사용자에게 자신의 로봇을 다른 사용자에게 생성하라는 RPC함수를 실행하게하는 함수를 RPC로 명령을 내림
         photonView.RPC("InstantePlayer", RpcTarget.All);
     }
     [PunRPC]
     public void InstantePlayer()
     {
         Debug.Log("나의 입장 순서는 = " + myOrder);
-        if (myOrder == 0)
-        {
-            Debug.Log("1번플레이어 생성");
-            PhotonNetwork.Instantiate("TestBot", hostingResultList[1].Result.Anchor.transform.position, Quaternion.identity);
-
-        }
-        else if (myOrder == 1)
-        {
-            Debug.Log("2번플레이어 생성");
-            PhotonNetwork.Instantiate("TestBot", hostingResultList[2].Result.Anchor.transform.position, Quaternion.identity);
-
-        }
-        else if (myOrder == 2)
-        {
-            Debug.Log("3번플레이어 생성");
-            PhotonNetwork.Instantiate("TestBot", hostingResultList[3].Result.Anchor.transform.position, Quaternion.identity);
-        }
-        else
-        {
-            Debug.Log("4번플레이어 생성");
-            PhotonNetwork.Instantiate("TestBot", hostingResultList[4].Result.Anchor.transform.position, Quaternion.identity);
-
-        }
-        for(int i=0;i< hostingResultList.Count;i++)
-        {
-            Debug.Log(i + "번째 앵커의 위치 " + hostingResultList[i].Result.Anchor.transform.position);
-        }
         Debug.Log("생성된 앵커의 숫자" + hostingResultList.Count);
+        //Call_MakeMyRobot(myOrder, GameManager.Get.beforeLeg.name, GameManager.Get.beforeBody.name, GameManager.Get.beforeWeapon.name);
+        Call_MakeTestBot(myOrder);
+    }
+    public void Call_MakeMyRobot(int actnum, string leg, string body, string weapon)
+    {
+        photonView.RPC("MakeMyRobot", RpcTarget.All, actnum, leg, body, weapon);
+    }
+
+    [PunRPC]
+    public void MakeMyRobot(int actnum,string leg,string body,string weapon)
+    {
+        GameObject player = Instantiate(robtObj, hostingResultList[actnum + 1].Result.Anchor.transform.position, Quaternion.identity);
+        player.GetComponent<Player>().legname = leg;
+        player.GetComponent<Player>().bodyname = body;
+        player.GetComponent<Player>().weaponname = weapon;
+        player.GetComponent<Player>().actnum = actnum;
+    }
+    /// <summary>
+    /// 테스트 봇 생성을 요구하는 알피씨 함수
+    /// </summary>
+    /// <param name="actnum"></param>
+    public void Call_MakeTestBot(int actnum)
+    {
+        
+        photonView.RPC("MakeTestBot", RpcTarget.All, actnum);
+    }
+    [PunRPC]
+    public void MakeTestBot(int actnum)
+    {
+        Debug.Log(actnum + "번 유저의 테스트 봇을 생성하라고 요청옴");
+        Instantiate(testBot, hostingResultList[actnum + 1].Result.Anchor.transform.position, Quaternion.identity);
     }
     #endregion
 

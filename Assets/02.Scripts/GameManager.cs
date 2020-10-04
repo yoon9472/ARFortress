@@ -67,7 +67,7 @@ public class GameManager : MonoBehaviour
     public GameObject bodyPrefab;
     public GameObject legPrefab;
 
-    //클릭하고 파츠의 교체가 될때마다 이전의 정보를 임시적으로 기억한다.
+    //클릭하고 파츠의 교체가 될때마다 이전의 정보를 기억한다.(최종 사용할 프리팹 정보)
     [Header("이전에 선택한 파츠프리팹")]
     public GameObject beforeLeg; //이전 다리
     public GameObject beforeBody; //이전 몸체
