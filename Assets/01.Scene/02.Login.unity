@@ -153,8 +153,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82d5e2f6019c84b45a3aa27ee9488292, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loading: {fileID: 1363970161}
-  login: {fileID: 1876793714}
+  loginBtn: {fileID: 1876793714}
+  loadingGauge: {fileID: 1363970161}
 --- !u!114 &26125126
 MonoBehaviour:
   m_ObjectHideFlags: 0

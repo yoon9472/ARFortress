@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class StoreButton : MonoBehaviour
 {
+    public GameObject rightBtn;
+    public GameObject leftBtn;
     public GameObject noCoin;
     GameObject item1;
     public GameObject instantiatePrefab;
@@ -50,6 +52,29 @@ public class StoreButton : MonoBehaviour
     void Update()
     {
         Mymoney();
+        if(scrollvalue.GetComponent<Scrollbar>().value == 0)
+        {
+            leftBtn.gameObject.SetActive(false);
+            rightBtn.gameObject.SetActive(true);
+        }
+        else if(scrollvalue.GetComponent<Scrollbar>().value == 1)
+        {
+            leftBtn.gameObject.SetActive(true);
+            rightBtn.gameObject.SetActive(false);
+        }
+        else
+        {
+            leftBtn.gameObject.SetActive(true);
+            rightBtn.gameObject.SetActive(true);
+        }
+    }
+    public void RightBtn()
+    {
+        scrollvalue.GetComponent<Scrollbar>().value += 0.3f;
+    }
+    public void LeftBtn()
+    {
+        scrollvalue.GetComponent<Scrollbar>().value -= 0.3f;
     }
     public void ScrollValue()
     {
