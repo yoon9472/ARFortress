@@ -38,6 +38,9 @@ public class StoreButton : MonoBehaviour
     //내 돈 표시.
     public GameObject mymoney;
     Text money;
+    
+    //스크롤바 value값 0으로 만들기
+    public GameObject scrollvalue;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,6 +50,10 @@ public class StoreButton : MonoBehaviour
     void Update()
     {
         Mymoney();
+    }
+    public void ScrollValue()
+    {
+        scrollvalue.GetComponent<Scrollbar>().value = 0;
     }
     public void Mymoney()
     {
@@ -64,6 +71,7 @@ public class StoreButton : MonoBehaviour
                 weaponButton.GetComponent<Image>().sprite = normalImage;
                 upperButton.GetComponent<Image>().sprite = normalImage;
                 lowerButton.GetComponent<Image>().sprite = normalImage;
+                ScrollValue();
             break;
             case 2 :
                 Debug.Log("되라!");
@@ -71,6 +79,7 @@ public class StoreButton : MonoBehaviour
                 weaponButton.GetComponent<Image>().sprite = highlightImage;
                 upperButton.GetComponent<Image>().sprite = normalImage;
                 lowerButton.GetComponent<Image>().sprite = normalImage;
+                ScrollValue();
             break;
             case 3 :
                 Debug.Log("제발!");
@@ -78,12 +87,15 @@ public class StoreButton : MonoBehaviour
                 weaponButton.GetComponent<Image>().sprite = normalImage;
                 upperButton.GetComponent<Image>().sprite = highlightImage;
                 lowerButton.GetComponent<Image>().sprite = normalImage;
+                ScrollValue();
             break;
             case 4 :
+                Debug.Log("된당!");
                 allButton.GetComponent<Image>().sprite = normalImage;
                 weaponButton.GetComponent<Image>().sprite = normalImage;
                 upperButton.GetComponent<Image>().sprite = normalImage;
                 lowerButton.GetComponent<Image>().sprite = highlightImage;
+                ScrollValue();
             break;
         
         }
@@ -107,9 +119,9 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.itemList[i].DisplayName;
             item1.GetComponent<PrefabPanel>().description = NetWork.Get.itemList[i].Description;
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"].ToString();
-            item1.GetComponent<PrefabPanel>().zz = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
+            item1.GetComponent<PrefabPanel>().price = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
             item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.itemList[i].ItemId;
-            item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
+            //item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
             for(int j =0; j < GameManager.Get.imgArr.Length; j++)
             {
                 if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
@@ -128,8 +140,9 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.weaponList[i].DisplayName;
             item1.GetComponent<PrefabPanel>().description = NetWork.Get.weaponList[i].Description;
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.weaponList[i].VirtualCurrencyPrices["GD"].ToString();
+            item1.GetComponent<PrefabPanel>().price = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
             item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.weaponList[i].ItemId;
-            item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
+            //item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
             for(int j =0; j < GameManager.Get.imgArr.Length; j++)
             {
                 if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
@@ -148,8 +161,9 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.bodyList[i].DisplayName;
             item1.GetComponent<PrefabPanel>().description = NetWork.Get.bodyList[i].Description;
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.bodyList[i].VirtualCurrencyPrices["GD"].ToString();
+            item1.GetComponent<PrefabPanel>().price = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
             item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.bodyList[i].ItemId;
-            item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
+            //item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
             for(int j =0; j < GameManager.Get.imgArr.Length; j++)
             {
                 if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
@@ -168,8 +182,9 @@ public class StoreButton : MonoBehaviour
             item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.legList[i].DisplayName;
             item1.GetComponent<PrefabPanel>().description = NetWork.Get.legList[i].Description;
             item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.legList[i].VirtualCurrencyPrices["GD"].ToString();
+            item1.GetComponent<PrefabPanel>().price = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
             item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.legList[i].ItemId;
-            item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
+            //item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
             for(int j =0; j < GameManager.Get.imgArr.Length; j++)
             {
                 if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
