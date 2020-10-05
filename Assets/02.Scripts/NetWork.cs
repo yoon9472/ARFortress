@@ -413,8 +413,8 @@ public class NetWork : MonoBehaviourPunCallbacks
     {
         Debug.Log("나의 입장 순서는 = " + myOrder);
         Debug.Log("생성된 앵커의 숫자" + hostingResultList.Count);
-        //Call_MakeMyRobot(myOrder, GameManager.Get.beforeLeg.name, GameManager.Get.beforeBody.name, GameManager.Get.beforeWeapon.name);
-        Call_MakeTestBot(myOrder);
+        Call_MakeMyRobot(myOrder, GameManager.Get.beforeLeg.name, GameManager.Get.beforeBody.name, GameManager.Get.beforeWeapon.name);
+        //Call_MakeTestBot(myOrder);
     }
     public void Call_MakeMyRobot(int actnum, string leg, string body, string weapon)
     {
@@ -460,6 +460,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     public string buylastItem;//상점에서 방금 구입한 아이템 이름
     public int buyItemPice;//방금 구입한 아이템의 가격
     public int myMoney;//현재 내가 가진돈
+    public string displayName;//플레이어 이름
     string playfabid;
     public List<CatalogItem> itemList = new List<CatalogItem>();
     //무기 리스트
@@ -630,6 +631,7 @@ public class NetWork : MonoBehaviourPunCallbacks
         {
             SetData(GameManager.Get.userinfo);
             //가져올 정보가 없을때 -> 기본 데이터 세팅한다 최초 로그인한 회원인 상태이다.
+           
         }
 
         //키가 없다고 에러가 뜨면 -> 기본 정보 세팅
@@ -678,7 +680,7 @@ public class NetWork : MonoBehaviourPunCallbacks
             }
             else
             {
-            myMoney = result.VirtualCurrency["GD"];
+            myMoney = result.VirtualCurrency["GD"]; //인벤토리 열면서 현재 돈 가져오기
             }
             //인벤토리 불러오기 성공하면 동작해야할것 작성....
             Debug.Log(result.VirtualCurrency);//가상화폐 종류별로  내가 가지고있는 잔액불러오기(배열) 
@@ -843,6 +845,31 @@ public class NetWork : MonoBehaviourPunCallbacks
         //GameManager의 보유 아이템 리스트(스트링타입)에 방금 구입한 아이템의 이름을 넣어준다
         GameManager.Get.ownedItem_List.Add(buylastItem);
         myMoney -= buyItemPice;//방금 구입한 아이템의 가격만큼 현재 가진돈을 빼준다
+    }
+    /// <summary>
+    /// 플레이어 디스플레이 네임 수정하기 첫로그인 시에만 수정창을 한번띄워주게한다
+    /// </summary>
+    /// <param name="nickname"></param>
+    public void ModifyDisplayName(string nickname)
+    {
+        displayName = nickname;
+        var request = new GetPlayerProfileRequest() { PlayFabId = playfabid };
+        PlayFabClientAPI.GetPlayerProfile(request, GetprofileSuccess, GetprofileFail);
+    }
+
+    private void GetprofileFail(PlayFabError obj)
+    {
+        Debug.Log("프로필 불러오기 실패");
+    }
+
+    private void GetprofileSuccess(GetPlayerProfileResult obj)
+    {
+        Debug.Log("프로필 불러오기 성공");
+        obj.PlayerProfile.DisplayName = displayName;
+        GameManager.Get.userinfo.nickName = obj.PlayerProfile.DisplayName;
+        GameManager.Get.userinfo.firstLogin = false;
+        SetData(GameManager.Get.userinfo);
+        Debug.Log("변경된 이름은 ; " + obj.PlayerProfile.DisplayName);
     }
     #endregion
 

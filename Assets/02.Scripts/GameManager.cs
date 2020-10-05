@@ -200,7 +200,7 @@ public class GameManager : MonoBehaviour
         }
         else
         {
-            Debug.Log("legPrefab us null");
+            Debug.Log("legPrefab is null");
         }
 
         if (beforeBody != null)
@@ -300,24 +300,24 @@ public class GameManager : MonoBehaviour
         Stats();
     }
     /// <summary>
-    /// 능력치 표시 beforePrfab 기준
+    /// 능력치 표시 beforePrfab 기준 이전에 저장된부품이나 현재 슬롯에서 선택한 부품이 있으면 능력치를 찾아서 넣어준다
     /// </summary>
     public void Stats()
     {
-        if (beforeLeg != null)
+        if (beforeLeg != null|| legPrefab != null)
         {
             legtotalweight = legInfo_List[legindex].totalweight;
             legspeed = legInfo_List[legindex].speed;
             legamor = legInfo_List[legindex].amor;
         }
-        if (beforeBody != null)
+        if (beforeBody != null|| bodyPrefab !=null)
         {
             bodyhp = bodyInfo_List[bodyindex].hp;
             bodyamor = bodyInfo_List[bodyindex].amor;
             bodytype = bodyInfo_List[bodyindex].bodytype;
             bodyweight = bodyInfo_List[bodyindex].weight;
         }
-        if (beforeWeapon != null)
+        if (beforeWeapon != null || weaponPrefab !=null)
         {
             weaponweight = weaponInfo_List[weaponindex].weight;
             weapontype = weaponInfo_List[weaponindex].weapontype;
@@ -325,7 +325,7 @@ public class GameManager : MonoBehaviour
             weaponattack = weaponInfo_List[weaponindex].attack;
         }
 
-        if (beforeLeg != null && beforeBody != null && beforeWeapon != null)
+        if ((beforeLeg != null && beforeBody != null && beforeWeapon != null)||(legPrefab!=null && bodyPrefab !=null && weaponPrefab !=null))
         {
             if (weaponweight + bodyweight > legtotalweight)
             {

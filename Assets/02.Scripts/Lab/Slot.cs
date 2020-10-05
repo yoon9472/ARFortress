@@ -215,6 +215,7 @@ public class Slot : MonoBehaviour
             }
         }
         GameManager.Get.CurrentStats();
+        GameManager.Get.Stats();
     }
 
 }
