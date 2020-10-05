@@ -62,6 +62,7 @@ public class PrefabPanel : MonoBehaviour
         blackCanvas.GetComponent<ForBuying>().itemId1 = itemId;
         blackCanvas.GetComponent<ForBuying>().price1 = price;
         blackCanvas.GetComponent<ForBuying>().panel = this.gameObject;
+        blackCanvas.GetComponent<ForBuying>().completeBuy.gameObject.SetActive(false);
     }
     public void Close()
     {

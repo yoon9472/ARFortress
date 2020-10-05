@@ -7,6 +7,7 @@ public class ForBuying : MonoBehaviour
     public string itemId1;
     public int price1;
     public GameObject panel;
+    public GameObject completeBuy;
     // Start is called before the first frame update
     void Start()
     {
@@ -24,8 +25,9 @@ public class ForBuying : MonoBehaviour
         panel.GetComponent<PrefabPanel>().canBuy = false;
         panel.GetComponent<PrefabPanel>().cost1.text = "OWNED";
         panel.GetComponent<PrefabPanel>().buttonImage.gameObject.SetActive(false);
-        //정상적으로 샀으면 창 꺼지게 만들기.
-        Destroy(this.gameObject,0.1f);
+        //정상적으로 샀으면 창 꺼지게 만들기.\
+        completeBuy.gameObject.SetActive(true);
+        Destroy(this.gameObject,0.5f);
     }
     public void Close()
     {
