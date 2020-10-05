@@ -630,6 +630,7 @@ public class NetWork : MonoBehaviourPunCallbacks
         else
         {
             SetData(GameManager.Get.userinfo);
+            Debug.Log("유저 기본정보 세팅");
             //가져올 정보가 없을때 -> 기본 데이터 세팅한다 최초 로그인한 회원인 상태이다.
            
         }

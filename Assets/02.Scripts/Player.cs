@@ -8,6 +8,7 @@ using PlayFab.GroupsModels;
 
 public class Player : MonoBehaviourPunCallbacks
 {
+    public GameObject isMine;
     public string legname;//다리 이름
     public string bodyname;//몸체 이름
     public string weaponname; //무기 이름
@@ -54,7 +55,10 @@ public class Player : MonoBehaviourPunCallbacks
             }
         }
         transform.forward = NetWork.Get.hostingResultList[0].Result.Anchor.transform.position - transform.position;
-
+        if(actnum == NetWork.Get.myOrder)
+        {
+            isMine.SetActive(true);
+        }
     }
 
     
