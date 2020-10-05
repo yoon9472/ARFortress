@@ -1826,7 +1826,18 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 114883371091395652}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1618859311458575}
+        m_MethodName: QuitBtn
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &114244187839792384
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3315,7 +3326,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uB098\uAC00\uAE30"
+  m_Text: EXIT
 --- !u!114 &2032516289790071817
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3348,7 +3359,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: OPTION
+  m_Text: Option
 --- !u!114 &2032592962177847079
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3381,7 +3392,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uC0C1\uC810"
+  m_Text: Store
 --- !u!114 &2032747991982737353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3414,7 +3425,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\uAC8C\uC784 \uCC38\uAC00"
+  m_Text: Play Game
 --- !u!114 &2032804099168106475
 MonoBehaviour:
   m_ObjectHideFlags: 0
