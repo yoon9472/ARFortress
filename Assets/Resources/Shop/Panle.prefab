@@ -399,6 +399,7 @@ MonoBehaviour:
   title: {fileID: 6887908294702024299}
   introduction: {fileID: 2167665867969361253}
   buttonText: {fileID: 2271903871637142043}
+  cost1: {fileID: 0}
   buttonImage: {fileID: 1416905268049443458}
   displayname: 
   description: 
@@ -406,6 +407,9 @@ MonoBehaviour:
   itemId: 
   price: 0
   image: {fileID: 6671485953964196268}
+  canBuy: 1
+  buy: {fileID: 1832112140543019144, guid: 473455b245852414386c2fd71343ccae, type: 3}
+  noCoin: {fileID: 164511897293959205, guid: 7d1c09b04dc3287419b4871ce0bdfb45, type: 3}
 --- !u!1 &2271903871637142043
 GameObject:
   m_ObjectHideFlags: 0
@@ -528,7 +532,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 4952645476625172831}
-        m_MethodName: Buy
+        m_MethodName: Choice
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
