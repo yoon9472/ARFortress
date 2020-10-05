@@ -5,6 +5,7 @@ using UnityEngine;
 public class RobotManager : MonoBehaviour
 {
     public GameObject pivot;
+    public GameObject assembleComplete;
     /// <summary>
     ///  GameManager의 Userinfo형태를 저장한다
     /// </summary>
@@ -23,7 +24,14 @@ public class RobotManager : MonoBehaviour
             NetWork.Get.SetData(GameManager.Get.userinfo);
             GameManager.Get.ChangeBeforePrefab();
             GameManager.Get.Msg = "저장되었습니다.";
+            assembleComplete.gameObject.SetActive(true);
+            StartCoroutine("SetActiveFalse");
         }
+    }
+    IEnumerator SetActiveFalse()
+    {
+        yield return new WaitForSeconds(0.5f);
+        assembleComplete.gameObject.SetActive(false);
     }
     private void Start()
     {
