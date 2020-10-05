@@ -9,13 +9,21 @@ public class MainSceneButton : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-       
     }
     // Update is called once per frame
     void Update()
     { 
     }
 
+    public void QuitBtn()
+    {
+#if UNITY_EDITIOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Debug.Log("종료를 시작합니다.");
+        Application.Quit();
+#endif
+    }
     public void ToLab()
     {
         SceneManager.LoadScene("TestLabUI");
