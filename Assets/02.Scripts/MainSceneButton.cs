@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 public class MainSceneButton : MonoBehaviour
 {
     public GameObject option;
+    public GameObject exit;
     // Start is called before the first frame update
     void Start()
     {
@@ -14,8 +15,11 @@ public class MainSceneButton : MonoBehaviour
     void Update()
     { 
     }
-
-    public void QuitBtn()
+    public void ExitBtn()
+    {
+        exit.gameObject.SetActive(true);
+    }
+    public void YesQuitBtn()
     {
 #if UNITY_EDITIOR
         UnityEditor.EditorApplication.isPlaying = false;
@@ -23,6 +27,10 @@ public class MainSceneButton : MonoBehaviour
         Debug.Log("종료를 시작합니다.");
         Application.Quit();
 #endif
+    }
+    public void NoQuitBtn()
+    {
+        exit.gameObject.SetActive(false);
     }
     public void ToLab()
     {
