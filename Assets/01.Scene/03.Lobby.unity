@@ -3459,7 +3459,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: LAB
+  m_Text: Lab
 --- !u!114 &2032808767354689881
 MonoBehaviour:
   m_ObjectHideFlags: 0
