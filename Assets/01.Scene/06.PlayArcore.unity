@@ -323,8 +323,9 @@ GameObject:
   - component: {fileID: 99249725}
   - component: {fileID: 99249727}
   - component: {fileID: 99249726}
+  - component: {fileID: 99249728}
   m_Layer: 5
-  m_Name: Direction (1)
+  m_Name: JoyStick
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -391,6 +392,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 99249724}
   m_CullTransparentMesh: 0
+--- !u!114 &99249728
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 99249724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cc15a6c424231d418b4be9018382fa6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 318797695}
+  rectTransform: {fileID: 99249725}
+  inputVector: {x: 0, y: 0}
+  isInput: 0
+  controllerRange: 100
 --- !u!1 &112410036
 GameObject:
   m_ObjectHideFlags: 0

@@ -19,7 +19,7 @@ using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 #endif
 
-public class NetWork : MonoBehaviourPunCallbacks
+public class NetWork : MonoBehaviourPunCallbacks,IPunObservable
 {
 
     private static NetWork m_Instance = null;
@@ -51,6 +51,9 @@ public class NetWork : MonoBehaviourPunCallbacks
     public bool isMaster = false;//방장인지 확인
     public GameObject robtObj;//로봇객체가될 프리팹
     public GameObject testBot;//테스트용 로봇
+    public int nowTurn = 0; //현재 턴
+    public float x; //동기화할 조이스틱의 x값
+    public float y;// 동기화할 조이스틱의 y 값
     //public string anchorId;
     //public bool receiveId = false;//클라우드 앵커 아이디를 받았는지 체크
     public int readyCnt = 0;//방안에 몇명의 사용자가 클라우드 앵커를 생성 공유했는가 체크 방장제외최대 3까지 카운트
@@ -445,6 +448,15 @@ public class NetWork : MonoBehaviourPunCallbacks
         Debug.Log(actnum + "번 유저의 테스트 봇을 생성하라고 요청옴");
         Instantiate(testBot, hostingResultList[actnum + 1].Result.Anchor.transform.position, Quaternion.identity);
     }
+    /// <summary>
+    /// 인터페이스 구현 동기화할 정보들
+    /// </summary>
+    /// <param name="stream"></param>
+    /// <param name="info"></param>
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        throw new NotImplementedException();
+    }
     #endregion
 
 
@@ -458,6 +470,8 @@ public class NetWork : MonoBehaviourPunCallbacks
     public string userName;//입력받은 사용자 이름
     public string nickName;//입력받은 닉네임
     public string buylastItem;//상점에서 방금 구입한 아이템 이름
+    public bool modifyOk=false;
+    public bool modifyFail = false;
     public int buyItemPice;//방금 구입한 아이템의 가격
     public int myMoney;//현재 내가 가진돈
     public string displayName;//플레이어 이름
@@ -854,23 +868,25 @@ public class NetWork : MonoBehaviourPunCallbacks
     public void ModifyDisplayName(string nickname)
     {
         displayName = nickname;
-        var request = new GetPlayerProfileRequest() { PlayFabId = playfabid };
-        PlayFabClientAPI.GetPlayerProfile(request, GetprofileSuccess, GetprofileFail);
+        var request = new UpdateUserTitleDisplayNameRequest() { DisplayName = nickname };
+        PlayFabClientAPI.UpdateUserTitleDisplayName(request, UpdatenameSuccess, GetprofileFail);
     }
 
     private void GetprofileFail(PlayFabError obj)
     {
-        Debug.Log("프로필 불러오기 실패");
+        Debug.Log("닉네임 변경 실패");
+        modifyFail = true;
     }
 
-    private void GetprofileSuccess(GetPlayerProfileResult obj)
+    private void UpdatenameSuccess(UpdateUserTitleDisplayNameResult obj)
     {
-        Debug.Log("프로필 불러오기 성공");
-        obj.PlayerProfile.DisplayName = displayName;
-        GameManager.Get.userinfo.nickName = obj.PlayerProfile.DisplayName;
+        Debug.Log("닉네임 변경 성공");
+        GameManager.Get.userinfo.nickName = obj.DisplayName;
         GameManager.Get.userinfo.firstLogin = false;
         SetData(GameManager.Get.userinfo);
-        Debug.Log("변경된 이름은 ; " + obj.PlayerProfile.DisplayName);
+        Debug.Log("변경된 이름은 ; " + obj.DisplayName);
+        modifyOk = true;
+
     }
     #endregion
 
@@ -941,6 +957,8 @@ public class NetWork : MonoBehaviourPunCallbacks
         JoinLobby();
 
     }
+
+
     #endregion
 }
 

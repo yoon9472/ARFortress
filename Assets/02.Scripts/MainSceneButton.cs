@@ -7,9 +7,14 @@ public class MainSceneButton : MonoBehaviour
 {
     public GameObject option;
     public GameObject exit;
+    public GameObject nickName;
     // Start is called before the first frame update
     void Start()
     {
+        if(GameManager.Get.userinfo.firstLogin == true)
+        {
+            nickName.SetActive(true);
+        }
     }
     // Update is called once per frame
     void Update()
@@ -32,21 +37,36 @@ public class MainSceneButton : MonoBehaviour
     {
         exit.gameObject.SetActive(false);
     }
+    /// <summary>
+    /// 조립실로 이동
+    /// </summary>
     public void ToLab()
     {
         SceneManager.LoadScene("TestLabUI");
     }
-
+    /// <summary>
+    /// 상점으로 이동
+    /// </summary>
     public void ToStore()
     {
         SceneManager.LoadScene("TestStore");
     }
     /// <summary>
-    /// 방이생성 씬으로 이동
+    /// 방이생성 씬으로 이동 조립된 로봇이 없으면 이동을 못하게 막는다.
     /// </summary>
     public void ToPlayGame()
     {
+        //로봇 조립된 상태인지 체크하고
+        if(GameManager.Get.beforeLeg !=null && GameManager.Get.beforeBody !=null && GameManager.Get.beforeWeapon !=null)
+        {
         SceneManager.LoadScene("04.MakeRoom");
+        }
+        else
+        {
+            //선택이 안되어 있다면 씬이동막고 로봇 조립하라는 메세지
+            GameManager.Get.Msg = "Build a robot in LAB";
+        }
+
     }
     public void ToOption()
     {
