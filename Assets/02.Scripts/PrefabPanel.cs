@@ -1,46 +1,77 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UI;
+﻿    using System.Collections;
+    using System.Collections.Generic;
+    using UnityEngine;
+    using UnityEngine.UI;
 
-public class PrefabPanel : MonoBehaviour
-{
+    public class PrefabPanel : MonoBehaviour
+    {
     public Text title;
     public Text introduction;
     public GameObject buttonText;
     public Text cost1;
     public GameObject buttonImage;
-    public string displayname;
-    public string description;
-    public string itemcost;
-    public string itemId;
-    public int price;
     public Image image;
     public bool canBuy = true;
 
     public GameObject buy;
     GameObject blackCanvas;
     public GameObject noCoin;
+
+    protected int price;
+    protected string id;
+
     // Start is called before the first frame update
     void Start()
     {
-        cost1 = buttonText.GetComponentInChildren<Text>();
-        title.text = displayname;
-        introduction.text = description;
-        cost1.text = itemcost;
-        for(int i=0; i<GameManager.Get.ownedItem_List.Count;i++)
-        {
-            if(GameManager.Get.ownedItem_List[i] == displayname)
-            {
-                canBuy = false;
-                cost1.text = "Owned";
-                buttonImage.gameObject.SetActive(false);
-            }
-        }
+        // cost1 = buttonText.GetComponentInChildren<Text>();
+        // title.text = displayname;
+        // introduction.text = description;
+        // cost1.text = itemcost;
+        // for(int i=0; i<GameManager.Get.ownedItem_List.Count;i++)
+        // {
+        //     if(GameManager.Get.ownedItem_List[i] == displayname)
+        //     {
+        //         canBuy = false;
+        //         cost1.text = "Owned";
+        //         buttonImage.gameObject.SetActive(false);
+        //     }
+        // }
     }
     // Update is called once per frame
     void Update()
     {
+    }
+
+    public void SetPrefabData(ItemData data) {
+        if (data != null) {
+            this.id = data.id;
+            this.price = data.price;
+
+            title.text = data.displayName;
+            introduction.text = data.descripition;
+
+            if (cost1 == null) cost1 = buttonText.GetComponentInChildren<Text>();
+            cost1.text = data.cost;
+
+            for(int j =0; j < GameManager.Get.imgArr.Length; j++)
+            {
+                if(GameManager.Get.imgArr[j].name == data.displayName)
+                {
+                    image.sprite = GameManager.Get.imgArr[j];
+                }
+            }
+
+            
+            for(int i=0; i<GameManager.Get.ownedItem_List.Count;i++)
+            {
+                if(GameManager.Get.ownedItem_List[i] == data.displayName)
+                {
+                    canBuy = false;
+                    cost1.text = "Owned";
+                    buttonImage.gameObject.SetActive(false);
+                }
+            }
+        }
     }
     public void Choice()
     {
@@ -50,7 +81,7 @@ public class PrefabPanel : MonoBehaviour
             Debug.Log("이미 사신 아이템입니다.");
             return;
         }
-        else if (NetWork.Get.myMoney < int.Parse(itemcost))
+        else if (NetWork.Get.myMoney < int.Parse(cost1.text))
         {
             Debug.Log("돈이 부족합니다.");
             Instantiate(noCoin, new Vector3(0,0,0), Quaternion.identity);
@@ -59,7 +90,7 @@ public class PrefabPanel : MonoBehaviour
         Debug.Log("만들어지자!!!");
         //사는 창을 만들 때, 창에 정보도 넘겨준다.
         blackCanvas = Instantiate(buy, new Vector3(0,0,0), Quaternion.identity);
-        blackCanvas.GetComponent<ForBuying>().itemId1 = itemId;
+        blackCanvas.GetComponent<ForBuying>().itemId1 = id;
         blackCanvas.GetComponent<ForBuying>().price1 = price;
         blackCanvas.GetComponent<ForBuying>().panel = this.gameObject;
         blackCanvas.GetComponent<ForBuying>().completeBuy.gameObject.SetActive(false);
@@ -68,5 +99,23 @@ public class PrefabPanel : MonoBehaviour
     {
         Destroy(blackCanvas, 0.1f);
     }
+
+}
+
+public class ItemData {
+    public string displayName;
+    public string descripition;
+    public string cost;
+    public int price;
+    public string id;
     
+    public ItemData(string id, string displayName, string descripition, string cost, int price) {
+        this.id = id;
+        this.displayName = displayName;
+        this.cost = cost;
+        this.price = price;
+        this.descripition = descripition;
+    }
+
+    public ItemData() {}
 }

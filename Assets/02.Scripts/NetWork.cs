@@ -514,6 +514,8 @@ public class NetWork : MonoBehaviourPunCallbacks
                     StartCoroutine(LoadItemList());// 상점 리스트 불러와서 정리하고 완료되면 씬전환
                     //JoinLobby();
 
+                    if (onChangeMoneyDelegate != null) onChangeMoneyDelegate(myMoney);
+
                 }, PlayFab_GoogleLogin_Error);
             }
             else
@@ -857,12 +859,19 @@ public class NetWork : MonoBehaviourPunCallbacks
         Debug.Log("구입 실패");
     }
 
+    public delegate void ChangeMoneyDelegate(int totalMoney);
+    public ChangeMoneyDelegate onChangeMoneyDelegate;
+    public int GetMyMoney() {
+        return myMoney;
+    }
+    
     private void BuyOk(PurchaseItemResult obj)
     {
         Debug.Log("구입 성공");
         //GameManager의 보유 아이템 리스트(스트링타입)에 방금 구입한 아이템의 이름을 넣어준다
         GameManager.Get.ownedItem_List.Add(buylastItem);
         myMoney -= buyItemPice;//방금 구입한 아이템의 가격만큼 현재 가진돈을 빼준다
+        if (onChangeMoneyDelegate != null) onChangeMoneyDelegate(myMoney);
     }
     /// <summary>
     /// 플레이어 디스플레이 네임 수정하기 첫로그인 시에만 수정창을 한번띄워주게한다

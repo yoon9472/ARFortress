@@ -323,13 +323,8 @@ MonoBehaviour:
   title: {fileID: 6887908294702024299}
   introduction: {fileID: 2167665867969361253}
   buttonText: {fileID: 2271903871637142043}
-  cost1: {fileID: 0}
+  cost1: {fileID: 2169541789182696453}
   buttonImage: {fileID: 1416905268049443458}
-  displayname: 
-  description: 
-  itemcost: 
-  itemId: 
-  price: 0
   image: {fileID: 6671485953964196268}
   canBuy: 1
   buy: {fileID: 1832112140543019144, guid: 473455b245852414386c2fd71343ccae, type: 3}
