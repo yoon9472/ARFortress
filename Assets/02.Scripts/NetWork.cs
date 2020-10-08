@@ -67,13 +67,13 @@ public class NetWork : MonoBehaviourPunCallbacks,IPunObservable
     //public string[] anchorIdArr;//앵커의 주소를 담을 배열
     private void Start()
     {
-        if (!PhotonNetwork.IsConnected && inIntro == true)//인트로 상태에서 시작하고 연결안되있으면->처음 시작이면
+        if (inIntro == true)//인트로 상태에서 시작하고 연결안되있으면->처음 시작이면
         {
             inIntro = false;
             inLogin = true;
             inLobby = false;
             inRoom = false;
-            Connect();//연결하고
+            //Connect();//연결하고
         }
 #if GOOGLEGAMES
         PlayGamesClientConfiguration config = new PlayGamesClientConfiguration.Builder()

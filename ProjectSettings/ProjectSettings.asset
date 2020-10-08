@@ -757,10 +757,10 @@ PlayerSettings:
     m_VersionCode: 1
     m_VersionName: 
   apiCompatibilityLevel: 6
-  cloudProjectId: 8c996a12-e906-4729-99fc-fe1a6d3a68eb
+  cloudProjectId: 4c5abea9-4a96-4099-82e6-d8f002de0faa
   framebufferDepthMemorylessMode: 0
-  projectName: Playfab&Photon
-  organizationId: meterslug2_unity
+  projectName: ARFotress (2)
+  organizationId: bcscjd1826
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0
