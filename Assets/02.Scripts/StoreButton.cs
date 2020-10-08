@@ -70,11 +70,13 @@ public class StoreButton : MonoBehaviour
     }
     public void RightBtn()
     {
-        scrollvalue.GetComponent<Scrollbar>().value += 0.3f;
+        if(checkNumber ==1){scrollvalue.GetComponent<Scrollbar>().value += 0.312f;}
+        else{ scrollvalue.GetComponent<Scrollbar>().value +=1;}
     }
     public void LeftBtn()
     {
-        scrollvalue.GetComponent<Scrollbar>().value -= 0.3f;
+        if(checkNumber ==1){scrollvalue.GetComponent<Scrollbar>().value -= 0.312f;}
+        else{ scrollvalue.GetComponent<Scrollbar>().value -=1;}
     }
     public void ScrollValue()
     {

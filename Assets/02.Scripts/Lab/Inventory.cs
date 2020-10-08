@@ -3,13 +3,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
     public List<GameObject> inventory = new List<GameObject>();
 
     public GameObject currItem;
-
+    
+    //토글을 위한 변수
+    public GameObject legBtn ;
+    public GameObject bodyBtn ;
+    public GameObject weaponBtn ;
+    public Sprite highlightImage;
+    public Sprite normalImage;
+    
     //시작시 레그 인벤토리가 켜져있으므로 Leg 메뉴를 Selected 상태로 시작. 
     public bool buttonDown; 
     void Start()
@@ -18,7 +26,7 @@ public class Inventory : MonoBehaviour
         //[09.28] 피드백 -  시작할떄 default 인벤토리 [먼저 조립되야하는 다리부분을] 켜놔야 좋을것 같다고 해서 수정
         currItem = inventory[2];
         inventory[2].SetActive(true);
-
+        checkImage(2);
     }
 /*    public void SelectedButton()
     {
@@ -29,7 +37,7 @@ public class Inventory : MonoBehaviour
     {
     }
     // Leg, Weapon , body 해당 메뉴마다 Onclick 시 해당 인벤토리 활성화 해놓음
-    // inventory[0] = Weapon , [1] = Body [2] = Weapon   curritem = 현재 선택된 인벤토리
+    // inventory[0] = Weapon , [1] = Body [2] = leg   curritem = 현재 선택된 인벤토리
     public void Inven0Open()
     {
         if(currItem != null)
@@ -39,6 +47,7 @@ public class Inventory : MonoBehaviour
         }
         inventory[0].SetActive(true);
         currItem = inventory[0] ;
+        checkImage(0);
     }
     public void Inven1Open()
     {
@@ -49,6 +58,7 @@ public class Inventory : MonoBehaviour
         }
         inventory[1].SetActive(true);
         currItem = inventory[1];
+        checkImage(1);
     }
     public void Inven2Open()
     {
@@ -59,6 +69,7 @@ public class Inventory : MonoBehaviour
         }
         inventory[2].SetActive(true);
         currItem = inventory[2];
+        checkImage(2);
     }
     public void Inven0Close()
     {
@@ -77,5 +88,29 @@ public class Inventory : MonoBehaviour
     {
         SceneManager.LoadScene("03.Lobby");
     }
+    
+    //여기는 이제 토글 넣어주려고 하는 부분
+    void checkImage(int k)
+    {
+        switch(k)
+        {
+            case 2 :
+                weaponBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
+                bodyBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
+                legBtn.GetComponent<UnityEngine.UI.Image>().sprite = highlightImage;
+            break;
 
+            case 1 :
+                weaponBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
+                bodyBtn.GetComponent<UnityEngine.UI.Image>().sprite = highlightImage;
+                legBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
+            break;
+            
+            case 0 :
+                weaponBtn.GetComponent<UnityEngine.UI.Image>().sprite = highlightImage;
+                bodyBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
+                legBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
+            break;
+        }
+    }
 }
