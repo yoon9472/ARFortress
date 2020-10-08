@@ -65,6 +65,7 @@ public class VirtualJoystick : MonoBehaviour, IBeginDragHandler, IDragHandler, I
         //최대 거리로 나눠서 0~1사이의 값을 만들어줘야한다 
         //방향만 알수 있게 정규화
         inputVector = clampDir / controllerRange;
+
     }
 }
 

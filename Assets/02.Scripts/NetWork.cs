@@ -19,7 +19,7 @@ using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 #endif
 
-public class NetWork : MonoBehaviourPunCallbacks,IPunObservable
+public class NetWork : MonoBehaviourPunCallbacks
 {
 
     private static NetWork m_Instance = null;
@@ -53,8 +53,6 @@ public class NetWork : MonoBehaviourPunCallbacks,IPunObservable
     public GameObject robtObj;//로봇객체가될 프리팹
     public GameObject testBot;//테스트용 로봇
     public int nowTurn = 0; //현재 턴
-    public float x; //동기화할 조이스틱의 x값
-    public float y;// 동기화할 조이스틱의 y 값
     //public string anchorId;
     //public bool receiveId = false;//클라우드 앵커 아이디를 받았는지 체크
     public int readyCnt = 0;//방안에 몇명의 사용자가 클라우드 앵커를 생성 공유했는가 체크 방장제외최대 3까지 카운트
@@ -101,6 +99,18 @@ public class NetWork : MonoBehaviourPunCallbacks,IPunObservable
         if (inRoom == true)
         {   //방에 입장했을때 현재 방의 유저수를 업데이트 시킨다.
             localPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
+        }
+    }
+    /// <summary>
+    /// 마스터 클라이언트 변경을 요구하기위함
+    /// </summary>
+    /// <param name="masterClientPlayer"></param>
+    public void ChangeMasterClient(Photon.Realtime.Player masterClientPlayer)
+    {
+        if(inRoom ==true)
+        {
+        //PhotonNetwork.PlayerList
+        PhotonNetwork.SetMasterClient(masterClientPlayer);
         }
     }
     public void Connect()
@@ -449,15 +459,7 @@ public class NetWork : MonoBehaviourPunCallbacks,IPunObservable
         Debug.Log(actnum + "번 유저의 테스트 봇을 생성하라고 요청옴");
         Instantiate(testBot, hostingResultList[actnum + 1].Result.Anchor.transform.position, Quaternion.identity);
     }
-    /// <summary>
-    /// 인터페이스 구현 동기화할 정보들
-    /// </summary>
-    /// <param name="stream"></param>
-    /// <param name="info"></param>
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
-    {
-        throw new NotImplementedException();
-    }
+    
     #endregion
 
 

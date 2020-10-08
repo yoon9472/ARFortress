@@ -1072,8 +1072,12 @@ MonoBehaviour:
   inLobby: 0
   inRoom: 0
   isMaster: 0
+  finalCheck: 0
   robtObj: {fileID: 7544266215859932968, guid: 0a3b5ca9a6dfb4643abbe67c0881f03e, type: 3}
   testBot: {fileID: 799937352128352444, guid: a05152cadb0802a40a9d8159d1f086c8, type: 3}
+  nowTurn: 0
+  x: 0
+  y: 0
   readyCnt: 0
   receiveCnt: 0
   localPlayer: 0
@@ -1083,6 +1087,8 @@ MonoBehaviour:
   userName: 
   nickName: 
   buylastItem: 
+  modifyOk: 0
+  modifyFail: 0
   buyItemPice: 0
   myMoney: 0
   displayName: 
@@ -1106,7 +1112,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 0
-  OwnershipTransfer: 0
+  OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 0}
   viewIdField: 1
