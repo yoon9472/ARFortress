@@ -49,6 +49,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     public bool inLobby = false;//로비 입장  상태
     public bool inRoom = false;//룸 입장 상태
     public bool isMaster = false;//방장인지 확인
+    public bool finalCheck = false;//퍼미션 완료되면 true로 바뀜.
     public GameObject robtObj;//로봇객체가될 프리팹
     public GameObject testBot;//테스트용 로봇
     //public string anchorId;
@@ -114,7 +115,7 @@ public class NetWork : MonoBehaviourPunCallbacks
 
         Debug.Log("마스터 서버 연결상태 : " + inLogin);
         //로그인 화면으로 전환
-        if (inLogin == true)
+        if (inLogin == true && finalCheck == true)
         {
             SceneManager.LoadScene("02.Login");
         }

@@ -6,7 +6,7 @@ using UnityEngine.Android;
 public class CheckPermission : MonoBehaviour
 {
     //어떻게 퍼미션을 얻을지 고민이 많다.
-    bool finalCheck = false;
+    
     bool cameraCheck = false;
     bool storageCheck = false;
     float timeCheck =0;
@@ -55,10 +55,10 @@ public class CheckPermission : MonoBehaviour
         if(/*storageCheck == false ||*/ cameraCheck == false)//얘는 나중에 누가 권한 껐을 때를 대비해서 아래 반복문으로 넣기 위한 작은 초석.
         {
             Debug.Log("접근권한이 없단댜~!");
-            finalCheck = false;
+            NetWork.Get.finalCheck = false;
         }
         yield return new WaitForSeconds(0.1f);
-        if(finalCheck == true)//코루틴 
+        if(NetWork.Get.finalCheck == true)//코루틴 
         {
             Debug.Log("권한 요청 다 되어있었네! 코루틴 꺼라 애들아!");
             StopCoroutine("PermissionCheck");
@@ -69,7 +69,7 @@ public class CheckPermission : MonoBehaviour
     {
         timeCheck += Time.deltaTime;
         //여기서 부터 반복을 시작한다.
-        while (finalCheck == false)
+        while (NetWork.Get.finalCheck == false)
         {
             Debug.Log("애들아 접근권한 없다잖아! 빨리 따내와!");
             //여기서 권한 요청 시작 ( 우리 것 부터 권한 요청 시작을 하자. 그 다음에 안드로이드에서 자동 권한 요청을 하도록 )
@@ -77,9 +77,9 @@ public class CheckPermission : MonoBehaviour
             forRequestPermission.gameObject.SetActive(true);
             yield return new WaitUntil(()=>btnCheck);//이것은 btncheck가 true값을 받을 때까지 기다리겠다고 하는 것임. false값일때까지면 waitwhile임.
             
-            Debug.Log("카메라 권한 내놓으라구!");
             if(cameraCheck==false)
             {
+                Debug.Log("카메라 권한 내놓으라구!");
                 Permission.RequestUserPermission(Permission.Camera);//안드로이드의 카메라 
             }
             yield return new WaitForSeconds(0.2f);
@@ -103,7 +103,7 @@ public class CheckPermission : MonoBehaviour
             if(cameraCheck ==true /*&& storageCheck ==true*/)
             {
                 Debug.Log("이 반복을 드디어 끝낼 수 있는 기회야!");
-                finalCheck = true;
+                NetWork.Get.finalCheck = true;
             }
             else if( timeCheck > 15)
             //여기는 혹시 만약에 시간이 너무 오래 걸린다 싶으면 그냥 경고창 하고 강제종료시키자. 
