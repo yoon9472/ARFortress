@@ -238,25 +238,33 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     //    {
     //        Debug.Log("1번플레이어 생성");
     //        obj = PhotonNetwork.Instantiate("Player", tasklist[1].Result.Anchor.transform.position, Quaternion.identity);
-           
+
     //    }
     //    else if(NetWork.Get.myOrder == 1)
     //    {
     //        Debug.Log("2번플레이어 생성");
     //        obj = PhotonNetwork.Instantiate("Player", tasklist[2].Result.Anchor.transform.position, Quaternion.identity);
-           
+
     //    }
     //    else if(NetWork.Get.myOrder == 2)
     //    {
     //        Debug.Log("3번플레이어 생성");
     //        obj = PhotonNetwork.Instantiate("Player", tasklist[3].Result.Anchor.transform.position, Quaternion.identity);
-            
+
     //    }
     //    else
     //    {
     //        Debug.Log("4번플레이어 생성");
     //        obj = PhotonNetwork.Instantiate("Player", tasklist[4].Result.Anchor.transform.position, Quaternion.identity);
-            
+
     //    }
     //}
+    public void TurnOff()
+    {
+        if (NetWork.Get.isMaster == true)
+        {
+            Debug.Log("턴을 넘김");
+            NetWork.Get.Call_ChangeMasterClient();
+        }
+    }
 }

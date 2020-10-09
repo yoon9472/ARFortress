@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
 
     [Header("다리 능력치")]
     public int legtotalweight;
-    public int legspeed;
+    public float legspeed;
     public int legamor;
 
     [Header("몸통 능력치")]

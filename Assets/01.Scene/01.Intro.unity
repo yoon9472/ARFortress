@@ -1059,6 +1059,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 82083f50423caaa4dae9e14e2e86298b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  masterIndex: 0
   actornums: 00000000000000000000000000000000
   userArr:
   - 
@@ -1076,12 +1077,12 @@ MonoBehaviour:
   robtObj: {fileID: 7544266215859932968, guid: 0a3b5ca9a6dfb4643abbe67c0881f03e, type: 3}
   testBot: {fileID: 799937352128352444, guid: a05152cadb0802a40a9d8159d1f086c8, type: 3}
   nowTurn: 0
-  x: 0
-  y: 0
   readyCnt: 0
   receiveCnt: 0
   localPlayer: 0
   anchorId: 
+  x: 0
+  y: 0
   email: 
   password: 
   userName: 
@@ -1111,10 +1112,10 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 0
+  Synchronization: 2
   OwnershipTransfer: 1
   ObservedComponents:
-  - {fileID: 0}
+  - {fileID: 1355645409}
   viewIdField: 1
   InstantiationId: 0
   isRuntimeInstantiated: 0

@@ -19,7 +19,7 @@ using GooglePlayGames;
 using GooglePlayGames.BasicApi;
 #endif
 
-public class NetWork : MonoBehaviourPunCallbacks
+public class NetWork : MonoBehaviourPunCallbacks, IPunObservable
 {
 
     private static NetWork m_Instance = null;
@@ -40,6 +40,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     }
     #region PhotonNetwork
     [Header("포톤 관련 변수")]
+    public int masterIndex;//마스터 클라이언트 인덱스
     public int[] actornums = new int[4];//방에 입장한 유저의 엑터 넘버를 저장할 배열
     public string[] userArr = new string[4]; //유저 이름을 저장하기위한 배열
     public bool[] userReady = new bool[4];//룸안에 유저가 게임 가능한 상태인지 여부 체크 false면 턴이 안돌아 온다(죽은 유저혹은 나간유저)
@@ -52,7 +53,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     public bool finalCheck = false;//퍼미션 완료되면 true로 바뀜.
     public GameObject robtObj;//로봇객체가될 프리팹
     public GameObject testBot;//테스트용 로봇
-    public int nowTurn = 0; //현재 턴
+    public int nowTurn; //현재 턴
     //public string anchorId;
     //public bool receiveId = false;//클라우드 앵커 아이디를 받았는지 체크
     public int readyCnt = 0;//방안에 몇명의 사용자가 클라우드 앵커를 생성 공유했는가 체크 방장제외최대 3까지 카운트
@@ -62,6 +63,9 @@ public class NetWork : MonoBehaviourPunCallbacks
     public List<AsyncTask<CloudAnchorResult>> hostingResultList = new List<AsyncTask<CloudAnchorResult>>();//클라우드 앵커 호스팅 된 결과가 담길 리스트
     public string anchorId;//앵커 아이디를 담을 변수
     private AsyncTask<CloudAnchorResult> task;//리졸브한 앵커의 결과를담을 변수
+    public float z;//전방 움직임값
+    public float x;//좌우 움직임값
+    public bool isInput = false;//컨트롤러 값 입력되었는지 체크s
     //public string[] anchorIdArr;//앵커의 주소를 담을 배열
     private void Start()
     {
@@ -105,12 +109,35 @@ public class NetWork : MonoBehaviourPunCallbacks
     /// 마스터 클라이언트 변경을 요구하기위함
     /// </summary>
     /// <param name="masterClientPlayer"></param>
+    public void Call_ChangeMasterClient()
+    {
+       
+        for(int i=0; i<PhotonNetwork.PlayerList.Length;i++)
+        {
+            //룸 사용자 배열에서 마스터 클라이언트가 몇번째 인덱스인지 찾는다
+            if(PhotonNetwork.PlayerList[i].IsMasterClient==true)
+            {
+                masterIndex = i;
+                Debug.Log("현재 마스터 클라이언트의 인덱스: " + i);
+                Debug.Log("현재 마스터 클라이언트의 엑터 넘버" + PhotonNetwork.PlayerList[i].ActorNumber);
+            }
+        }
+        if(masterIndex+1 ==PhotonNetwork.PlayerList.Length)
+        {
+            masterIndex = 0;
+            ChangeMasterClient(PhotonNetwork.PlayerList[masterIndex]);
+        }
+        else
+        {
+            ChangeMasterClient(PhotonNetwork.PlayerList[masterIndex+1]);
+        }
+    }
     public void ChangeMasterClient(Photon.Realtime.Player masterClientPlayer)
     {
         if(inRoom ==true)
         {
-        //PhotonNetwork.PlayerList
         PhotonNetwork.SetMasterClient(masterClientPlayer);
+            Debug.Log("새로운 마스터 클라이언트의 엑터 넘버"+masterClientPlayer.ActorNumber);
         }
     }
     public void Connect()
@@ -322,6 +349,24 @@ public class NetWork : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             PhotonNetwork.LoadLevel("06.PlayArcore");
+        }
+    }
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+    {
+        if (stream.IsWriting)
+        {
+            stream.SendNext(z);
+            stream.SendNext(x);
+            stream.SendNext(myOrder);
+            
+        }
+
+        //클론이 통신을 받는 
+        else
+        {
+            z = (float)stream.ReceiveNext();
+            x = (float)stream.ReceiveNext();
+            nowTurn = (int)stream.ReceiveNext();
         }
     }
     /// <summary>
@@ -958,9 +1003,7 @@ public class NetWork : MonoBehaviourPunCallbacks
     {
         yield return null;
         JoinLobby();
-
     }
-
 
     #endregion
 }

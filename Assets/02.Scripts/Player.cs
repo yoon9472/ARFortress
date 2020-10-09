@@ -17,12 +17,14 @@ public class Player : MonoBehaviourPunCallbacks
     public int attack;//공격력
     public int hp;//체력
     public int amor;//방어력
-    public int speed;//이동속도
+    public float speed;//이동속도
     public int lange;//사거리
 
     private GameObject legObj;
     private GameObject bodyObj;
     private GameObject weaponObj;
+
+    public Vector3 dir;
     void Start()
     {
         attack = GameManager.Get.weaponattack;
@@ -64,6 +66,19 @@ public class Player : MonoBehaviourPunCallbacks
     
     void Update()
     {
+        //현재 사용자가 마스터 클라이언트고 현재턴과 로봇의 엑터넘버를 비교해서 일치하고 입력값이 들어왔을때만 움직인다
+        if(NetWork.Get.nowTurn == actnum && NetWork.Get.isInput==true&&NetWork.Get.isMaster==true)
+        {
 
+            Debug.Log("nowTurn : " + NetWork.Get.nowTurn);
+            dir.Set(NetWork.Get.x, 0, NetWork.Get.z);
+            Debug.Log("움직임 적용중" + dir);
+            Debug.Log("다리속도: " + speed);
+            Debug.Log("인게임 움직임 속도: " + speed / 100);
+            transform.localPosition += dir * (speed/100) * Time.deltaTime;
+            Debug.Log("현재 위치: " + transform.position);
+            
+        }
     }
+
 }

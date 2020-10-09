@@ -17,12 +17,12 @@ public class PlayerMove : MonoBehaviour
    
     void Update()
     {
-        if(controller.GetComponent<VirtualJoystick>().isInput==true)
-        {
-            x = controller.GetComponent<VirtualJoystick>().inputVector.x;
-            z = controller.GetComponent<VirtualJoystick>().inputVector.y;
-            dir.Set(x, 0, z);
-            transform.position += dir * speed * Time.deltaTime;
-        }
+        //if(controller.GetComponent<VirtualJoystick>().isInput==true)
+        //{
+        //    x = controller.GetComponent<VirtualJoystick>().inputVector.x;
+        //    z = controller.GetComponent<VirtualJoystick>().inputVector.y;
+        //    dir.Set(x, 0, z);
+        //    transform.position += dir * speed * Time.deltaTime;
+        //}
     }
 }
