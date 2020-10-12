@@ -243,7 +243,7 @@ MonoBehaviour:
   noCoin: {fileID: 164511897293959205, guid: 7d1c09b04dc3287419b4871ce0bdfb45, type: 3}
   instantiateItemPrefab: {fileID: 4952645476625172831, guid: efcd6a28d0099d642bdf52ec8e283904,
     type: 3}
-  contents: {fileID: 1062205102}
+  itemPrefabParentTransform: {fileID: 1062205102}
   checkNumber: 0
   allButton: {fileID: 1079380630975702}
   weaponButton: {fileID: 1467721384536058}
@@ -251,8 +251,8 @@ MonoBehaviour:
   lowerButton: {fileID: 1237680943264870}
   highlightImage: {fileID: 21300000, guid: 1000ffd94ffa8f74ab1abd839fec31d1, type: 3}
   normalImage: {fileID: 21300000, guid: e8c1078cf3fbef041a21142a46feb996, type: 3}
-  mymoney: {fileID: 1371321151074956}
-  scrollvalue: {fileID: 1472436978}
+  userMoneyText: {fileID: 4013628380594913273}
+  scrollbar: {fileID: 1472436978}
 --- !u!1 &241290570
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,7 +642,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 5560311}
   m_HandleRect: {fileID: 5560310}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1246,7 +1246,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 241094012}
-        m_MethodName: LeftBtn
+        m_MethodName: OnClikedLeftBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2057,7 +2057,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 241094012}
-        m_MethodName: BacktoMainScene
+        m_MethodName: OnClickedBackButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2708,7 +2708,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 241094012}
-        m_MethodName: RightBtn
+        m_MethodName: OnClickedRightBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

@@ -11,12 +11,11 @@ public class StoreManager : MonoBehaviour
     protected GameObject rightBtnObj;
     [SerializeField]
     protected GameObject leftBtnObj;
-    [SerializeField]
-    protected GameObject noCoin;
     // PrefabPanel item1;
-    public PrefabPanel instantiateItemPrefab;
-
-    public Transform itemStorageTransform;
+    [SerializeField]
+    protected PrefabPanel instantiateItemPrefab;
+    [SerializeField]
+    protected Transform itemPrefabParentTransform;
     
     //이것은 버튼을 누르면 중복을 줄이기 위한 변수들
     protected int allNumber=1;
@@ -35,28 +34,31 @@ public class StoreManager : MonoBehaviour
     public Sprite normalImage;
 
     //내 돈 표시.
-    public GameObject mymoney;
-    Text money;
-    
+    //public GameObject mymoney;
+    [SerializeField]
+    protected Text userMoneyText;
+
     //스크롤바 value값 0으로 만들기
-    public Scrollbar scrollvalue;
+    [SerializeField]
+    protected Scrollbar scrollbar;
     // Start is called before the first frame update
     void Start()
     {
-        NetWork.Get.onChangeMoneyDelegate += Mymoney;
-        Mymoney(NetWork.Get.GetMyMoney());
+        
+        NetWork.Get.onChangeMoneyDelegate += SetUsermoney;
+        SetUsermoney(NetWork.Get.GetMyMoney());
         AllItem();//처음에 all 아이템 띄워야 되기 때문에 여기에 넣음!
         
     }
     // Update is called once per frame
     void Update()
     {
-        if(scrollvalue.value == 0)
+        if(scrollbar.value == 0)
         {
             leftBtnObj.SetActive(false);
             rightBtnObj.SetActive(true);
         }
-        else if(scrollvalue.value == 1)
+        else if(scrollbar.value == 1)
         {
             leftBtnObj.SetActive(true);
             rightBtnObj.SetActive(false);
@@ -67,24 +69,24 @@ public class StoreManager : MonoBehaviour
             rightBtnObj.SetActive(true);
         }
     }
-    public void RightBtn()
+    public void OnClickedRightBtn()
     {
-        if(checkNumber ==1){scrollvalue.value += 0.312f;}
-        else{ scrollvalue.value +=1;}
+        if(checkNumber ==1){scrollbar.value += 0.312f;}
+        else{ scrollbar.value +=1;}
     }
-    public void LeftBtn()
+    public void OnClikedLeftBtn()
     {
-        if(checkNumber ==1){scrollvalue.value -= 0.312f;}
-        else{ scrollvalue.value -=1;}
+        if(checkNumber ==1){scrollbar.value -= 0.312f;}
+        else{ scrollbar.value -=1;}
     }
-    public void ScrollValue()
+    public void ResetScroll()
     {
-        scrollvalue.value = 0;
+        scrollbar.value = 0;
     }
-    public void Mymoney(int currentMoney)
+    public void SetUsermoney(int currentMoney)
     {
-        if (money == null) money = mymoney.GetComponentInChildren<Text>();
-        money.text = currentMoney.ToString();
+        //if (userMoneyText == null) userMoneyText = mymoney.GetComponentInChildren<Text>();
+        userMoneyText.text = currentMoney.ToString();
     }
     //checknumber에 따른 이미지 바꿈!
     void checkImage(int k)
@@ -97,7 +99,7 @@ public class StoreManager : MonoBehaviour
                 weaponButton.GetComponent<Image>().sprite = normalImage;
                 upperButton.GetComponent<Image>().sprite = normalImage;
                 lowerButton.GetComponent<Image>().sprite = normalImage;
-                ScrollValue();
+                ResetScroll();
             break;
             case 2 :
                 Debug.Log("되라!");
@@ -105,7 +107,7 @@ public class StoreManager : MonoBehaviour
                 weaponButton.GetComponent<Image>().sprite = highlightImage;
                 upperButton.GetComponent<Image>().sprite = normalImage;
                 lowerButton.GetComponent<Image>().sprite = normalImage;
-                ScrollValue();
+                ResetScroll();
             break;
             case 3 :
                 Debug.Log("제발!");
@@ -113,7 +115,7 @@ public class StoreManager : MonoBehaviour
                 weaponButton.GetComponent<Image>().sprite = normalImage;
                 upperButton.GetComponent<Image>().sprite = highlightImage;
                 lowerButton.GetComponent<Image>().sprite = normalImage;
-                ScrollValue();
+                ResetScroll();
             break;
             case 4 :
                 Debug.Log("된당!");
@@ -121,39 +123,36 @@ public class StoreManager : MonoBehaviour
                 weaponButton.GetComponent<Image>().sprite = normalImage;
                 upperButton.GetComponent<Image>().sprite = normalImage;
                 lowerButton.GetComponent<Image>().sprite = highlightImage;
-                ScrollValue();
+                ResetScroll();
             break;
         
         }
     }
-    //돈이 없어서 아이템을 못샀다고 한 창을 끌때!
-    public void CloseNoCoin()
-    {
-        noCoin.gameObject.SetActive(false);
-    }
+
     //뒤로가기 버튼 넣음 됨!
-    public void BacktoMainScene()
+    public void OnClickedBackButton()
     {
         SceneManager.LoadScene("03.Lobby");
     }
 
-    void UpdatePanel(List<CatalogItem> itemList) {
+    protected void UpdateItemPanel(List<CatalogItem> itemList) 
+    {
          for(int i =0 ; i <itemList.Count; i++)
-        {
-            PrefabPanel item1 = Instantiate(instantiateItemPrefab , new Vector3(0,0,0), Quaternion.identity, itemStorageTransform);
+         {
+            PrefabPanel item1 = Instantiate(instantiateItemPrefab , new Vector3(0,0,0), Quaternion.identity, itemPrefabParentTransform);
             CatalogItem networkItem = itemList[i];
 
             ItemData data = new ItemData();
             data.id = networkItem.ItemId;
             data.displayName = networkItem.DisplayName;
             data.descripition = networkItem.Description;
-            data.cost = networkItem.VirtualCurrencyPrices["GD"].ToString();
             data.price = (int)networkItem.VirtualCurrencyPrices["GD"];
+            data.cost = data.price.ToString();
 
             item1.SetPrefabData(data);
             // item1.SetPrefabData(new ItemData(networkItem.ItemId, networkItem.DisplayName, networkItem.Description, networkItem.VirtualCurrencyPrices["GD"].ToString(),
             // networkItem.VirtualCurrencyPrices["GD"]));
-        }
+         }
     }
     //allitem의 패널 생성 하는 곳!
     // void AllPanel()
@@ -245,12 +244,12 @@ public class StoreManager : MonoBehaviour
     //     }
     // }
     //자식들 없애는 곳!
-    void DestroyChild()
+    protected void DestroyChildObj()
     {
         Debug.Log("자식 오브젝트 삭제 시작");
-        for (int i =0; i < itemStorageTransform.childCount; i++)
+        for (int i =0; i < itemPrefabParentTransform.childCount; i++)
         {
-            Destroy(itemStorageTransform.GetChild(i).gameObject);
+            Destroy(itemPrefabParentTransform.GetChild(i).gameObject);
         }
     }
     //all 버튼에 넣는 것!
@@ -262,8 +261,8 @@ public class StoreManager : MonoBehaviour
             return;
         }
         Debug.Log("중복 실험 되는지 안되는지!");
-        DestroyChild();
-        UpdatePanel(NetWork.Get.itemList);
+        DestroyChildObj();
+        UpdateItemPanel(NetWork.Get.itemList);
         checkNumber = allNumber;
         checkImage(checkNumber);
     }
@@ -276,8 +275,8 @@ public class StoreManager : MonoBehaviour
             return;
         }
         Debug.Log("중복 실험 되는지 안되는지!");
-        DestroyChild();
-        UpdatePanel(NetWork.Get.weaponList);
+        DestroyChildObj();
+        UpdateItemPanel(NetWork.Get.weaponList);
         checkNumber= weaponNumber;
         checkImage(checkNumber);
     }
@@ -290,8 +289,8 @@ public class StoreManager : MonoBehaviour
             return;
         }
         Debug.Log("중복 실험 되는지 안되는지!");
-        DestroyChild();
-        UpdatePanel(NetWork.Get.bodyList);
+        DestroyChildObj();
+        UpdateItemPanel(NetWork.Get.bodyList);
         checkNumber = upperBodyNumber;
         checkImage(checkNumber);
     }
@@ -304,8 +303,8 @@ public class StoreManager : MonoBehaviour
             return;
         }
         //Debug.Log("중복 실험 되는지 안되는지!");
-        DestroyChild();
-        UpdatePanel(NetWork.Get.legList);
+        DestroyChildObj();
+        UpdateItemPanel(NetWork.Get.legList);
         checkNumber = lowerBodyNumber;
         checkImage(checkNumber);
     }
