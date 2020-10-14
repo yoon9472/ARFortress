@@ -31,6 +31,8 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     public Text idreceiveCnt;
     public Text resolveCnt;
     public Text nowPlayer;
+    [SerializeField]
+    protected Text checkMasterText;
     private void Start()
     {
         DistanceFromCenter = 0.5f;
@@ -45,6 +47,11 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
             idreceiveCnt.text = "앵커 아이디 전달받은 플레이어수: "+NetWork.Get.receiveCnt.ToString();
             resolveCnt.text = "앵커 리졸브한 플레이어수: "+NetWork.Get.readyCnt.ToString();
             nowPlayer.text = "현재 방에 입장한 플레이어수: " + NetWork.Get.localPlayer.ToString();
+            checkMasterText.text = "마스터";
+        }
+        else
+        {
+            checkMasterText.text = "마스터아님";
         }
         
         if (Input.touchCount==0)

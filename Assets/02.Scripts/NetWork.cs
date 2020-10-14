@@ -66,6 +66,10 @@ public class NetWork : MonoBehaviourPunCallbacks, IPunObservable
     public float z;//전방 움직임값
     public float x;//좌우 움직임값
     public bool isInput = false;//컨트롤러 값 입력되었는지 체크s
+    public float rotateX;//x축 회전을 위한값
+    public float rotateY;//y 축 회전을 위한값
+    public bool isRotateUpDown = false;//x축 회전하고 있는지
+    public bool isRotateLeftRight = false;//y축 회전하고 있는지
     //public string[] anchorIdArr;//앵커의 주소를 담을 배열
     private void Start()
     {
@@ -106,7 +110,8 @@ public class NetWork : MonoBehaviourPunCallbacks, IPunObservable
         }
     }
     /// <summary>
-    /// 마스터 클라이언트 변경을 요구하기위함
+    /// 마스터 클라이언트 변경을 요구하기위함 
+    /// 마스터 클라이언트를 변경하고 nowTurn을 현재 마스터클라이언트의엑터 넘버로 변경
     /// </summary>
     /// <param name="masterClientPlayer"></param>
     public void Call_ChangeMasterClient()
@@ -358,7 +363,11 @@ public class NetWork : MonoBehaviourPunCallbacks, IPunObservable
             stream.SendNext(z);
             stream.SendNext(x);
             stream.SendNext(myOrder);
-            
+            stream.SendNext(isInput);
+            stream.SendNext(rotateX);
+            stream.SendNext(rotateY);
+            stream.SendNext(isRotateUpDown);
+            stream.SendNext(isRotateLeftRight);
         }
 
         //클론이 통신을 받는 
@@ -367,6 +376,11 @@ public class NetWork : MonoBehaviourPunCallbacks, IPunObservable
             z = (float)stream.ReceiveNext();
             x = (float)stream.ReceiveNext();
             nowTurn = (int)stream.ReceiveNext();
+            isInput = (bool)stream.ReceiveNext();
+            rotateX = (float)stream.ReceiveNext();
+            rotateY = (float)stream.ReceiveNext();
+            isRotateUpDown = (bool)stream.ReceiveNext();
+            isRotateLeftRight = (bool)stream.ReceiveNext();
         }
     }
     /// <summary>

@@ -14,6 +14,8 @@ public class VirtualJoystick : MonoBehaviour
     public Vector3 JoyVec;         // 조이스틱의 벡터(방향)
     private float Radius;           // 조이스틱 배경의 반 지름.
 
+    //public Transform cube;
+
     void Start()
     {
         Radius = GetComponent<RectTransform>().sizeDelta.y * 0.5f;
@@ -45,10 +47,9 @@ public class VirtualJoystick : MonoBehaviour
             Stick.position = StickFirstPos + JoyVec * Radius;
         if (NetWork.Get.isMaster == true)
         {
-            NetWork.Get.z = JoyVec.x;//전방 움직임값
-            NetWork.Get.x = JoyVec.y;//좌우 움직임값
+            NetWork.Get.z = JoyVec.y;//전방 움직임값
+            NetWork.Get.x = JoyVec.x;//좌우 움직임값
         }
-
     }
 
     // 드래그 끝.
@@ -58,6 +59,30 @@ public class VirtualJoystick : MonoBehaviour
         JoyVec = Vector3.zero;          // 방향을 0으로.
         NetWork.Get.isInput =false;
     }
+
+    //void Update()
+    //{
+    //    print(JoyVec.x + ", " + JoyVec.y);
+
+    //    if (JoyVec.x != 0)
+    //    {
+    //        if(JoyVec.y>0)
+    //        {
+    //        cube.Rotate(Vector3.up * JoyVec.x);
+    //        }
+    //        if(JoyVec.y<0)
+    //        {
+    //            cube.Rotate(Vector3.up * -JoyVec.x);
+    //        }
+    //    }
+
+    //    if (JoyVec.y != 0)
+    //    {
+    //        Vector3 dir = cube.forward * JoyVec.y;
+    //        dir.Normalize();
+    //        cube.position += dir * 0.5f * Time.deltaTime;
+    //    }
+    //}
 }
 
 
