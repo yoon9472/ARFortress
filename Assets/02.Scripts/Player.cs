@@ -22,9 +22,9 @@ public class Player : MonoBehaviourPunCallbacks
 
     private GameObject legObj;
     private GameObject bodyObj;
-    private GameObject weaponObj;
+    private GameObject weaponObj; //좌우회전때 회전시킬 대상
+    private Transform barrel; //포신 위아래로 움직이는 대상
 
-    public Vector3 dir;
     void Start()
     {
         attack = GameManager.Get.weaponattack;
@@ -61,24 +61,62 @@ public class Player : MonoBehaviourPunCallbacks
         {
             isMine.SetActive(true);
         }
+        barrel = weaponObj.GetComponent<WeaponParts>().ReturnTransform();
     }
 
     
     void Update()
     {
-        //현재 사용자가 마스터 클라이언트고 현재턴과 로봇의 엑터넘버를 비교해서 일치하고 입력값이 들어왔을때만 움직인다
-        if(NetWork.Get.nowTurn == actnum && NetWork.Get.isInput==true&&NetWork.Get.isMaster==true)
+        //이로봇 객체의 엑터 넘버와 현재 턴이 일치할때 움직임값을 받아서 움직인다
+        if(NetWork.Get.nowTurn == actnum )
         {
-
-            Debug.Log("nowTurn : " + NetWork.Get.nowTurn);
-            dir.Set(NetWork.Get.x, 0, NetWork.Get.z);
-            Debug.Log("움직임 적용중" + dir);
-            Debug.Log("다리속도: " + speed);
-            Debug.Log("인게임 움직임 속도: " + speed / 100);
-            transform.localPosition += dir * (speed/100) * Time.deltaTime;
-            Debug.Log("현재 위치: " + transform.position);
-            
+            if(NetWork.Get.isInput == true) MovePlayer();
+            //현재 턴과 이 로봇 객체의 엑터넘버가 일치하고 위아래 회전중일때
+            if (NetWork.Get.isRotateUpDown == true) RotateUpDown();
+            //현재턴과 이 로봇 객체의 엑터넘버가 일치하고 좌우 회전중일때
+            if (NetWork.Get.isRotateLeftRight == true) RotateLeftRight();
         }
     }
 
+    /// <summary>
+    /// NetWork의 x값은 컨트롤러의 좌우 값을, z는 앞뒤값을 변경하는데 사용한다
+    /// </summary>
+    public void MovePlayer()
+    {
+        //좌우 회전에 관한 x 값의 변화가 있을때
+        if(NetWork.Get.x !=0)
+        {
+            //전진중일때
+            if (NetWork.Get.z > 0)
+            {
+                transform.Rotate(Vector3.up * NetWork.Get.x);
+            }
+            //후진중일때
+            if (NetWork.Get.z < 0)
+            {
+                transform.Rotate(Vector3.up * -NetWork.Get.x);
+            }
+        }
+        //전진 후진 에 대한 z축값에 변화가 있을때
+        if (NetWork.Get.z !=0)
+        {
+            Vector3 dir = transform.forward * NetWork.Get.z;
+            dir.Normalize();
+            transform.position += dir * (speed / 200) * Time.deltaTime;
+        }
+    }
+    /// <summary>
+    /// 좌우 회전할때
+    /// </summary>
+    public void RotateLeftRight()
+    {
+        weaponObj.transform.Rotate(Vector3.up * -NetWork.Get.rotateY);
+    }
+    /// <summary>
+    /// 포신 위아래 회전할때
+    /// </summary>
+    public void RotateUpDown()
+    {
+        barrel.Rotate(Vector3.right * -NetWork.Get.rotateX);
+    }
 }
