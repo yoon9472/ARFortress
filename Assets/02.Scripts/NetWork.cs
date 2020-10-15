@@ -917,7 +917,7 @@ public class NetWork : MonoBehaviourPunCallbacks, IPunObservable
     {
         Debug.Log("구입 실패");
     }
-
+    //델리게이트 
     public delegate void ChangeMoneyDelegate(int totalMoney);
     public ChangeMoneyDelegate onChangeMoneyDelegate;
     public int GetMyMoney() {
