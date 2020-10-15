@@ -16,7 +16,7 @@ public class CheckPermission : MonoBehaviour
     bool btnCheck = false;
     // Start is called before the first frame update
     void Start()
-    {
+    { 
         forRequestPermission.gameObject.SetActive(false);
         StartCoroutine("PermissionCheck");//먼저 무조건 퍼미션 체크를 시작하자.
     }
@@ -33,9 +33,9 @@ public class CheckPermission : MonoBehaviour
     }
     IEnumerator PermissionCheck() 
     {
-        timeCheck += Time.deltaTime*10;
+        timeCheck += (Time.deltaTime * 10);
         //여기서 권한 확인. 하나하나 해야 되나 싶기도 하다. 
-        if(Permission.HasUserAuthorizedPermission(Permission.Camera)==false)//카메라 권한 체크 시작
+        if (Permission.HasUserAuthorizedPermission(Permission.Camera)==false)//카메라 권한 체크 시작
         {
             Debug.Log("카메라 권한이 없습니다.");
             cameraCheck = false;

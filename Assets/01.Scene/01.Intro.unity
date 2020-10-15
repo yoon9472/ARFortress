@@ -1181,6 +1181,10 @@ MonoBehaviour:
   z: 0
   x: 0
   isInput: 0
+  rotateX: 0
+  rotateY: 0
+  isRotateUpDown: 0
+  isRotateLeftRight: 0
   email: 
   password: 
   userName: 
@@ -1729,7 +1733,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: For AR CORE
+  m_Text: AR CORE
 --- !u!222 &1975365160
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2095,7 +2099,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &3996617770910297038
 MonoBehaviour:
   m_ObjectHideFlags: 0
