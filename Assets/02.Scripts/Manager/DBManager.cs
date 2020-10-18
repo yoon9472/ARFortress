@@ -33,7 +33,12 @@ public class DBManager : MonoBehaviour
         dataManager = DataManager.GetInstance();
         //포톤 매니저도 가져와야함
         photonManager = PhotonManager.GetInstance();
-        
+
+        dataManager.imgArr = Resources.LoadAll<Sprite>("04.Img");
+        dataManager.weaponPartsArr = Resources.LoadAll<GameObject>("01.Weapon");
+        dataManager.bodyPartsArr = Resources.LoadAll<GameObject>("02.Body");
+        dataManager.legPartsArr = Resources.LoadAll<GameObject>("03.Leg");
+
     }
     public string email;//입력받은 이메일값 이메일 형식으로 @.com으로 적어
     public string password;//입력받은 비밀번호
@@ -46,7 +51,11 @@ public class DBManager : MonoBehaviour
     public int myMoney;//현재 내가 가진돈
     public string displayName;//플레이어 이름
     public string playfabid;
+    //델리게이트 
+    public delegate void ChangeMoneyDelegate(int totalMoney);
+    public ChangeMoneyDelegate onChangeMoneyDelegate;
 
+    #region 유니티 에디터 테스트 로그인용 TestLogin()
     /// <summary>
     /// 유니티 에디터에서 로그인되도록 테스트용으로 만들어 놓음
     /// </summary>
@@ -76,7 +85,9 @@ public class DBManager : MonoBehaviour
         GetInventory(); //로그인 성공하고 유저의 인벤토리 정보 바로 호출
         Getdata(obj.PlayFabId);
     }
+    #endregion
 
+    #region 데이터를 저장하는것 SetData(UserInfo info) 
     /// <summary>
     /// 유저의 정보를 저장하기 변경사항이 있으면 Userinfo 클래스를 변경하고 매개변수로 변경된 클래스를 넣어서 호출하면
     /// 변경된 클래스가 저장이 된다
@@ -105,7 +116,9 @@ public class DBManager : MonoBehaviour
     {
         Debug.Log("데이터 저장 성공");
     }
+    #endregion
 
+    #region 정보가져오기 Getdata(string myId)
     /// <summary>
     /// 사용자의 정보 불러오기
     /// </summary>
@@ -126,24 +139,27 @@ public class DBManager : MonoBehaviour
         {
             //가져올 정보가 있을때
             var yourObject = JsonUtility.FromJson<UserInfo>(obj.Data["Info"].Value);
-            GameManager.Get.userinfo = yourObject;
+            dataManager.userinfo = yourObject;
             //선택된 부품 프리팹 가져오기
-            GameManager.Get.SelecPrefabs();
+            SelecPrefabs();
         }
         else
         {
-            SetData(GameManager.Get.userinfo);
+            //플레이팹 아이디가 존재해서 성공 콜백은 넘어왔지만 키값에 대응하는 정보가 없으면 처음 로그인 상요자이므로 기본정보 Set해주기
+            SetData(dataManager.userinfo);
             Debug.Log("유저 기본정보 세팅");
             //가져올 정보가 없을때 -> 기본 데이터 세팅한다 최초 로그인한 회원인 상태이다.
 
         }
-
         //키가 없다고 에러가 뜨면 -> 기본 정보 세팅
-
     }
+    #endregion
+
+    #region 돈 얻기 GetMoney(int amount)
     /// <summary>
-    /// 가상화폐 얻기 한번 호출될때마다 100씩
+    /// amount 만큼 돈이 늘어남
     /// </summary>
+    /// <param name="amount"></param>
     public void GetMoney(int amount)
     {
         PlayFabClientAPI.AddUserVirtualCurrency(new AddUserVirtualCurrencyRequest { Amount = amount, VirtualCurrency = "GD" }, (result) =>
@@ -153,23 +169,9 @@ public class DBManager : MonoBehaviour
         },
         (error) => Debug.Log("돈 얻기 실패"));
     }
-    /// <summary>
-    /// 가상화폐 감소시키기 매개변수로 감소 시키고 싶은 양
-    /// </summary>
-    /// <param name="amount"></param>
-    public void SubMoney(int amount)
-    {
-        PlayFabClientAPI.SubtractUserVirtualCurrency(new SubtractUserVirtualCurrencyRequest { Amount = amount, VirtualCurrency = "GD" }, (result) =>
-        {
-            Debug.Log("돈 감소");
-            myMoney = result.Balance;//현재 돈 변경
-            if (myMoney < 0)
-            {
-                myMoney = 0;
-            }
-        },
-        (error) => Debug.Log("돈 감소 실패"));
-    }
+    #endregion
+
+    #region 인벤토리 정보 불러오기 GetInventory()
     /// <summary>
     /// 인벤토리 정보 불러오기
     /// </summary>
@@ -192,7 +194,7 @@ public class DBManager : MonoBehaviour
             {
                 //인벤토리 리스트에 있는 아이템들의 각정보들
                 var inventory = result.Inventory[i];
-                GameManager.Get.ownedItem_List.Add(result.Inventory[i].DisplayName);
+                dataManager.ownedItem_List.Add(result.Inventory[i].DisplayName);
                 /*  Debug.Log(inventory.DisplayName);
                   Debug.Log(inventory.ItemId);
                   Debug.Log(inventory.ItemInstanceId);
@@ -203,9 +205,12 @@ public class DBManager : MonoBehaviour
         },
         (error) => Debug.Log("인벤토리 불러오기 실패"));
     }
+    #endregion
 
+    #region 상점 목록 불러오기 GetCatalogItem(string storeName)
     /// <summary>
     /// 상점 불러오기 상점의 내용은 Playfab 홈페이지에서 설정할수 있다(아이템 가격 중첩여부 기간 등..)
+    /// 현재는 DB에 상점이 Store 만 있으므로 매개변수로 Store를 입력하면된다
     /// itemList에 정체 리스트가 담긴다
     /// </summary>
     /// <param name="storeName"></param>
@@ -244,8 +249,11 @@ public class DBManager : MonoBehaviour
         },
         (error) => Debug.Log("상점 불러오기 실패"));
     }
+    #endregion
+
+    #region OrganizeItem_3()에서 호출됨 아이템의 상세한 각 능력치를 받아온다 
     /// <summary>
-    /// 리스트에서 각 아이템의 상세 능력치 딕셔너리로 가져오기 + GameManager에 있는 아이템 상세정보리스트에 정보 넣어주기
+    /// 리스트에서 각 아이템의 상세 능력치 딕셔너리로 가져오기 + dataManager에 있는 아이템 상세정보리스트에 정보 넣어주기
     /// </summary>
     public void GetCustomIteminfo(CatalogItem item)
     {
@@ -261,7 +269,7 @@ public class DBManager : MonoBehaviour
             info.attack = int.Parse(iteminfo["attack"]);
             info.weight = int.Parse(iteminfo["weight"]);
             info.lange = int.Parse(iteminfo["lange"]);
-            GameManager.Get.weaponInfo_List.Add(info);
+            dataManager.weaponInfo_List.Add(info);
             Debug.Log("무기 정보 추가");
         }
         else if (item.Tags[0] == "LowerBody")
@@ -275,7 +283,7 @@ public class DBManager : MonoBehaviour
             info.totalweight = int.Parse(iteminfo["totalweight"]);
             info.speed = int.Parse(iteminfo["speed"]);
             info.amor = int.Parse(iteminfo["amor"]);
-            GameManager.Get.legInfo_List.Add(info);
+            dataManager.legInfo_List.Add(info);
             Debug.Log("다리 정보 추가");
 
         }
@@ -288,11 +296,13 @@ public class DBManager : MonoBehaviour
             info.weight = int.Parse(iteminfo["weight"]);//무게
             info.hp = int.Parse(iteminfo["hp"]);//체력
             info.amor = int.Parse(iteminfo["amor"]);//방어력
-            GameManager.Get.bodyInfo_List.Add(info);
+            dataManager.bodyInfo_List.Add(info);
             Debug.Log("몸통 정보 추가");
         }
-
     }
+    #endregion
+
+    #region OrganizeItem_2()에서 호출됨 아이템 리스트 낮은순으로 정렬하기 
     /// <summary>
     /// 아이템 리스트를 받아와서 가격에 따라 낮은 가격부터 정렬하기
     /// </summary>
@@ -323,6 +333,9 @@ public class DBManager : MonoBehaviour
         //        Debug.Log("------");
         //#endif
     }
+    #endregion
+
+    #region 아이템 구매시 호출 상점 씬에서 호출한다 BuyItem(string storeName, string itemid, string virtualCurrency, int price)
     /// <summary>
     /// 상점에서 아이텝 구입
     /// </summary>
@@ -342,22 +355,24 @@ public class DBManager : MonoBehaviour
     {
         Debug.Log("구입 실패");
     }
-    //델리게이트 
-    public delegate void ChangeMoneyDelegate(int totalMoney);
-    public ChangeMoneyDelegate onChangeMoneyDelegate;
+    private void BuyOk(PurchaseItemResult obj)
+    {
+        Debug.Log("구입 성공");
+        //dataManager의 보유 아이템 리스트(스트링타입)에 방금 구입한 아이템의 이름을 넣어준다
+        dataManager.ownedItem_List.Add(buylastItem);
+        myMoney -= buyItemPice;//방금 구입한 아이템의 가격만큼 현재 가진돈을 빼준다
+        if (onChangeMoneyDelegate != null) onChangeMoneyDelegate(myMoney);
+    }
+    #endregion
+
+    #region 현재 돈을 리턴해줌 GetMyMoney()
     public int GetMyMoney()
     {
         return myMoney;
     }
+    #endregion
 
-    private void BuyOk(PurchaseItemResult obj)
-    {
-        Debug.Log("구입 성공");
-        //GameManager의 보유 아이템 리스트(스트링타입)에 방금 구입한 아이템의 이름을 넣어준다
-        GameManager.Get.ownedItem_List.Add(buylastItem);
-        myMoney -= buyItemPice;//방금 구입한 아이템의 가격만큼 현재 가진돈을 빼준다
-        if (onChangeMoneyDelegate != null) onChangeMoneyDelegate(myMoney);
-    }
+    #region 닉네임을 입력받아 업데이트 시킨다 첫로그인 시에만 호출되게한다 ModifyDisplayName(string nickname) 로비신에서 호출한다
     /// <summary>
     /// 플레이어 디스플레이 네임 수정하기 첫로그인 시에만 수정창을 한번띄워주게한다
     /// </summary>
@@ -378,16 +393,16 @@ public class DBManager : MonoBehaviour
     private void UpdatenameSuccess(UpdateUserTitleDisplayNameResult obj)
     {
         Debug.Log("닉네임 변경 성공");
-        GameManager.Get.userinfo.nickName = obj.DisplayName;
-        GameManager.Get.userinfo.firstLogin = false;
-        SetData(GameManager.Get.userinfo);
+        dataManager.userinfo.nickName = obj.DisplayName;
+        dataManager.userinfo.firstLogin = false;
+        SetData(dataManager.userinfo);
         Debug.Log("변경된 이름은 ; " + obj.DisplayName);
         modifyOk = true;
 
     }
+    #endregion
 
-
-    #region 상점아이템 받아오기 -> 아이템 가격순 정렬->아이템별 상세 정보 담아서 리스트 만들기
+    #region 로그인 성공후에 호출되는부분들 상점아이템 받아오기 -> 아이템 가격순 정렬->아이템별 상세 정보 담아서 리스트 만들기
     public IEnumerator LoadItemList()
     {
         Debug.Log("LoadItemList");
@@ -422,7 +437,7 @@ public class DBManager : MonoBehaviour
     }
     /// <summary>
     /// 각 아이템별 상세 정보를 담는다.
-    /// GameManaget 스크립트의 weaponInfo_List ,bodyInfo_List, legInfo_Listdp 에 정보를 담기 위함
+    /// dataManager 스크립트의 weaponInfo_List ,bodyInfo_List, legInfo_Listdp 에 정보를 담기 위함
     /// </summary>
     /// <returns></returns>
     public IEnumerator OrganizeItem_3()
@@ -430,7 +445,7 @@ public class DBManager : MonoBehaviour
         yield return null;
         Debug.Log("OrganizeItem_3");
         //GetCustomIteminfo 함수는 리스트에 있는 아이템들의 이름 타입 커스텀 데이터를 받아와서
-        //GameManager에 있는 무기.몸,다리 상세정보리스트에 정보를 담는다.
+        //dataManager에 있는 무기.몸,다리 상세정보리스트에 정보를 담는다.
         for (int i = 0; i < dataManager.weaponList.Count; i++)
         {
             GetCustomIteminfo(dataManager.weaponList[i]);
@@ -443,9 +458,9 @@ public class DBManager : MonoBehaviour
         {
             GetCustomIteminfo(dataManager.legList[i]);
         }
-        yield return new WaitUntil(() => GameManager.Get.legInfo_List.Count == 7);
+        yield return new WaitUntil(() => dataManager.legInfo_List.Count == 7);
         //무기 정보 리스트가 차면->기존에 조립된 것이 있다면 바로 정보를 찾아서 불러온다
-        GameManager.Get.BeforeStats();
+        BeforeStats();
         StartCoroutine("MoveToLobby");
     }
     public IEnumerator MoveToLobby()
@@ -453,6 +468,258 @@ public class DBManager : MonoBehaviour
         yield return null;
         photonManager.JoinLobby();
     }
+    #endregion
 
+    #region DB에서 저장된 정보로 프리팹을 찾는다 로그인성공시 호출 SelecPrefabs()
+    /// <summary>
+    /// DB에서 이름 받아와서 현재 조립된 프리팹을 찾아서 담아 놓는다
+    /// 로그인후에 호출
+    /// </summary>
+    public void SelecPrefabs()
+    {
+        if (dataManager.userinfo.selectedLeg != null)
+        {
+            //다리 프리팹이 담긴 배열에서
+            for (int i = 0; i < dataManager.legPartsArr.Length; i++)
+            {
+                //DB에 저장된것과 이름이 같은 프리팹을찾아서
+                if (dataManager.userinfo.selectedLeg == dataManager.legPartsArr[i].name)
+                {
+                    //프리팹을 찾아 놓는다
+                    dataManager.legPrefab = dataManager.legPartsArr[i];
+                    //방금 불러온 정보를 이전정보로 저장
+                    dataManager.beforeLeg = dataManager.legPrefab;
+                }
+            }
+        }
+        if (dataManager.userinfo.selectedBody != null)
+        {
+            for (int i = 0; i < dataManager.bodyPartsArr.Length; i++)
+            {
+                if (dataManager.userinfo.selectedBody == dataManager.bodyPartsArr[i].name)
+                {
+                    dataManager.bodyPrefab = dataManager.bodyPartsArr[i];
+                    //방금 불러온 정보를 이전정보로 저장
+                    dataManager.beforeBody = dataManager.bodyPrefab;
+                }
+            }
+        }
+        if (dataManager.userinfo.selectedWeapon != null)
+        {
+            for (int i = 0; i < dataManager.weaponPartsArr.Length; i++)
+            {
+                if (dataManager.userinfo.selectedWeapon == dataManager.weaponPartsArr[i].name)
+                {
+                    dataManager.weaponPrefab = dataManager.weaponPartsArr[i];
+                    //방금 불러온 정보를 이전정보로 저장
+                    dataManager.beforeWeapon = dataManager.weaponPrefab;
+                }
+            }
+        }
+    }
+    #endregion
+
+    #region 아이템 능력치가 담긴 리스트에서 내가 저장한 아이템의 능력치를 가져오기위해 인덱스 찾기 부위별로 BeforeStats()
+    /// <summary>
+    /// 저장된 부품의 인덱스 찾기
+    /// </summary>
+    public void BeforeStats()
+    {
+        Debug.Log("능력치 가져오기");
+        if (dataManager.beforeLeg != null)
+        {
+            Debug.Log("다리 찾기 시작");
+            for (int i = 0; i < dataManager.legInfo_List.Count; i++)
+            {
+                if (dataManager.beforeLeg.name == dataManager.legInfo_List[i].partName)
+                {
+                    Debug.Log("인덱스 찾음");
+                    dataManager.legindex = i;
+                }
+            }
+
+        }
+        else
+        {
+            Debug.Log("legPrefab is null");
+        }
+
+        if (dataManager.beforeBody != null)
+        {
+            Debug.Log("몸통 찾기 시작");
+            for (int i = 0; i < dataManager.bodyInfo_List.Count; i++)
+            {
+                if (dataManager.beforeBody.name == dataManager.bodyInfo_List[i].partName)
+                {
+                    Debug.Log("인덱스 찾음");
+                    dataManager.bodyindex = i;
+                }
+            }
+
+        }
+        else
+        {
+            Debug.Log("bodyPrefab is null");
+        }
+
+        if (dataManager.beforeWeapon != null)
+        {
+            Debug.Log("무기 찾기 시작");
+            for (int i = 0; i < dataManager.weaponInfo_List.Count; i++)
+            {
+                if (dataManager.beforeWeapon.name == dataManager.weaponInfo_List[i].partName)
+                {
+                    Debug.Log("인덱스 찾음");
+                    dataManager.weaponindex = i;
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("weaponPrefab is null");
+        }
+        Stats();
+    }
+    #endregion
+
+    #region 조립실에서 현재 내가 선택한 부픔의 인덱스를 찾아 정보를 가져온다 CurrentStats()
+    /// <summary>
+    /// 선택된 부품에 따른 현재 능력치 표기
+    /// </summary>
+    public void CurrentStats()
+    {
+        Debug.Log("능력치 가져오기");
+        if (dataManager.legPrefab != null)
+        {
+            Debug.Log("다리 찾기 시작");
+            for (int i = 0; i < dataManager.legInfo_List.Count; i++)
+            {
+                if (dataManager.legPrefab.name == dataManager.legInfo_List[i].partName)
+                {
+                    Debug.Log("인덱스 찾음");
+                    dataManager.legindex = i;
+                }
+            }
+
+        }
+        else
+        {
+            Debug.Log("legPrefab us null");
+        }
+
+        if (dataManager.bodyPrefab != null)
+        {
+            Debug.Log("몸통 찾기 시작");
+            for (int i = 0; i < dataManager.bodyInfo_List.Count; i++)
+            {
+                if (dataManager.bodyPrefab.name == dataManager.bodyInfo_List[i].partName)
+                {
+                    Debug.Log("인덱스 찾음");
+                    dataManager.bodyindex = i;
+                }
+            }
+
+        }
+        else
+        {
+            Debug.Log("bodyPrefab is null");
+        }
+
+        if (dataManager.weaponPrefab != null)
+        {
+            Debug.Log("무기 찾기 시작");
+            for (int i = 0; i < dataManager.weaponInfo_List.Count; i++)
+            {
+                if (dataManager.weaponPrefab.name == dataManager.weaponInfo_List[i].partName)
+                {
+                    Debug.Log("인덱스 찾음");
+                    dataManager.weaponindex = i;
+                }
+            }
+        }
+        else
+        {
+            Debug.Log("weaponPrefab is null");
+        }
+        Stats();
+    }
+    #endregion
+
+    #region 능력치 표시 Stats() 조립실에서 현재 선택한 부품 혹은 이전에 저장된 정보가 있는경우 그정보를 입력시킨다
+    /// <summary>
+    /// 능력치 표시 beforePrfab 기준 이전에 저장된부품이나 현재 슬롯에서 선택한 부품이 있으면 능력치를 찾아서 넣어준다
+    /// </summary>
+    public void Stats()
+    {
+        if (dataManager.beforeLeg != null || dataManager.legPrefab != null)
+        {
+            dataManager.legtotalweight = dataManager.legInfo_List[dataManager.legindex].totalweight;
+            dataManager.legspeed = dataManager.legInfo_List[dataManager.legindex].speed;
+            dataManager.legamor = dataManager.legInfo_List[dataManager.legindex].amor;
+        }
+        if (dataManager.beforeBody != null || dataManager.bodyPrefab != null)
+        {
+            dataManager.bodyhp = dataManager.bodyInfo_List[dataManager.bodyindex].hp;
+            dataManager.bodyamor = dataManager.bodyInfo_List[dataManager.bodyindex].amor;
+            dataManager.bodytype = dataManager.bodyInfo_List[dataManager.bodyindex].bodytype;
+            dataManager.bodyweight = dataManager.bodyInfo_List[dataManager.bodyindex].weight;
+        }
+        if (dataManager.beforeWeapon != null || dataManager.weaponPrefab != null)
+        {
+            dataManager.weaponweight = dataManager.weaponInfo_List[dataManager.weaponindex].weight;
+            dataManager.weapontype = dataManager.weaponInfo_List[dataManager.weaponindex].weapontype;
+            dataManager.weaponlange = dataManager.weaponInfo_List[dataManager.weaponindex].lange;
+            dataManager.weaponattack = dataManager.weaponInfo_List[dataManager.weaponindex].attack;
+        }
+
+        if ((dataManager.beforeLeg != null && dataManager.beforeBody != null && dataManager.beforeWeapon != null) || 
+            (dataManager.legPrefab != null && dataManager.bodyPrefab != null && dataManager.weaponPrefab != null))
+        {
+            if (dataManager.weaponweight + dataManager.bodyweight > dataManager.legtotalweight)
+            {
+                dataManager.isloadOver = true;
+            }
+            else
+            {
+                dataManager.isloadOver = false;
+            }
+        }
+
+        if (dataManager.beforeBody != null && dataManager.beforeWeapon != null)
+        {
+            if (dataManager.weapontype.Equals(dataManager.bodytype))
+            {
+                dataManager.istypeNoeSame = false;
+            }
+            else
+            {
+                dataManager.istypeNoeSame = true;
+            }
+        }
+    }
+    #endregion
+
+    #region 조립실 입장하고 호출 이전에 DB에 저장한 프리팹정보를 가져온다 RecallBeforePrefab()
+    /// <summary>
+    /// 저장되지 않은 상태로 조립실을 나갔을경우를 대비해 이전 프리팹 정보를 다시 가져와서 선택된 무기로 바꿔준다.
+    /// </summary>
+    public void RecallBeforePrefab()
+    {
+        dataManager.legPrefab = dataManager.beforeLeg;
+        dataManager.bodyPrefab = dataManager.beforeBody;
+        dataManager.weaponPrefab = dataManager.beforeWeapon;
+    }
+    #endregion
+
+    #region 조립실의 ConfirmAssemble()에서 호출 부품 선택후 DB에 저장하면 프리팹을 현재 선택된 프리팹으로 바꿔준다 ChangeBeforePrefab()
+    /// <summary>
+    /// 저장되었을경우 조립실에서 선택해서 보여주던 legPrefab, bodyPrefab, weaponPrefab을 이전 정보로 변경한다.
+    /// </summary>
+    public void ChangeBeforePrefab()
+    {
+        dataManager.beforeLeg = dataManager.legPrefab;
+        dataManager.beforeBody = dataManager.bodyPrefab;
+        dataManager.beforeWeapon = dataManager.weaponPrefab;
+    }
     #endregion
 }

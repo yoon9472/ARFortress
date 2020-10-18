@@ -5,6 +5,7 @@ using PlayFab.GroupsModels;
 using PlayFab.ClientModels;
 using PlayFab;
 using TMPro.EditorUtilities;
+using System;
 #if GOOGLEGAMES
 using GooglePlayGames;
 using GooglePlayGames.BasicApi;
@@ -12,6 +13,7 @@ using GooglePlayGames.BasicApi;
 public class LoginManager : MonoBehaviour
 {
     protected static LoginManager instance =null;
+    protected DBManager dbManager;
     private void Awake()
     {
         instance = this;
@@ -38,6 +40,7 @@ public class LoginManager : MonoBehaviour
     private void Start()
     {
         //디비 메니져를 가져와야한다
+        dbManager = DBManager.GetInstance();
     }
     public void GoogleLogin()
     {
@@ -57,14 +60,14 @@ public class LoginManager : MonoBehaviour
                 }, (result) =>
                 {
                     //로그인 성공시 콜백 부분
-                    playfabid = result.PlayFabId;
+                    dbManager.playfabid = result.PlayFabId;
                     Debug.Log("로그인 성공");
-                    GetInventory(); //로그인 성공하고 유저의 인벤토리 정보 바로 호출
-                    Getdata(playfabid);//타이틀데이터 불러오기->타이틀데이터가 없으면 새로 생성해서 기본값 넣어주기
-                    StartCoroutine(LoadItemList());// 상점 리스트 불러와서 정리하고 완료되면 씬전환
+                    dbManager.GetInventory(); //로그인 성공하고 유저의 인벤토리 정보 바로 호출
+                    dbManager.Getdata(dbManager.playfabid);//타이틀데이터 불러오기->타이틀데이터가 없으면 새로 생성해서 기본값 넣어주기
+                    StartCoroutine(dbManager.LoadItemList());// 상점 리스트 불러와서 정리하고 완료되면 씬전환
                     //JoinLobby();
 
-                    if (onChangeMoneyDelegate != null) onChangeMoneyDelegate(myMoney);
+                    if (dbManager.onChangeMoneyDelegate != null) dbManager.onChangeMoneyDelegate(dbManager.myMoney);
 
                 }, PlayFab_GoogleLogin_Error);
             }

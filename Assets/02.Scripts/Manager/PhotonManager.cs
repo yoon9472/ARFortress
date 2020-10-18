@@ -25,7 +25,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         }
         return instance;
     }
-    #region PhotonNetwork
+
     [Header("포톤 관련 변수")]
     public int masterIndex;//마스터 클라이언트 인덱스
     public string[] userArr = new string[4]; //유저 이름을 저장하기위한 배열
@@ -211,6 +211,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         receiveCnt = 0;
     }
     #endregion
+
+    #region 방에이름찾아서 참가하기 JoinRoom(string m_Roomname)
     /// <summary>
     /// 방이름으로 방에 참가하기
     /// </summary>
@@ -219,6 +221,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         PhotonNetwork.JoinRoom(m_Roomname);
     }
+    #endregion
+
+    #region 방생성하기 CreateRoom(string m_Roomname)
     /// <summary>
     /// 방 이름 정하고 방생성하기
     /// </summary>
@@ -253,6 +258,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
             PhotonNetwork.ConnectUsingSettings();
         }
     }
+    #endregion
+
+    #region 방입장 실패시 콜백됨 OnJoinRoomFailed(short returnCode, string message)
     /// <summary>
     /// 방입장에 실패했을때 호출됨.
     /// </summary>
@@ -262,6 +270,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         Debug.Log("방 입장 실패");
     }
+    #endregion
+
+    #region 방생성이나 방입장에 성공했을때 콜백됨 OnJoinedRoom()
     /// <summary>
     /// 방입장에 성공했을때 호출 방생성에 성공했을때도 호출
     /// </summary>
@@ -295,30 +306,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
             SceneManager.LoadScene("05.Room");
         }
     }
-    /// <summary>
-    /// 방에서 나가면 콜백으로 호출됨
-    /// </summary>
-    public override void OnLeftRoom()
-    {
-        base.OnLeftRoom();
-        print("OnLeftRoom");
-        inRoom = false;
-        SceneManager.LoadScene("03.Lobby");
+    #endregion
 
-    }
-    //룸에 입장해서 커스텀 프로퍼티 변경을 요청하는 함수
-    [PunRPC]
-    public void UpdateRoomCustomProperty(string[] Arr,  bool[] userready)
-    {
-        //RPC로 업데이트된 커스텀 프로퍼티를 다른유저에게도 뿌린다
-        Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties; //현재 방의 커스텀 프로퍼티를 받아서 CP에 담음
-        cp["roomMember"] = Arr;//받은 매개변수로 현재 방의 커스텀 프로퍼티 수정
-        cp["userReady"] = userready;
-        PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
-        userArr = Arr;//매개변수로 받은 배열을 덮어쓰기
-        userReady = userready;//매개변수로 받은 배열을 덮어쓰기
-    }
-
+    #region 방에서 나가기 LeaveRoom()는 PhotonNetwork.LeaveRoom()를 호출함
     /// <summary>
     /// 룸에서 나감
     /// </summary>
@@ -340,6 +330,38 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         PhotonNetwork.LeaveRoom();//방퇴장 ->로비로 돌아감
         //SceneManager.LoadScene("03.Lobby");
     }
+    #endregion
+
+    #region 방에서 나가면 콜백됨 PhotonNetwork.LeaveRoom()호출데 대한 콜백 OnLeftRoom()
+    /// <summary>
+    /// 방에서 나가면 콜백으로 호출됨
+    /// </summary>
+    public override void OnLeftRoom()
+    {
+        base.OnLeftRoom();
+        print("OnLeftRoom");
+        inRoom = false;
+        SceneManager.LoadScene("03.Lobby");
+
+    }
+    #endregion
+
+    #region 룸에 입장했을때 룸커스텀 프로퍼티 변경을위해 호출됨 OnJoinedRoom에서 호출되는 RPC
+    //룸에 입장해서 커스텀 프로퍼티 변경을 요청하는 함수
+    [PunRPC]
+    public void UpdateRoomCustomProperty(string[] Arr,  bool[] userready)
+    {
+        //RPC로 업데이트된 커스텀 프로퍼티를 다른유저에게도 뿌린다
+        Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties; //현재 방의 커스텀 프로퍼티를 받아서 CP에 담음
+        cp["roomMember"] = Arr;//받은 매개변수로 현재 방의 커스텀 프로퍼티 수정
+        cp["userReady"] = userready;
+        PhotonNetwork.CurrentRoom.SetCustomProperties(cp);
+        userArr = Arr;//매개변수로 받은 배열을 덮어쓰기
+        userReady = userready;//매개변수로 받은 배열을 덮어쓰기
+    }
+    #endregion
+
+    #region 게임 시작 StartGame() 동기화해서 씬을 전환한다
     /// <summary>
     /// 방장이 시작을 누르면 다른 사용자와 함께 씬이동 autosynce를 사용할지 rpc로 사용할지 정해야함 아직 미정
     /// </summary>
@@ -350,6 +372,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
             PhotonNetwork.LoadLevel("06.PlayArcore");
         }
     }
+    #endregion
+
+    #region  IPunObservable 인터페이스 구현부분
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
         if (stream.IsWriting)
@@ -377,6 +402,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
             isRotateLeftRight = (bool)stream.ReceiveNext();
         }
     }
+    #endregion
+
+    #region 앵커아이디를 다른 사용자에게 보내기위한 RPC메소드를 호출하는 SendAnchorId(string anchorId)
     /// <summary>
     /// string 앵커 아이디를 룸안에 다른 사용자에게 보내기위한 rpc 함수를 호출함
     /// </summary>
@@ -399,6 +427,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         //아이디를 전달받고 마스터 클라이언트한테 받은것을 확인시켜주기위하여 receiveCnt 를 1증가하라는 명령을 내린다
         Call_ReceiveId();
     }
+    #endregion
+
+    #region 앵커아이디를 전달받은 방장이 아닌 사용자가 호출하는 함수 Call_ReceiveId()
     /// <summary>
     /// 방장에게 receiveCnt 1증가하라고 시키는 rpc 함수 앵커 아이디를 전달 받앗을때 호출한다
     /// </summary>
@@ -413,6 +444,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log(myorder + "번째 플레이어가 앵커 아이디를 받았다고 알림");
         receiveCnt++;
     }
+    #endregion
+
+    #region 아이디로 앵커 리졸브해쓰면 방장한테 알려주기위한 RPC 메소드  Call_CheckResolve(int myoder, int i)
     /// <summary>
     /// 리졸브 한거를 체크해서 마스터 클라이언트한테 보내줌
     /// 마스터 클라이언트가 아닌 플레이어가 리졸브가 끝나면 호출함
@@ -428,8 +462,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log(myorder + "번째플레이어가" + i + "번쨰 앵커 리졸브 했다고 알림");
         readyCnt++;
     }
+    #endregion
+
+    #region 방장이 다른사람들에게  리졸브 하라고 명령을 내리는 RPC Call_ResolveRpc(int i)
     /// <summary>
     /// 방장이 아닌 사용자에게 리졸브를 하라고 rpc로 명령을 내린다
+    /// 매개변수 i는 현재 리졸브하는게 몇번째 앵커인지 앵커를 가리키는 인덱스
     /// </summary>
     /// <param name="id"></param>
     public void Call_ResolveRpc(int i)
@@ -444,6 +482,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         StartCoroutine(ResolveCloudAnchor(i));
     }
+
     IEnumerator ResolveCloudAnchor(int i)
     {
         //Debug.Log(id);
@@ -466,7 +505,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         //obj.transform.SetParent(task.Result.Anchor.transform);//부모로 설정
         //InstantePlayer(NetWork.Get.hostingResultList);
     }
+    #endregion
 
+    #region 로븟을 생성하라고 방장이 명령을 내리는 RPC Call_InstantePlayer()
     /// <summary>
     /// 플레이어를 각자 자기 위치에 생성하라고 명령을 내리는 rpc 함수 all로 호출해서 방장 자신도 포함해서 명령을 내린다
     /// </summary>
@@ -480,9 +521,20 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         Debug.Log("나의 입장 순서는 = " + myOrder);
         Debug.Log("생성된 앵커의 숫자" + hostingResultList.Count);
+        //플레이 생성 명령이 방장으로 부터 떨어지면 내 로봇을 생성하고 이명령을 다른사용자에게도 내 로봇을 이위치에 생성해라 라고 명령을 전달
         Call_MakeMyRobot(myOrder, GameManager.Get.beforeLeg.name, GameManager.Get.beforeBody.name, GameManager.Get.beforeWeapon.name);
         //Call_MakeTestBot(myOrder);
     }
+    #endregion
+
+    #region 자신의 로봇을 생성하면서 다른 사용자에게 해당앵커위치에 로봇을 생성하라고 명령을 내리는 RPC를 호출 InstantePlayer()부분에서 호출
+    /// <summary>
+    /// 나의 포톤 엑터넘버와 다리 몸 무기의 이름을 매개변수로 넘겨준다
+    /// </summary>
+    /// <param name="actnum"></param>
+    /// <param name="leg"></param>
+    /// <param name="body"></param>
+    /// <param name="weapon"></param>
     public void Call_MakeMyRobot(int actnum, string leg, string body, string weapon)
     {
         photonView.RPC("MakeMyRobot", RpcTarget.All, actnum, leg, body, weapon);
@@ -497,6 +549,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         player.GetComponent<Player>().weaponname = weapon;
         player.GetComponent<Player>().actnum = actnum;
     }
+    #endregion
+
+    #region 테스트용 봇 생성
     /// <summary>
     /// 테스트 봇 생성을 요구하는 알피씨 함수
     /// </summary>
@@ -512,6 +567,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log(actnum + "번 유저의 테스트 봇을 생성하라고 요청옴");
         Instantiate(testBot, hostingResultList[actnum + 1].Result.Anchor.transform.position, Quaternion.identity);
     }
+    #endregion
 
-#endregion
+
 }
