@@ -18,17 +18,17 @@ public class StoreManager : MonoBehaviour
     protected Transform itemPrefabParentTransform;
     
     //이것은 버튼을 누르면 중복을 줄이기 위한 변수들
-    protected int allNumber=1;
-    protected int weaponNumber=2;
-    protected int bodyNumber=3;
-    protected int legNumber=4;
-    public int checkNumber = 0;// 중복 버튼 눌러서 리소스 줄이기 위해서 이것을 넣음!
+    protected int allNumber=0;
+    protected int weaponNumber=1;
+    protected int bodyNumber=2;
+    protected int legNumber=3;
+    public int checkNumber = 4;// 중복 버튼 눌러서 리소스 줄이기 위해서 이것을 넣음!
     
     //이것은 버튼이 선택되면 선택 되어있도록 하기 위한 변수
     public GameObject allButton;
     public GameObject weaponButton;
     public GameObject upperButton;
-    public GameObject lowerButton;
+    public GameObject legbutton;
 
     public Sprite highlightImage;
     public Sprite normalImage;
@@ -41,6 +41,9 @@ public class StoreManager : MonoBehaviour
     //스크롤바 value값 0으로 만들기
     [SerializeField]
     protected Scrollbar scrollbar;
+
+    [SerializeField]
+    protected CustomToggleGroup ctg;
     // Start is called before the first frame update
     void Start()
     {
@@ -63,7 +66,7 @@ public class StoreManager : MonoBehaviour
         //NetWork.Get.GetMyMoney()는 현재 돈을 반환해준다
         //씬처음들어와서 내돈 표시해줘야하니 한번 표시해준다
         SetUsermoney(NetWork.Get.GetMyMoney());
-        OnClickedAllItem();//처음에 all 아이템 띄워야 되기 때문에 여기에 넣음!
+        OnClickedAllItem();
     }
     // Update is called once per frame
     void Update()
@@ -83,6 +86,10 @@ public class StoreManager : MonoBehaviour
             leftBtnObj.SetActive(true);
             rightBtnObj.SetActive(true);
         }
+    }
+    public void ChangeScrollBarValue()
+    {
+
     }
     public void OnClickedRightBtn()
     {
@@ -104,46 +111,6 @@ public class StoreManager : MonoBehaviour
         //if (userMoneyText == null) userMoneyText = mymoney.GetComponentInChildren<Text>();
         userMoneyText.text = currentMoney.ToString();
     }
-    //checknumber에 따른 이미지 바꿈!
-    void CheckImage(int k)
-    {
-        switch(k)
-        {
-            case 1 :
-                Debug.Log("all에 highlight");
-                allButton.GetComponent<Image>().sprite = highlightImage;
-                weaponButton.GetComponent<Image>().sprite = normalImage;
-                upperButton.GetComponent<Image>().sprite = normalImage;
-                lowerButton.GetComponent<Image>().sprite = normalImage;
-                ResetScroll();
-            break;
-            case 2 :
-                Debug.Log("weapon에 highlight");
-                allButton.GetComponent<Image>().sprite = normalImage;
-                weaponButton.GetComponent<Image>().sprite = highlightImage;
-                upperButton.GetComponent<Image>().sprite = normalImage;
-                lowerButton.GetComponent<Image>().sprite = normalImage;
-                ResetScroll();
-            break;
-            case 3 :
-                Debug.Log("body에 highlight");
-                allButton.GetComponent<Image>().sprite = normalImage;
-                weaponButton.GetComponent<Image>().sprite = normalImage;
-                upperButton.GetComponent<Image>().sprite = highlightImage;
-                lowerButton.GetComponent<Image>().sprite = normalImage;
-                ResetScroll();
-            break;
-            case 4 :
-                Debug.Log("leg에 highlight");
-                allButton.GetComponent<Image>().sprite = normalImage;
-                weaponButton.GetComponent<Image>().sprite = normalImage;
-                upperButton.GetComponent<Image>().sprite = normalImage;
-                lowerButton.GetComponent<Image>().sprite = highlightImage;
-                ResetScroll();
-            break;
-        
-        }
-    }
 
     //뒤로가기 버튼 넣음 됨!
     public void OnClickedBackButton()
@@ -151,7 +118,7 @@ public class StoreManager : MonoBehaviour
         SceneManager.LoadScene("03.Lobby");
     }
 
-    protected void UpdateItemPanel(List<CatalogItem> itemList) 
+    public void UpdateItemPanel(List<CatalogItem> itemList) 
     {
          for(int i =0 ; i <itemList.Count; i++)
          {
@@ -260,7 +227,7 @@ public class StoreManager : MonoBehaviour
     //     }
     // }
     //자식들 없애는 곳!
-    protected void DestroyChildObj()
+    public void DestroyChildObj()
     {
         Debug.Log("자식 오브젝트 삭제 시작");
         for (int i =0; i < itemPrefabParentTransform.childCount; i++)
@@ -268,88 +235,61 @@ public class StoreManager : MonoBehaviour
             Destroy(itemPrefabParentTransform.GetChild(i).gameObject);
         }
     }
+    
     //all 버튼에 넣는 것!
     public void OnClickedAllItem()
     {
-        if(checkNumber == 1)
+        if (checkNumber == allNumber)
         {
             Debug.Log("중복 불가.");
             return;
         }
-        Debug.Log("all아이템 나올차례.");
-        DestroyChildObj();
-        UpdateItemPanel(NetWork.Get.itemList);
-        checkNumber = allNumber;
-        CheckImage(checkNumber);
+        else
+        { 
+            checkNumber = allNumber; 
+        }
+        ctg.ForChangingPanel(checkNumber);
     }
     //weapon 버튼에 넣는 것!
     public void OnClickedWeaponItem()
     {
-        if(checkNumber == 2)
+        if (checkNumber == weaponNumber)
         {
             Debug.Log("중복 불가.");
             return;
         }
-        Debug.Log("weapon아이템 나올차례.");
-        DestroyChildObj();
-        UpdateItemPanel(NetWork.Get.weaponList);
-        checkNumber = weaponNumber;
-        CheckImage(checkNumber);
+        else
+        { 
+            checkNumber = weaponNumber; 
+        }
+        ctg.ForChangingPanel(checkNumber);
     }
     //upperbody버튼에 넣는 것!
     public void OnClickedBodyItem()
     {
-        if(checkNumber == 3)
+        if (checkNumber == bodyNumber)
         {
             Debug.Log("중복 불가.");
             return;
         }
-        Debug.Log("body아이템 나올차례.");
-        DestroyChildObj();
-        UpdateItemPanel(NetWork.Get.bodyList);
-        checkNumber = bodyNumber;
-        CheckImage(checkNumber);
+        else
+        { 
+            checkNumber = bodyNumber; 
+        }
+        ctg.ForChangingPanel(checkNumber);
     }
     //lowerbody에 넣는 것!
     public void OnClickedLegItem()
     {
-        if(checkNumber == 4)
+        if (checkNumber == legNumber)
         {
             Debug.Log("중복 불가.");
             return;
         }
-        Debug.Log("leg아이템 나올차례.");
-        DestroyChildObj();
-        UpdateItemPanel(NetWork.Get.legList);
-        checkNumber = legNumber;
-        CheckImage(checkNumber);
-    }
-    public void AllItem(bool all)
-    {
-        if(all == true)
-        {
-            Debug.Log("all아이템 나올차례.");
-            DestroyChildObj();
-            UpdateItemPanel(NetWork.Get.itemList);
-            allButton.GetComponent<Image>().sprite = highlightImage;
-        }
         else
-        {
-            allButton.GetComponent<Image>().sprite = normalImage;
+        { 
+            checkNumber = legNumber; 
         }
-    }
-    public void WeaponItem(bool weapon)
-    {
-        if(weapon == true)
-        {
-            Debug.Log("weapon아이템 나올차례.");
-            DestroyChildObj();
-            UpdateItemPanel(NetWork.Get.weaponList);
-            weaponButton.GetComponent<Image>().sprite = highlightImage;
-        }
-        else
-        {
-            weaponButton.GetComponent<Image>().sprite = normalImage;
-        }
-    }
+        ctg.ForChangingPanel(checkNumber);
+    }  
 }

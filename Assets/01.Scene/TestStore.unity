@@ -247,11 +247,12 @@ MonoBehaviour:
   allButton: {fileID: 1079380630975702}
   weaponButton: {fileID: 1467721384536058}
   upperButton: {fileID: 1258856604177516}
-  lowerButton: {fileID: 1237680943264870}
+  legbutton: {fileID: 0}
   highlightImage: {fileID: 21300000, guid: 1000ffd94ffa8f74ab1abd839fec31d1, type: 3}
   normalImage: {fileID: 21300000, guid: e8c1078cf3fbef041a21142a46feb996, type: 3}
   userMoneyText: {fileID: 4013628380594913273}
   scrollbar: {fileID: 1472436978}
+  ctg: {fileID: 1339059804926655}
 --- !u!1 &241290570
 GameObject:
   m_ObjectHideFlags: 0
@@ -986,7 +987,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1146106847055706
 GameObject:
   m_ObjectHideFlags: 0
@@ -1188,10 +1189,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 1339059804926654}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fafe2cfe61f6974895a912c3755e8f1, type: 3}
+  m_Script: {fileID: 11500000, guid: 14e3a58ae0a478841a435a8bac7145a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_AllowSwitchOff: 0
+  m_AllowSwitchOff: 1
+  allButtonImage: {fileID: 114570068446708712}
+  weaponButtonImage: {fileID: 988729964337634781}
+  bodyButtonImage: {fileID: 114595062357206736}
+  legButtonImage: {fileID: 114970540708205304}
+  highlightImage: {fileID: 21300000, guid: 1000ffd94ffa8f74ab1abd839fec31d1, type: 3}
+  normalImage: {fileID: 21300000, guid: e8c1078cf3fbef041a21142a46feb996, type: 3}
+  sm: {fileID: 241094012}
 --- !u!1 &1371321151074956
 GameObject:
   m_ObjectHideFlags: 0
