@@ -185,7 +185,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &389626639
 GameObject:
@@ -281,7 +281,7 @@ RectTransform:
   m_Children:
   - {fileID: 1706726180}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -628,90 +628,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 465743504}
   m_CullTransparentMesh: 0
---- !u!1 &526708555
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 526708557}
-  - component: {fileID: 526708556}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &526708556
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526708555}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4d32cacb1527d554098a558760dbffee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  weaponInfo_List: []
-  bodyInfo_List: []
-  legInfo_List: []
-  ownedItem_List: []
-  weaponPartsArr: []
-  bodyPartsArr: []
-  legPartsArr: []
-  imgArr: []
-  selectLeg: {fileID: 0}
-  selectBody: {fileID: 0}
-  selectWeapon: {fileID: 0}
-  userinfo:
-    playfabId: 
-    nickName: 
-    firstLogin: 1
-    selectedWeapon: 
-    selectedBody: 
-    selectedLeg: 
-  weaponPrefab: {fileID: 0}
-  bodyPrefab: {fileID: 0}
-  legPrefab: {fileID: 0}
-  beforeLeg: {fileID: 0}
-  beforeBody: {fileID: 0}
-  beforeWeapon: {fileID: 0}
-  legindex: 0
-  bodyindex: 0
-  weaponindex: 0
-  legtotalweight: 0
-  legspeed: 0
-  legamor: 0
-  bodyhp: 0
-  bodyamor: 0
-  bodytype: 
-  bodyweight: 0
-  weaponweight: 0
-  weapontype: 
-  weaponlange: 0
-  weaponattack: 0
-  isloadOver: 0
-  istypeNoeSame: 0
-  Msg: 
---- !u!4 &526708557
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 526708555}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 260.22153, y: 189.58781, z: 10.379899}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &567653343
 GameObject:
   m_ObjectHideFlags: 0
@@ -1112,115 +1028,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1181769656}
   m_CullTransparentMesh: 0
---- !u!1 &1355645407
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1355645408}
-  - component: {fileID: 1355645409}
-  - component: {fileID: 1355645410}
-  m_Layer: 0
-  m_Name: Network
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1355645408
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1355645407}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.6701088, y: 62.885643, z: 6.8282776}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1355645409
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1355645407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 82083f50423caaa4dae9e14e2e86298b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  masterIndex: 0
-  actornums: 00000000000000000000000000000000
-  userArr:
-  - 
-  - 
-  - 
-  - 
-  userReady: 00000000
-  myOrder: 99
-  inIntro: 1
-  inLogin: 0
-  inLobby: 0
-  inRoom: 0
-  isMaster: 0
-  finalCheck: 0
-  robtObj: {fileID: 7544266215859932968, guid: 0a3b5ca9a6dfb4643abbe67c0881f03e, type: 3}
-  testBot: {fileID: 799937352128352444, guid: a05152cadb0802a40a9d8159d1f086c8, type: 3}
-  nowTurn: 0
-  readyCnt: 0
-  receiveCnt: 0
-  localPlayer: 0
-  anchorId: 
-  z: 0
-  x: 0
-  isInput: 0
-  rotateX: 0
-  rotateY: 0
-  isRotateUpDown: 0
-  isRotateLeftRight: 0
-  email: 
-  password: 
-  userName: 
-  nickName: 
-  buylastItem: 
-  modifyOk: 0
-  modifyFail: 0
-  buyItemPice: 0
-  myMoney: 0
-  displayName: 
-  itemList: []
-  weaponList: []
-  bodyList: []
-  legList: []
---- !u!114 &1355645410
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1355645407}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 2
-  OwnershipTransfer: 1
-  ObservedComponents:
-  - {fileID: 1355645409}
-  viewIdField: 1
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1001 &1522438228
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1234,7 +1041,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22400762, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00005340576
+      value: -0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 22426080, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_AnchorMax.x
@@ -1326,7 +1133,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 22457152, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 22457152, guid: 67117722a812a2e46ab8cb8eafbf5f5e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -1588,6 +1395,188 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1546158474}
   m_CullTransparentMesh: 0
+--- !u!1 &1559272409
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1559272410}
+  - component: {fileID: 1559272412}
+  - component: {fileID: 1559272411}
+  m_Layer: 0
+  m_Name: PhotonManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1559272410
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559272409}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1745.6284, y: 99.11276, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1559272411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559272409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  ObservedComponents:
+  - {fileID: 1559272412}
+  viewIdField: 1
+  InstantiationId: 0
+  isRuntimeInstantiated: 0
+--- !u!114 &1559272412
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559272409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c127396c51aa9841bc16fa1c9ce675a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  masterIndex: 0
+  userArr:
+  - 
+  - 
+  - 
+  - 
+  userReady: 00000000
+  myOrder: 99
+  inIntro: 1
+  inLogin: 0
+  inLobby: 0
+  inRoom: 0
+  isMaster: 0
+  finalCheck: 0
+  robtObj: {fileID: 7544266215859932968, guid: 0a3b5ca9a6dfb4643abbe67c0881f03e, type: 3}
+  nowTurn: 0
+  readyCnt: 0
+  receiveCnt: 0
+  localPlayer: 0
+  anchorId: 
+  z: 0
+  x: 0
+  isInput: 0
+  rotateX: 0
+  rotateY: 0
+  isRotateUpDown: 0
+  isRotateLeftRight: 0
+--- !u!1 &1689635099
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1689635100}
+  - component: {fileID: 1689635101}
+  m_Layer: 0
+  m_Name: DataManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1689635100
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1689635099}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 1745.6284, y: 99.11276, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1689635101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1689635099}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5048ce96fe8615341ae9f9e0308a74c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  myMoney: 0
+  itemList: []
+  weaponList: []
+  bodyList: []
+  legList: []
+  weaponInfo_List: []
+  bodyInfo_List: []
+  legInfo_List: []
+  ownedItem_List: []
+  weaponPartsArr: []
+  bodyPartsArr: []
+  legPartsArr: []
+  imgArr: []
+  selectLeg: {fileID: 0}
+  selectBody: {fileID: 0}
+  selectWeapon: {fileID: 0}
+  userinfo:
+    playfabId: 
+    nickName: 
+    firstLogin: 1
+    selectedWeapon: 
+    selectedBody: 
+    selectedLeg: 
+  weaponPrefab: {fileID: 0}
+  bodyPrefab: {fileID: 0}
+  legPrefab: {fileID: 0}
+  beforeLeg: {fileID: 0}
+  beforeBody: {fileID: 0}
+  beforeWeapon: {fileID: 0}
+  legindex: 0
+  bodyindex: 0
+  weaponindex: 0
+  legtotalweight: 0
+  legspeed: 0
+  legamor: 0
+  bodyhp: 0
+  bodyamor: 0
+  bodytype: 
+  bodyweight: 0
+  weaponweight: 0
+  weapontype: 
+  weaponlange: 0
+  weaponattack: 0
+  isloadOver: 0
+  istypeNoeSame: 0
+  Msg: 
 --- !u!1 &1706726179
 GameObject:
   m_ObjectHideFlags: 0
@@ -1955,7 +1944,7 @@ RectTransform:
   m_Children:
   - {fileID: 5189280369137083693}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

@@ -7,21 +7,25 @@ using UnityEngine.SceneManagement;
 
 public class LobbyScene : MonoBehaviour
 {
-    
+    protected PhotonManager photonManager;
     public InputField roomName;//입력받을 필드
+    private void Start()
+    {
+        photonManager = PhotonManager.GetInstance();
+    }
     /// <summary>
     /// 방생성
     /// </summary>
     public void CreateRoom()
     {
-        NetWork.Get.CreateRoom(roomName.text); //입력한 텍스트로 방생성
+        photonManager.CreateRoom(roomName.text); //입력한 텍스트로 방생성
     }
     /// <summary>
     /// 방참가
     /// </summary>
     public void JoinRoom()
     {
-        NetWork.Get.JoinRoom(roomName.text);
+        photonManager.JoinRoom(roomName.text);
     }
     //뒤로 로비씬으로 가기.
     public void ToBackToLobby()

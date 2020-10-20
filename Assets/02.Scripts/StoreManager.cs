@@ -7,6 +7,8 @@ using PlayFab.ClientModels;
 //StoreManager, StoreBehaviour, StoreUI
 public class StoreManager : MonoBehaviour
 {
+    protected DataManager dataManager = null;
+    protected DBManager dbManager = null;
     [SerializeField]
     protected GameObject rightBtnObj;
     [SerializeField]
@@ -44,6 +46,8 @@ public class StoreManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        dataManager = DataManager.GetInstance();
+        dbManager = DBManager.GetInstance();
         //델리게이트를 등록하는것??
         //NetWork.Get.onChangeMoneyDelegate는 매개변수가 int임 Setusermoney도 매개변수가 int임
         //매개변수가 int 인것들을 묶어서 한번에 처리하는것?
@@ -59,10 +63,10 @@ public class StoreManager : MonoBehaviour
         //근데 UI에 표시를 해야하니 현재 UI가 연결된 스크립트에 있는 함수를 onChangeMoneyDelegate델리게이트로 등록후 
         //BuyOk 콜백부분에서 onChangeMoneyDelegate 델리게이트를 호출하는것인가?
         //onChangeMoneyDelegate를 호출하기위해선 무언가 연결되어 있어야하니 그래서 if문으로 null 체크 하는것인가?
-        NetWork.Get.onChangeMoneyDelegate += SetUsermoney;
+        dbManager.onChangeMoneyDelegate += SetUsermoney;
         //NetWork.Get.GetMyMoney()는 현재 돈을 반환해준다
         //씬처음들어와서 내돈 표시해줘야하니 한번 표시해준다
-        SetUsermoney(NetWork.Get.GetMyMoney());
+        SetUsermoney(dbManager.GetMyMoney());
         OnClickedAllItem();//처음에 all 아이템 띄워야 되기 때문에 여기에 넣음!
     }
     // Update is called once per frame
@@ -170,95 +174,7 @@ public class StoreManager : MonoBehaviour
             // networkItem.VirtualCurrencyPrices["GD"]));
          }
     }
-    //allitem의 패널 생성 하는 곳!
-    // void AllPanel()
-    // {
-    //     for(int i =0 ; i <NetWork.Get.itemList.Count; i++)
-    //     {
-    //         PrefabPanel item1 = Instantiate(instantiateItemPrefab , new Vector3(0,0,0), Quaternion.identity, contents);
-    //         CatalogItem networkItem = NetWork.Get.itemList[i];
-
-    //         item1.SetPrefabData(new ItemData(networkItem.ItemId, networkItem.DisplayName, networkItem.Description, networkItem.VirtualCurrencyPrices["GD"].ToString(),
-    //         networkItem.VirtualCurrencyPrices["GD"]));
-
-    //         // item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.itemList[i].DisplayName;
-    //         // item1.GetComponent<PrefabPanel>().description = NetWork.Get.itemList[i].Description;
-    //         // item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"].ToString();
-    //         // item1.GetComponent<PrefabPanel>().price = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
-    //         // item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.itemList[i].ItemId;
-    //         //item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
-    //         // for(int j =0; j < GameManager.Get.imgArr.Length; j++)
-    //         // {
-    //         //     if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
-    //         //     {
-    //         //         item1.GetComponent<PrefabPanel>().image.sprite = GameManager.Get.imgArr[j];
-    //         //     }
-    //         // }
-    //     }
-    // }
-    //weapon 패널 생성하는 곳!
-    // void WeaponPanel()
-    // {
-    //     for(int i =0 ; i <NetWork.Get.weaponList.Count; i++)
-    //     {
-    //         item1 = Instantiate(instantiatePrefab , new Vector3(0,0,0), Quaternion.identity, contents);
-    //         item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.weaponList[i].DisplayName;
-    //         item1.GetComponent<PrefabPanel>().description = NetWork.Get.weaponList[i].Description;
-    //         item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.weaponList[i].VirtualCurrencyPrices["GD"].ToString();
-    //         item1.GetComponent<PrefabPanel>().price = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
-    //         item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.weaponList[i].ItemId;
-    //         //item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
-    //         for(int j =0; j < GameManager.Get.imgArr.Length; j++)
-    //         {
-    //             if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
-    //             {
-    //                 item1.GetComponent<PrefabPanel>().image.sprite = GameManager.Get.imgArr[j];
-    //             }
-    //         }
-    //     }
-    // }
-    //upperbody 패널 생성하는 곳!
-    // void UpperBodyPanel()
-    // {
-    //     for(int i =0 ; i <NetWork.Get.bodyList.Count; i++)
-    //     {
-    //         item1 = Instantiate(instantiatePrefab , new Vector3(0,0,0), Quaternion.identity, contents);
-    //         item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.bodyList[i].DisplayName;
-    //         item1.GetComponent<PrefabPanel>().description = NetWork.Get.bodyList[i].Description;
-    //         item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.bodyList[i].VirtualCurrencyPrices["GD"].ToString();
-    //         item1.GetComponent<PrefabPanel>().price = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
-    //         item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.bodyList[i].ItemId;
-    //         //item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
-    //         for(int j =0; j < GameManager.Get.imgArr.Length; j++)
-    //         {
-    //             if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
-    //             {
-    //                 item1.GetComponent<PrefabPanel>().image.sprite = GameManager.Get.imgArr[j];
-    //             }
-    //         }
-    //     }
-    // }
-    // //lowerdody 패널 생성하는 곳!
-    // void LowerBodyPanel()
-    // {
-    //     for(int i =0 ; i <NetWork.Get.legList.Count; i++)
-    //     {
-    //         item1 = Instantiate(instantiatePrefab , new Vector3(0,0,0), Quaternion.identity, contents);
-    //         item1.GetComponent<PrefabPanel>().displayname = NetWork.Get.legList[i].DisplayName;
-    //         item1.GetComponent<PrefabPanel>().description = NetWork.Get.legList[i].Description;
-    //         item1.GetComponent<PrefabPanel>().itemcost = NetWork.Get.legList[i].VirtualCurrencyPrices["GD"].ToString();
-    //         item1.GetComponent<PrefabPanel>().price = (int)NetWork.Get.itemList[i].VirtualCurrencyPrices["GD"];
-    //         item1.GetComponent<PrefabPanel>().itemId = NetWork.Get.legList[i].ItemId;
-    //         //item1.GetComponent<PrefabPanel>().price = System.Convert.ToInt32(item1.GetComponent<PrefabPanel>().itemcost);
-    //         for(int j =0; j < GameManager.Get.imgArr.Length; j++)
-    //         {
-    //             if(GameManager.Get.imgArr[j].name == item1.GetComponent<PrefabPanel>().displayname)
-    //             {
-    //                 item1.GetComponent<PrefabPanel>().image.sprite = GameManager.Get.imgArr[j];
-    //             }
-    //         }
-    //     }
-    // }
+   
     //자식들 없애는 곳!
     protected void DestroyChildObj()
     {
@@ -278,7 +194,7 @@ public class StoreManager : MonoBehaviour
         }
         Debug.Log("all아이템 나올차례.");
         DestroyChildObj();
-        UpdateItemPanel(NetWork.Get.itemList);
+        UpdateItemPanel(dataManager.itemList);
         checkNumber = allNumber;
         CheckImage(checkNumber);
     }
@@ -292,7 +208,7 @@ public class StoreManager : MonoBehaviour
         }
         Debug.Log("weapon아이템 나올차례.");
         DestroyChildObj();
-        UpdateItemPanel(NetWork.Get.weaponList);
+        UpdateItemPanel(dataManager.weaponList);
         checkNumber = weaponNumber;
         CheckImage(checkNumber);
     }
@@ -306,7 +222,7 @@ public class StoreManager : MonoBehaviour
         }
         Debug.Log("body아이템 나올차례.");
         DestroyChildObj();
-        UpdateItemPanel(NetWork.Get.bodyList);
+        UpdateItemPanel(dataManager.bodyList);
         checkNumber = bodyNumber;
         CheckImage(checkNumber);
     }
@@ -320,7 +236,7 @@ public class StoreManager : MonoBehaviour
         }
         Debug.Log("leg아이템 나올차례.");
         DestroyChildObj();
-        UpdateItemPanel(NetWork.Get.legList);
+        UpdateItemPanel(dataManager.legList);
         checkNumber = legNumber;
         CheckImage(checkNumber);
     }
@@ -330,7 +246,7 @@ public class StoreManager : MonoBehaviour
         {
             Debug.Log("all아이템 나올차례.");
             DestroyChildObj();
-            UpdateItemPanel(NetWork.Get.itemList);
+            UpdateItemPanel(dataManager.itemList);
             allButton.GetComponent<Image>().sprite = highlightImage;
         }
         else
@@ -344,7 +260,7 @@ public class StoreManager : MonoBehaviour
         {
             Debug.Log("weapon아이템 나올차례.");
             DestroyChildObj();
-            UpdateItemPanel(NetWork.Get.weaponList);
+            UpdateItemPanel(dataManager.weaponList);
             weaponButton.GetComponent<Image>().sprite = highlightImage;
         }
         else

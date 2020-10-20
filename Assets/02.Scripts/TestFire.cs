@@ -32,6 +32,6 @@ public class TestFire : MonoBehaviour
     {
         GameObject obj = Instantiate(bullet, firePos.transform.position, Quaternion.identity);
         obj.GetComponent<TestBall>().dir = gun.transform.up;
-        obj.GetComponent<TestBall>().speed = 25;
+        obj.GetComponent<TestBall>().speed = 5;
     }
 }

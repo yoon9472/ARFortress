@@ -33,6 +33,8 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     public Text nowPlayer;
     [SerializeField]
     protected Text checkMasterText;
+    [SerializeField]
+    protected Text nowPower;
     private void Start()
     {
         DistanceFromCenter = 0.5f;
@@ -42,11 +44,12 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
 
     private void Update()
     {
-        if(NetWork.Get.isMaster == true)
+        if(PhotonManager.Instance.isMaster == true)
         {
-            idreceiveCnt.text = "앵커 아이디 전달받은 플레이어수: "+NetWork.Get.receiveCnt.ToString();
-            resolveCnt.text = "앵커 리졸브한 플레이어수: "+NetWork.Get.readyCnt.ToString();
-            nowPlayer.text = "현재 방에 입장한 플레이어수: " + NetWork.Get.localPlayer.ToString();
+            idreceiveCnt.text = "앵커 아이디 전달받은 플레이어수: "+PhotonManager.Instance.receiveCnt.ToString();
+            resolveCnt.text = "앵커 리졸브한 플레이어수: "+PhotonManager.Instance.readyCnt.ToString();
+            nowPlayer.text = "현재 방에 입장한 플레이어수: " + PhotonManager.Instance.localPlayer.ToString();
+            nowPower.text = "현재 게이지 : " + PhotonManager.Instance.lange.ToString();
             checkMasterText.text = "마스터";
         }
         else
@@ -74,13 +77,13 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     {
         Touch touch = Input.GetTouch(0);
         TrackableHitFlags racastFilter = TrackableHitFlags.PlaneWithinPolygon; //평면만 검출
-        if(firstAnchor == false && NetWork.Get.isMaster == true)//처음 앵커는 방장만 찍게 한다.
+        if(PhotonManager.Instance.firstAnchor == false && PhotonManager.Instance.isMaster == true)//처음 앵커는 방장만 찍게 한다.
         {
             if (touch.phase == TouchPhase.Began && Frame.Raycast(touch.position.x, touch.position.y, racastFilter, out hit))
             {
 
-                
-                firstAnchor = true;//값을 true 로 해서 이함수가 2번 실행되지 않게 한다? 터치2번못하게 막는다
+                PhotonManager.Instance.Call_MakeFirstAnchor(); //다른사용자에게 도 firstAnchor의 값을 true로 바꿔줌
+                //firstAnchor = true;//값을 true 로 해서 이함수가 2번 실행되지 않게 한다? 터치2번못하게 막는다
                 firstpos = hit.Pose;
                 pos = hit.Pose;//터치한 지점을 담는다.
                 Instantiate(firstTouch, pos.position, Quaternion.identity);
@@ -88,13 +91,13 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
                 //localAnchor.Add(hit.Trackable.CreateAnchor(pos));
                 //Debug.Log("중심점 설정");
                 //유저수 +1 만큼 앵커를 만들고 싶음 유저수 +1만큼 반복문을 돈다
-                nowPlayerCnt = NetWork.Get.localPlayer;
+                nowPlayerCnt = PhotonManager.Instance.localPlayer;
                 Debug.Log("현재 방안의 플레이어수 : " + nowPlayerCnt);
                 for(int i=0; i<nowPlayerCnt+1;i++)
                 {
                     ismakeAnchor = false;
-                    NetWork.Get.receiveCnt = 0;//몇명이 클라우드 앵커 아이디를 받았는가 0 으로 초기화 하고 시작
-                    NetWork.Get.readyCnt = 0; //몇명이 클라우드 앵커를 생성했는가 0으로 초기화 하고 시작
+                    PhotonManager.Instance.receiveCnt = 0;//몇명이 클라우드 앵커 아이디를 받았는가 0 으로 초기화 하고 시작
+                    PhotonManager.Instance.readyCnt = 0; //몇명이 클라우드 앵커를 생성했는가 0으로 초기화 하고 시작
                     if (i == 0) //센터 위치
                     {
                         anchor = hit.Trackable.CreateAnchor(hit.Pose);//터치한 지점에 앵커를 만든다.
@@ -129,15 +132,15 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
                     yield return new WaitUntil(() => ismakeAnchor == true);//방장이 클라우드 앵커 생성할떄까지 대기
                     if (nowPlayerCnt > 1)
                     {
-                        yield return new WaitUntil(() => NetWork.Get.receiveCnt == NetWork.Get.localPlayer - 1);//클라우드 앵커아이디가 모든 사용자에게 전달될때까지 대기
+                        yield return new WaitUntil(() => PhotonManager.Instance.receiveCnt == PhotonManager.Instance.localPlayer - 1);//클라우드 앵커아이디가 모든 사용자에게 전달될때까지 대기
                                                                                                                 //방장이 아닌 다름 사용자들에게 리졸브하라는 명령을 내림
-                        NetWork.Get.Call_ResolveRpc(i);
-                        yield return new WaitUntil(() => NetWork.Get.readyCnt == NetWork.Get.localPlayer - 1); //방에 방장을 제외한 다른사용자가 리졸브 할때까지 대기
+                        PhotonManager.Instance.Call_ResolveRpc(i);
+                        yield return new WaitUntil(() => PhotonManager.Instance.readyCnt == PhotonManager.Instance.localPlayer - 1); //방에 방장을 제외한 다른사용자가 리졸브 할때까지 대기
                     }
                     Debug.Log(i + "번째 반복문 끝남");
                 }
                 //반복문을 빠져나오면 모든 앵커가 잡히면 각자의 위치에 플레이어를 생성하라는 명령을 알피씨로 내리게함
-                NetWork.Get.Call_InstantePlayer();
+                PhotonManager.Instance.Call_InstantePlayer();
                 //Debug.Log("방장이 생성한 앵커의 위치 = " + anchor.transform.position);
                 //GameObject obj = PhotonNetwork.Instantiate("TestBot", hit.Pose.position, Quaternion.identity);
                 //obj = Instantiate(centerObject, anchor.transform.position, Quaternion.identity);
@@ -151,7 +154,7 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     }
     //public void ButtonCreateCloudAnchor()
     //{
-    //        if (NetWork.Get.isMaster == true)//방장이면 앵커 만들고 다른사람들한테 클라우드 앵커 아이디 넘겨주기
+    //        if (PhotonManager.Instance.isMaster == true)//방장이면 앵커 만들고 다른사람들한테 클라우드 앵커 아이디 넘겨주기
     //        {
     //            //AsyncTask<CloudAnchorResult> task = XPSession.CreateCloudAnchor(anchor);
     //            if (firstAnchor == true && time > 3.0f)//방장은 첫앵커 생성하고 3초후에 버튼 누르면 호스팅 동작함
@@ -161,12 +164,12 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     //        }
     //        else
     //        {
-    //            if(NetWork.Get.receiveId==true) //앵커 아이디를 받았으면
+    //            if(PhotonManager.Instance.receiveId==true) //앵커 아이디를 받았으면
     //            {
     //            Debug.Log("방장아닌 사용자 앵커아이디 받음");
-    //            //Debug.Log(NetWork.Get.anchorId);
-    //            //StartCoroutine(ResolveCloudAnchor(NetWork.Get.anchorId));//코루틴 실행
-    //            StartCoroutine(ResolveCloudAnchor(NetWork.Get.anchorIdList));//코루틴 실행
+    //            //Debug.Log(PhotonManager.Instance.anchorId);
+    //            //StartCoroutine(ResolveCloudAnchor(PhotonManager.Instance.anchorId));//코루틴 실행
+    //            StartCoroutine(ResolveCloudAnchor(PhotonManager.Instance.anchorIdList));//코루틴 실행
     //            }
     //        }
         
@@ -187,9 +190,9 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
         task = XPSession.CreateCloudAnchor(anchor);
         yield return new WaitUntil(() => task.IsComplete == true);
         ismakeAnchor = true;
-        //NetWork.Get.CheckResolve();//readyCnt 1증가
-        //NetWork.Get.anchorIdList.Add(task.Result.Anchor.CloudId);//완료된 클라우드 앵커의 아이디를 리스트에 담는다.
-        NetWork.Get.hostingResultList.Add(task);//task를 담는다.
+        //PhotonManager.Instance.CheckResolve();//readyCnt 1증가
+        //PhotonManager.Instance.anchorIdList.Add(task.Result.Anchor.CloudId);//완료된 클라우드 앵커의 아이디를 리스트에 담는다.
+        PhotonManager.Instance.hostingResultList.Add(task);//task를 담는다.
         Debug.Log(task.Result.Response);
         Debug.Log(task.Result.Anchor.CloudId);
         anchorid = task.Result.Anchor.CloudId;
@@ -199,11 +202,11 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
         if (nowPlayerCnt > 1 && ismakeAnchor == true) //방장말고 다른 유저가 존재할때
         {
             Debug.Log("다른 사용자에게 앵커 아이디리스트 보내는중...");
-            NetWork.Get.SendAnchorId(anchorid);//rpc 가 실행되고 앵커아이디를 전달하고 나도 카운트가 1올라간다
+            PhotonManager.Instance.SendAnchorId(anchorid);//rpc 가 실행되고 앵커아이디를 전달하고 나도 카운트가 1올라간다
         }
         //플레이어를 해당위치에 생성
         //hostingResultList 매개변수로
-        //InstantePlayer(NetWork.Get.hostingResultList);
+        //InstantePlayer(PhotonManager.Instance.hostingResultList);
     }
     /// <summary>
     /// 매개변수로 앵커 아이디 리스트를 받는다. 리솔브 한다.
@@ -222,7 +225,7 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     //        Debug.Log(i + "번째 앵커아이디 리졸브중..");
     //        task = XPSession.ResolveCloudAnchor(ids[i]);
     //        yield return new WaitUntil(() => task.IsComplete);
-    //        NetWork.Get.hostingResultList.Add(task);//결과를 담는다
+    //        PhotonManager.Instance.hostingResultList.Add(task);//결과를 담는다
     //        Debug.Log(task.Result.Response); 
     //        Debug.Log(task.Result.Anchor); 
     //        Debug.Log(task.Result.Anchor.CloudId);//NullReferenceExceoption
@@ -231,7 +234,7 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     //    //yield return new WaitUntil(() => task.IsComplete);
     //    //obj = Instantiate(centerObject, task.Result.Anchor.transform.position, Quaternion.identity);//앵커위치에 생성하고
     //    //obj.transform.SetParent(task.Result.Anchor.transform);//부모로 설정
-    //    //InstantePlayer(NetWork.Get.hostingResultList);
+    //    //InstantePlayer(PhotonManager.Instance.hostingResultList);
     //}
     /// <summary>
     /// 앵커 기준으로 포톤 객체를 생성함(플레이할 객체)
@@ -240,20 +243,20 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     /// </summary>
     //public void InstantePlayer(List<AsyncTask<CloudAnchorResult>> tasklist)
     //{
-    //    Debug.Log("나의 입장 순서는 = "+NetWork.Get.myOrder);
-    //    if(NetWork.Get.myOrder ==0)
+    //    Debug.Log("나의 입장 순서는 = "+PhotonManager.Instance.myOrder);
+    //    if(PhotonManager.Instance.myOrder ==0)
     //    {
     //        Debug.Log("1번플레이어 생성");
     //        obj = PhotonNetwork.Instantiate("Player", tasklist[1].Result.Anchor.transform.position, Quaternion.identity);
 
     //    }
-    //    else if(NetWork.Get.myOrder == 1)
+    //    else if(PhotonManager.Instance.myOrder == 1)
     //    {
     //        Debug.Log("2번플레이어 생성");
     //        obj = PhotonNetwork.Instantiate("Player", tasklist[2].Result.Anchor.transform.position, Quaternion.identity);
 
     //    }
-    //    else if(NetWork.Get.myOrder == 2)
+    //    else if(PhotonManager.Instance.myOrder == 2)
     //    {
     //        Debug.Log("3번플레이어 생성");
     //        obj = PhotonNetwork.Instantiate("Player", tasklist[3].Result.Anchor.transform.position, Quaternion.identity);
@@ -268,10 +271,10 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     //}
     public void TurnOff()
     {
-        if (NetWork.Get.isMaster == true)
+        if (PhotonManager.Instance.isMaster == true)
         {
             Debug.Log("턴을 넘김");
-            NetWork.Get.Call_ChangeMasterClient();
+            PhotonManager.Instance.Call_ChangeMasterClient();
         }
     }
 }

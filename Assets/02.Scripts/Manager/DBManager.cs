@@ -11,8 +11,8 @@ using Newtonsoft.Json;
 public class DBManager : MonoBehaviour
 {
     protected static DBManager instance = null;
-    protected DataManager dataManager;
-    protected PhotonManager photonManager;
+    //protected DataManager dataManager;
+    //protected PhotonManager.Instance PhotonManager.Instance;
     private void Awake()
     {
         instance = this;
@@ -30,15 +30,18 @@ public class DBManager : MonoBehaviour
     private void Start()
     {
         //데이타매니저 가져와야함
-        dataManager = DataManager.GetInstance();
+        //dataManager = DataManager.GetInstance();
         //포톤 매니저도 가져와야함
-        photonManager = PhotonManager.GetInstance();
+        //PhotonManager.Instance = PhotonManager.Instance.GetInstance();
 
-        dataManager.imgArr = Resources.LoadAll<Sprite>("04.Img");
-        dataManager.weaponPartsArr = Resources.LoadAll<GameObject>("01.Weapon");
-        dataManager.bodyPartsArr = Resources.LoadAll<GameObject>("02.Body");
-        dataManager.legPartsArr = Resources.LoadAll<GameObject>("03.Leg");
-
+        if (DataManager.Instance.imgArr.Length == 0)
+        {
+            //DataManager.Instance
+            DataManager.Instance.imgArr = Resources.LoadAll<Sprite>("04.Img");
+            DataManager.Instance.weaponPartsArr = Resources.LoadAll<GameObject>("01.Weapon");
+            DataManager.Instance.bodyPartsArr = Resources.LoadAll<GameObject>("02.Body");
+            DataManager.Instance.legPartsArr = Resources.LoadAll<GameObject>("03.Leg");
+        }
     }
     public string email;//입력받은 이메일값 이메일 형식으로 @.com으로 적어
     public string password;//입력받은 비밀번호
@@ -48,45 +51,14 @@ public class DBManager : MonoBehaviour
     public bool modifyOk = false;
     public bool modifyFail = false;
     public int buyItemPice;//방금 구입한 아이템의 가격
-    public int myMoney;//현재 내가 가진돈
+
     public string displayName;//플레이어 이름
     public string playfabid;
     //델리게이트 
     public delegate void ChangeMoneyDelegate(int totalMoney);
     public ChangeMoneyDelegate onChangeMoneyDelegate;
 
-    #region 유니티 에디터 테스트 로그인용 TestLogin()
-    /// <summary>
-    /// 유니티 에디터에서 로그인되도록 테스트용으로 만들어 놓음
-    /// </summary>
-    public void TestLogin()
-    {
-        var request = new LoginWithCustomIDRequest { CustomId = "GettingStartedGuide", CreateAccount = true };
-        PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFail);
-    }
-    /// <summary>
-    /// 로그인 실패시 호출됨
-    /// </summary>
-    /// <param name="obj"></param>
-    private void OnLoginFail(PlayFabError obj)
-    {
-        Debug.Log("로그인 실패");
-    }
-    /// <summary>
-    /// 로그인 성공시 호출됨
-    /// </summary>
-    /// <param name="obj"></param>
-    private void OnLoginSuccess(LoginResult obj)
-    {
-        Debug.Log("로그인 성공");
-        StartCoroutine(LoadItemList());
-        //로그인 성공하면 앞으로 유저의 정보가 수정될수 있으니 유저의 정보를 불러와서 userinfo에 담아서 가지고 있는다
-        //JoinLobby();
-        GetInventory(); //로그인 성공하고 유저의 인벤토리 정보 바로 호출
-        Getdata(obj.PlayFabId);
-    }
-    #endregion
-
+    
     #region 데이터를 저장하는것 SetData(UserInfo info) 
     /// <summary>
     /// 유저의 정보를 저장하기 변경사항이 있으면 Userinfo 클래스를 변경하고 매개변수로 변경된 클래스를 넣어서 호출하면
@@ -139,14 +111,14 @@ public class DBManager : MonoBehaviour
         {
             //가져올 정보가 있을때
             var yourObject = JsonUtility.FromJson<UserInfo>(obj.Data["Info"].Value);
-            dataManager.userinfo = yourObject;
+            DataManager.Instance.userinfo = yourObject;
             //선택된 부품 프리팹 가져오기
             SelecPrefabs();
         }
         else
         {
             //플레이팹 아이디가 존재해서 성공 콜백은 넘어왔지만 키값에 대응하는 정보가 없으면 처음 로그인 상요자이므로 기본정보 Set해주기
-            SetData(dataManager.userinfo);
+            SetData(DataManager.Instance.userinfo);
             Debug.Log("유저 기본정보 세팅");
             //가져올 정보가 없을때 -> 기본 데이터 세팅한다 최초 로그인한 회원인 상태이다.
 
@@ -165,7 +137,7 @@ public class DBManager : MonoBehaviour
         PlayFabClientAPI.AddUserVirtualCurrency(new AddUserVirtualCurrencyRequest { Amount = amount, VirtualCurrency = "GD" }, (result) =>
         {
             Debug.Log("돈 추가");
-            myMoney = result.Balance;//현재 돈 변경
+            DataManager.Instance.myMoney = result.Balance;//현재 돈 변경
         },
         (error) => Debug.Log("돈 얻기 실패"));
     }
@@ -182,11 +154,11 @@ public class DBManager : MonoBehaviour
             Debug.Log("인벤토리 불러오기 성공");
             if (result.VirtualCurrency["GD"] < 0)
             {
-                myMoney = 0;
+                DataManager.Instance.myMoney = 0;
             }
             else
             {
-                myMoney = result.VirtualCurrency["GD"]; //인벤토리 열면서 현재 돈 가져오기
+                DataManager.Instance.myMoney = result.VirtualCurrency["GD"]; //인벤토리 열면서 현재 돈 가져오기
             }
             //인벤토리 불러오기 성공하면 동작해야할것 작성....
             Debug.Log(result.VirtualCurrency);//가상화폐 종류별로  내가 가지고있는 잔액불러오기(배열) 
@@ -194,7 +166,7 @@ public class DBManager : MonoBehaviour
             {
                 //인벤토리 리스트에 있는 아이템들의 각정보들
                 var inventory = result.Inventory[i];
-                dataManager.ownedItem_List.Add(result.Inventory[i].DisplayName);
+                DataManager.Instance.ownedItem_List.Add(result.Inventory[i].DisplayName);
                 /*  Debug.Log(inventory.DisplayName);
                   Debug.Log(inventory.ItemId);
                   Debug.Log(inventory.ItemInstanceId);
@@ -222,7 +194,7 @@ public class DBManager : MonoBehaviour
         {
             Debug.Log("상점 불러오기 성공");
 
-            dataManager.itemList = result.Catalog;
+            DataManager.Instance.itemList = result.Catalog;
             //리스트 낮은 가격순으로 정렬
             //SortItemByPrice(itemList);
             for (int i = 0; i < result.Catalog.Count; i++)
@@ -232,17 +204,17 @@ public class DBManager : MonoBehaviour
                 //태그로 비교한다.
                 if (catalog.Tags[0] == "Weapon")
                 {
-                    dataManager.weaponList.Add(catalog);//무기는 무기리스트에 추가
+                    DataManager.Instance.weaponList.Add(catalog);//무기는 무기리스트에 추가
                     //아이템의 customData 불러오는 부분
                     //GetCustomIteminfo(catalog);
                 }
                 else if (catalog.Tags[0] == "LowerBody")
                 {
-                    dataManager.legList.Add(catalog);//다리는 다리 리스트에 추가
+                    DataManager.Instance.legList.Add(catalog);//다리는 다리 리스트에 추가
                 }
                 else
                 {
-                    dataManager.bodyList.Add(catalog);//그외에 것들은 몸통 리스트에 추가
+                    DataManager.Instance.bodyList.Add(catalog);//그외에 것들은 몸통 리스트에 추가
                 }
             }
             StartCoroutine("OrganizeItem_2");
@@ -269,7 +241,7 @@ public class DBManager : MonoBehaviour
             info.attack = int.Parse(iteminfo["attack"]);
             info.weight = int.Parse(iteminfo["weight"]);
             info.lange = int.Parse(iteminfo["lange"]);
-            dataManager.weaponInfo_List.Add(info);
+            DataManager.Instance.weaponInfo_List.Add(info);
             Debug.Log("무기 정보 추가");
         }
         else if (item.Tags[0] == "LowerBody")
@@ -283,7 +255,7 @@ public class DBManager : MonoBehaviour
             info.totalweight = int.Parse(iteminfo["totalweight"]);
             info.speed = int.Parse(iteminfo["speed"]);
             info.amor = int.Parse(iteminfo["amor"]);
-            dataManager.legInfo_List.Add(info);
+            DataManager.Instance.legInfo_List.Add(info);
             Debug.Log("다리 정보 추가");
 
         }
@@ -296,7 +268,7 @@ public class DBManager : MonoBehaviour
             info.weight = int.Parse(iteminfo["weight"]);//무게
             info.hp = int.Parse(iteminfo["hp"]);//체력
             info.amor = int.Parse(iteminfo["amor"]);//방어력
-            dataManager.bodyInfo_List.Add(info);
+            DataManager.Instance.bodyInfo_List.Add(info);
             Debug.Log("몸통 정보 추가");
         }
     }
@@ -359,16 +331,17 @@ public class DBManager : MonoBehaviour
     {
         Debug.Log("구입 성공");
         //dataManager의 보유 아이템 리스트(스트링타입)에 방금 구입한 아이템의 이름을 넣어준다
-        dataManager.ownedItem_List.Add(buylastItem);
-        myMoney -= buyItemPice;//방금 구입한 아이템의 가격만큼 현재 가진돈을 빼준다
-        if (onChangeMoneyDelegate != null) onChangeMoneyDelegate(myMoney);
+        DataManager.Instance.ownedItem_List.Add(buylastItem);
+        DataManager.Instance.myMoney -= buyItemPice;//방금 구입한 아이템의 가격만큼 현재 가진돈을 빼준다
+        if (onChangeMoneyDelegate != null) onChangeMoneyDelegate(DataManager.Instance.myMoney);
     }
     #endregion
 
     #region 현재 돈을 리턴해줌 GetMyMoney()
     public int GetMyMoney()
     {
-        return myMoney;
+        Debug.Log("돈 리턴");
+        return DataManager.Instance.myMoney;
     }
     #endregion
 
@@ -393,9 +366,9 @@ public class DBManager : MonoBehaviour
     private void UpdatenameSuccess(UpdateUserTitleDisplayNameResult obj)
     {
         Debug.Log("닉네임 변경 성공");
-        dataManager.userinfo.nickName = obj.DisplayName;
-        dataManager.userinfo.firstLogin = false;
-        SetData(dataManager.userinfo);
+        DataManager.Instance.userinfo.nickName = obj.DisplayName;
+        DataManager.Instance.userinfo.firstLogin = false;
+        SetData(DataManager.Instance.userinfo);
         Debug.Log("변경된 이름은 ; " + obj.DisplayName);
         modifyOk = true;
 
@@ -428,10 +401,10 @@ public class DBManager : MonoBehaviour
         yield return null;
         Debug.Log("OrganizeItem_2");
         //List<CatalogItem> list 형태 리스트가 매개변수로 사용됨
-        SortItemByPrice(dataManager.itemList); //전체아이템 리스트 가격 낮은 순으로 정렬
-        SortItemByPrice(dataManager.weaponList);//무기리스트 가격낮은 순으로 정렬
-        SortItemByPrice(dataManager.bodyList);//몸통 리스트 가격낮은 순으로 정렬
-        SortItemByPrice(dataManager.legList);//다리 리스트 가격낮은 순으로 정렬
+        SortItemByPrice(DataManager.Instance.itemList); //전체아이템 리스트 가격 낮은 순으로 정렬
+        SortItemByPrice(DataManager.Instance.weaponList);//무기리스트 가격낮은 순으로 정렬
+        SortItemByPrice(DataManager.Instance.bodyList);//몸통 리스트 가격낮은 순으로 정렬
+        SortItemByPrice(DataManager.Instance.legList);//다리 리스트 가격낮은 순으로 정렬
 
         StartCoroutine("OrganizeItem_3");
     }
@@ -446,19 +419,19 @@ public class DBManager : MonoBehaviour
         Debug.Log("OrganizeItem_3");
         //GetCustomIteminfo 함수는 리스트에 있는 아이템들의 이름 타입 커스텀 데이터를 받아와서
         //dataManager에 있는 무기.몸,다리 상세정보리스트에 정보를 담는다.
-        for (int i = 0; i < dataManager.weaponList.Count; i++)
+        for (int i = 0; i < DataManager.Instance.weaponList.Count; i++)
         {
-            GetCustomIteminfo(dataManager.weaponList[i]);
+            GetCustomIteminfo(DataManager.Instance.weaponList[i]);
         }
-        for (int i = 0; i < dataManager.bodyList.Count; i++)
+        for (int i = 0; i < DataManager.Instance.bodyList.Count; i++)
         {
-            GetCustomIteminfo(dataManager.bodyList[i]);
+            GetCustomIteminfo(DataManager.Instance.bodyList[i]);
         }
-        for (int i = 0; i < dataManager.legList.Count; i++)
+        for (int i = 0; i < DataManager.Instance.legList.Count; i++)
         {
-            GetCustomIteminfo(dataManager.legList[i]);
+            GetCustomIteminfo(DataManager.Instance.legList[i]);
         }
-        yield return new WaitUntil(() => dataManager.legInfo_List.Count == 7);
+        yield return new WaitUntil(() => DataManager.Instance.legInfo_List.Count == 7);
         //무기 정보 리스트가 차면->기존에 조립된 것이 있다면 바로 정보를 찾아서 불러온다
         BeforeStats();
         StartCoroutine("MoveToLobby");
@@ -466,7 +439,7 @@ public class DBManager : MonoBehaviour
     public IEnumerator MoveToLobby()
     {
         yield return null;
-        photonManager.JoinLobby();
+        PhotonManager.Instance.JoinLobby();
     }
     #endregion
 
@@ -477,42 +450,42 @@ public class DBManager : MonoBehaviour
     /// </summary>
     public void SelecPrefabs()
     {
-        if (dataManager.userinfo.selectedLeg != null)
+        if (DataManager.Instance.userinfo.selectedLeg != null)
         {
             //다리 프리팹이 담긴 배열에서
-            for (int i = 0; i < dataManager.legPartsArr.Length; i++)
+            for (int i = 0; i < DataManager.Instance.legPartsArr.Length; i++)
             {
                 //DB에 저장된것과 이름이 같은 프리팹을찾아서
-                if (dataManager.userinfo.selectedLeg == dataManager.legPartsArr[i].name)
+                if (DataManager.Instance.userinfo.selectedLeg == DataManager.Instance.legPartsArr[i].name)
                 {
                     //프리팹을 찾아 놓는다
-                    dataManager.legPrefab = dataManager.legPartsArr[i];
+                    DataManager.Instance.legPrefab = DataManager.Instance.legPartsArr[i];
                     //방금 불러온 정보를 이전정보로 저장
-                    dataManager.beforeLeg = dataManager.legPrefab;
+                    DataManager.Instance.beforeLeg = DataManager.Instance.legPrefab;
                 }
             }
         }
-        if (dataManager.userinfo.selectedBody != null)
+        if (DataManager.Instance.userinfo.selectedBody != null)
         {
-            for (int i = 0; i < dataManager.bodyPartsArr.Length; i++)
+            for (int i = 0; i < DataManager.Instance.bodyPartsArr.Length; i++)
             {
-                if (dataManager.userinfo.selectedBody == dataManager.bodyPartsArr[i].name)
+                if (DataManager.Instance.userinfo.selectedBody == DataManager.Instance.bodyPartsArr[i].name)
                 {
-                    dataManager.bodyPrefab = dataManager.bodyPartsArr[i];
+                    DataManager.Instance.bodyPrefab = DataManager.Instance.bodyPartsArr[i];
                     //방금 불러온 정보를 이전정보로 저장
-                    dataManager.beforeBody = dataManager.bodyPrefab;
+                    DataManager.Instance.beforeBody = DataManager.Instance.bodyPrefab;
                 }
             }
         }
-        if (dataManager.userinfo.selectedWeapon != null)
+        if (DataManager.Instance.userinfo.selectedWeapon != null)
         {
-            for (int i = 0; i < dataManager.weaponPartsArr.Length; i++)
+            for (int i = 0; i < DataManager.Instance.weaponPartsArr.Length; i++)
             {
-                if (dataManager.userinfo.selectedWeapon == dataManager.weaponPartsArr[i].name)
+                if (DataManager.Instance.userinfo.selectedWeapon == DataManager.Instance.weaponPartsArr[i].name)
                 {
-                    dataManager.weaponPrefab = dataManager.weaponPartsArr[i];
+                    DataManager.Instance.weaponPrefab = DataManager.Instance.weaponPartsArr[i];
                     //방금 불러온 정보를 이전정보로 저장
-                    dataManager.beforeWeapon = dataManager.weaponPrefab;
+                    DataManager.Instance.beforeWeapon = DataManager.Instance.weaponPrefab;
                 }
             }
         }
@@ -526,15 +499,15 @@ public class DBManager : MonoBehaviour
     public void BeforeStats()
     {
         Debug.Log("능력치 가져오기");
-        if (dataManager.beforeLeg != null)
+        if (DataManager.Instance.beforeLeg != null)
         {
             Debug.Log("다리 찾기 시작");
-            for (int i = 0; i < dataManager.legInfo_List.Count; i++)
+            for (int i = 0; i < DataManager.Instance.legInfo_List.Count; i++)
             {
-                if (dataManager.beforeLeg.name == dataManager.legInfo_List[i].partName)
+                if (DataManager.Instance.beforeLeg.name == DataManager.Instance.legInfo_List[i].partName)
                 {
                     Debug.Log("인덱스 찾음");
-                    dataManager.legindex = i;
+                    DataManager.Instance.legindex = i;
                 }
             }
 
@@ -544,15 +517,15 @@ public class DBManager : MonoBehaviour
             Debug.Log("legPrefab is null");
         }
 
-        if (dataManager.beforeBody != null)
+        if (DataManager.Instance.beforeBody != null)
         {
             Debug.Log("몸통 찾기 시작");
-            for (int i = 0; i < dataManager.bodyInfo_List.Count; i++)
+            for (int i = 0; i < DataManager.Instance.bodyInfo_List.Count; i++)
             {
-                if (dataManager.beforeBody.name == dataManager.bodyInfo_List[i].partName)
+                if (DataManager.Instance.beforeBody.name == DataManager.Instance.bodyInfo_List[i].partName)
                 {
                     Debug.Log("인덱스 찾음");
-                    dataManager.bodyindex = i;
+                    DataManager.Instance.bodyindex = i;
                 }
             }
 
@@ -562,15 +535,15 @@ public class DBManager : MonoBehaviour
             Debug.Log("bodyPrefab is null");
         }
 
-        if (dataManager.beforeWeapon != null)
+        if (DataManager.Instance.beforeWeapon != null)
         {
             Debug.Log("무기 찾기 시작");
-            for (int i = 0; i < dataManager.weaponInfo_List.Count; i++)
+            for (int i = 0; i < DataManager.Instance.weaponInfo_List.Count; i++)
             {
-                if (dataManager.beforeWeapon.name == dataManager.weaponInfo_List[i].partName)
+                if (DataManager.Instance.beforeWeapon.name == DataManager.Instance.weaponInfo_List[i].partName)
                 {
                     Debug.Log("인덱스 찾음");
-                    dataManager.weaponindex = i;
+                    DataManager.Instance.weaponindex = i;
                 }
             }
         }
@@ -589,15 +562,15 @@ public class DBManager : MonoBehaviour
     public void CurrentStats()
     {
         Debug.Log("능력치 가져오기");
-        if (dataManager.legPrefab != null)
+        if (DataManager.Instance.legPrefab != null)
         {
             Debug.Log("다리 찾기 시작");
-            for (int i = 0; i < dataManager.legInfo_List.Count; i++)
+            for (int i = 0; i < DataManager.Instance.legInfo_List.Count; i++)
             {
-                if (dataManager.legPrefab.name == dataManager.legInfo_List[i].partName)
+                if (DataManager.Instance.legPrefab.name == DataManager.Instance.legInfo_List[i].partName)
                 {
                     Debug.Log("인덱스 찾음");
-                    dataManager.legindex = i;
+                    DataManager.Instance.legindex = i;
                 }
             }
 
@@ -607,15 +580,15 @@ public class DBManager : MonoBehaviour
             Debug.Log("legPrefab us null");
         }
 
-        if (dataManager.bodyPrefab != null)
+        if (DataManager.Instance.bodyPrefab != null)
         {
             Debug.Log("몸통 찾기 시작");
-            for (int i = 0; i < dataManager.bodyInfo_List.Count; i++)
+            for (int i = 0; i < DataManager.Instance.bodyInfo_List.Count; i++)
             {
-                if (dataManager.bodyPrefab.name == dataManager.bodyInfo_List[i].partName)
+                if (DataManager.Instance.bodyPrefab.name == DataManager.Instance.bodyInfo_List[i].partName)
                 {
                     Debug.Log("인덱스 찾음");
-                    dataManager.bodyindex = i;
+                    DataManager.Instance.bodyindex = i;
                 }
             }
 
@@ -625,15 +598,15 @@ public class DBManager : MonoBehaviour
             Debug.Log("bodyPrefab is null");
         }
 
-        if (dataManager.weaponPrefab != null)
+        if (DataManager.Instance.weaponPrefab != null)
         {
             Debug.Log("무기 찾기 시작");
-            for (int i = 0; i < dataManager.weaponInfo_List.Count; i++)
+            for (int i = 0; i < DataManager.Instance.weaponInfo_List.Count; i++)
             {
-                if (dataManager.weaponPrefab.name == dataManager.weaponInfo_List[i].partName)
+                if (DataManager.Instance.weaponPrefab.name == DataManager.Instance.weaponInfo_List[i].partName)
                 {
                     Debug.Log("인덱스 찾음");
-                    dataManager.weaponindex = i;
+                    DataManager.Instance.weaponindex = i;
                 }
             }
         }
@@ -651,49 +624,49 @@ public class DBManager : MonoBehaviour
     /// </summary>
     public void Stats()
     {
-        if (dataManager.beforeLeg != null || dataManager.legPrefab != null)
+        if (DataManager.Instance.beforeLeg != null || DataManager.Instance.legPrefab != null)
         {
-            dataManager.legtotalweight = dataManager.legInfo_List[dataManager.legindex].totalweight;
-            dataManager.legspeed = dataManager.legInfo_List[dataManager.legindex].speed;
-            dataManager.legamor = dataManager.legInfo_List[dataManager.legindex].amor;
+            DataManager.Instance.legtotalweight = DataManager.Instance.legInfo_List[DataManager.Instance.legindex].totalweight;
+            DataManager.Instance.legspeed = DataManager.Instance.legInfo_List[DataManager.Instance.legindex].speed;
+            DataManager.Instance.legamor = DataManager.Instance.legInfo_List[DataManager.Instance.legindex].amor;
         }
-        if (dataManager.beforeBody != null || dataManager.bodyPrefab != null)
+        if (DataManager.Instance.beforeBody != null || DataManager.Instance.bodyPrefab != null)
         {
-            dataManager.bodyhp = dataManager.bodyInfo_List[dataManager.bodyindex].hp;
-            dataManager.bodyamor = dataManager.bodyInfo_List[dataManager.bodyindex].amor;
-            dataManager.bodytype = dataManager.bodyInfo_List[dataManager.bodyindex].bodytype;
-            dataManager.bodyweight = dataManager.bodyInfo_List[dataManager.bodyindex].weight;
+            DataManager.Instance.bodyhp = DataManager.Instance.bodyInfo_List[DataManager.Instance.bodyindex].hp;
+            DataManager.Instance.bodyamor = DataManager.Instance.bodyInfo_List[DataManager.Instance.bodyindex].amor;
+            DataManager.Instance.bodytype = DataManager.Instance.bodyInfo_List[DataManager.Instance.bodyindex].bodytype;
+            DataManager.Instance.bodyweight = DataManager.Instance.bodyInfo_List[DataManager.Instance.bodyindex].weight;
         }
-        if (dataManager.beforeWeapon != null || dataManager.weaponPrefab != null)
+        if (DataManager.Instance.beforeWeapon != null || DataManager.Instance.weaponPrefab != null)
         {
-            dataManager.weaponweight = dataManager.weaponInfo_List[dataManager.weaponindex].weight;
-            dataManager.weapontype = dataManager.weaponInfo_List[dataManager.weaponindex].weapontype;
-            dataManager.weaponlange = dataManager.weaponInfo_List[dataManager.weaponindex].lange;
-            dataManager.weaponattack = dataManager.weaponInfo_List[dataManager.weaponindex].attack;
+            DataManager.Instance.weaponweight = DataManager.Instance.weaponInfo_List[DataManager.Instance.weaponindex].weight;
+            DataManager.Instance.weapontype = DataManager.Instance.weaponInfo_List[DataManager.Instance.weaponindex].weapontype;
+            DataManager.Instance.weaponlange = DataManager.Instance.weaponInfo_List[DataManager.Instance.weaponindex].lange;
+            DataManager.Instance.weaponattack = DataManager.Instance.weaponInfo_List[DataManager.Instance.weaponindex].attack;
         }
 
-        if ((dataManager.beforeLeg != null && dataManager.beforeBody != null && dataManager.beforeWeapon != null) || 
-            (dataManager.legPrefab != null && dataManager.bodyPrefab != null && dataManager.weaponPrefab != null))
+        if ((DataManager.Instance.beforeLeg != null && DataManager.Instance.beforeBody != null && DataManager.Instance.beforeWeapon != null) || 
+            (DataManager.Instance.legPrefab != null && DataManager.Instance.bodyPrefab != null && DataManager.Instance.weaponPrefab != null))
         {
-            if (dataManager.weaponweight + dataManager.bodyweight > dataManager.legtotalweight)
+            if (DataManager.Instance.weaponweight + DataManager.Instance.bodyweight > DataManager.Instance.legtotalweight)
             {
-                dataManager.isloadOver = true;
+                DataManager.Instance.isloadOver = true;
             }
             else
             {
-                dataManager.isloadOver = false;
+                DataManager.Instance.isloadOver = false;
             }
         }
 
-        if (dataManager.beforeBody != null && dataManager.beforeWeapon != null)
+        if (DataManager.Instance.beforeBody != null && DataManager.Instance.beforeWeapon != null)
         {
-            if (dataManager.weapontype.Equals(dataManager.bodytype))
+            if (DataManager.Instance.weapontype.Equals(DataManager.Instance.bodytype))
             {
-                dataManager.istypeNoeSame = false;
+                DataManager.Instance.istypeNoeSame = false;
             }
             else
             {
-                dataManager.istypeNoeSame = true;
+                DataManager.Instance.istypeNoeSame = true;
             }
         }
     }
@@ -705,9 +678,9 @@ public class DBManager : MonoBehaviour
     /// </summary>
     public void RecallBeforePrefab()
     {
-        dataManager.legPrefab = dataManager.beforeLeg;
-        dataManager.bodyPrefab = dataManager.beforeBody;
-        dataManager.weaponPrefab = dataManager.beforeWeapon;
+        DataManager.Instance.legPrefab = DataManager.Instance.beforeLeg;
+        DataManager.Instance.bodyPrefab = DataManager.Instance.beforeBody;
+        DataManager.Instance.weaponPrefab = DataManager.Instance.beforeWeapon;
     }
     #endregion
 
@@ -717,9 +690,9 @@ public class DBManager : MonoBehaviour
     /// </summary>
     public void ChangeBeforePrefab()
     {
-        dataManager.beforeLeg = dataManager.legPrefab;
-        dataManager.beforeBody = dataManager.bodyPrefab;
-        dataManager.beforeWeapon = dataManager.weaponPrefab;
+        DataManager.Instance.beforeLeg = DataManager.Instance.legPrefab;
+        DataManager.Instance.beforeBody = DataManager.Instance.bodyPrefab;
+        DataManager.Instance.beforeWeapon = DataManager.Instance.weaponPrefab;
     }
     #endregion
 }

@@ -4,7 +4,6 @@ using UnityEngine;
 using PlayFab.GroupsModels;
 using PlayFab.ClientModels;
 using PlayFab;
-using TMPro.EditorUtilities;
 using System;
 #if GOOGLEGAMES
 using GooglePlayGames;
@@ -13,6 +12,7 @@ using GooglePlayGames.BasicApi;
 public class LoginManager : MonoBehaviour
 {
     protected static LoginManager instance =null;
+    protected DataManager dataManager;
     protected DBManager dbManager;
     private void Awake()
     {
@@ -27,6 +27,7 @@ public class LoginManager : MonoBehaviour
         PlayGamesPlatform.Activate();
 #endif
     }
+
     public static LoginManager GetInstance()
     {
         if(instance == null)
@@ -41,7 +42,10 @@ public class LoginManager : MonoBehaviour
     {
         //디비 메니져를 가져와야한다
         dbManager = DBManager.GetInstance();
+        dataManager = DataManager.GetInstance();
     }
+
+    #region 구글로그인 GoogleLogin()
     public void GoogleLogin()
     {
         print("GoogleLogin");
@@ -67,7 +71,7 @@ public class LoginManager : MonoBehaviour
                     StartCoroutine(dbManager.LoadItemList());// 상점 리스트 불러와서 정리하고 완료되면 씬전환
                     //JoinLobby();
 
-                    if (dbManager.onChangeMoneyDelegate != null) dbManager.onChangeMoneyDelegate(dbManager.myMoney);
+                    if (dbManager.onChangeMoneyDelegate != null) dbManager.onChangeMoneyDelegate(dataManager.myMoney);
 
                 }, PlayFab_GoogleLogin_Error);
             }
@@ -85,4 +89,37 @@ public class LoginManager : MonoBehaviour
     {
         throw new NotImplementedException();
     }
+    #endregion
+
+    #region 유니티 에디터 테스트 로그인용 TestLogin()
+    /// <summary>
+    /// 유니티 에디터에서 로그인되도록 테스트용으로 만들어 놓음
+    /// </summary>
+    public void TestLogin()
+    {
+        var request = new LoginWithCustomIDRequest { CustomId = "GettingStartedGuide", CreateAccount = true };
+        PlayFabClientAPI.LoginWithCustomID(request, OnLoginSuccess, OnLoginFail);
+    }
+    /// <summary>
+    /// 로그인 실패시 호출됨
+    /// </summary>
+    /// <param name="obj"></param>
+    private void OnLoginFail(PlayFabError obj)
+    {
+        Debug.Log("로그인 실패");
+    }
+    /// <summary>
+    /// 로그인 성공시 호출됨
+    /// </summary>
+    /// <param name="obj"></param>
+    private void OnLoginSuccess(LoginResult obj)
+    {
+        Debug.Log("로그인 성공");
+        StartCoroutine(dbManager.LoadItemList());
+        //로그인 성공하면 앞으로 유저의 정보가 수정될수 있으니 유저의 정보를 불러와서 userinfo에 담아서 가지고 있는다
+        //JoinLobby();
+        dbManager.GetInventory(); //로그인 성공하고 유저의 인벤토리 정보 바로 호출
+        dbManager.Getdata(obj.PlayFabId);
+    }
+    #endregion
 }
