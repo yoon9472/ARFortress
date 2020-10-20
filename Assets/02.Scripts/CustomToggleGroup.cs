@@ -43,7 +43,7 @@ public class CustomToggleGroup : ToggleGroup
                 OffAllToggle();
                 m_Toggles[0].isOn = true;
                 m_Toggles[0].image.sprite = highlightImage;
-                sm.UpdateItemPanel(NetWork.Get.itemList);
+                sm.UpdateItemPanel(DataManager.Instance.itemList);
                 sm.ResetScroll();
                 break;
             case 1:
@@ -51,7 +51,7 @@ public class CustomToggleGroup : ToggleGroup
                 OffAllToggle();
                 m_Toggles[1].isOn = true;
                 m_Toggles[1].image.sprite = highlightImage;
-                sm.UpdateItemPanel(NetWork.Get.weaponList);
+                sm.UpdateItemPanel(DataManager.Instance.weaponList);
                 sm.ResetScroll();
                 break;
             case 2:
@@ -59,7 +59,7 @@ public class CustomToggleGroup : ToggleGroup
                 OffAllToggle();
                 m_Toggles[2].isOn = true;
                 m_Toggles[2].image.sprite = highlightImage;
-                sm.UpdateItemPanel(NetWork.Get.bodyList);
+                sm.UpdateItemPanel(DataManager.Instance.bodyList);
                 sm.ResetScroll();
                 break;
             case 3:
@@ -67,7 +67,7 @@ public class CustomToggleGroup : ToggleGroup
                 OffAllToggle();
                 m_Toggles[3].isOn = true;
                 m_Toggles[3].image.sprite = highlightImage;
-                sm.UpdateItemPanel(NetWork.Get.legList);
+                sm.UpdateItemPanel(DataManager.Instance.legList);
                 break;
         }
     }

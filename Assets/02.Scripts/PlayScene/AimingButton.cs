@@ -59,16 +59,17 @@ public class AimingButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
     public void OnPointerUp(PointerEventData eventData)
     {
         //버튼에서 떼고 있을때
-        aiming.isRotateUpDown = false;
-        aiming.isRotateLeftRight = false;
-        aiming.isControlPower = false;
-        if(roll == ButtonRoll.shoot)
+        if (PhotonManager.Instance.isMaster == true)
         {
-        //PhotonManager.Instance.isFireCheck = true;
-            //손떼면 손을뗏다는것을 알리는 불값을 전송한다 다른사용자에게
-            if(PhotonManager.Instance.isMaster == true)
+            aiming.isRotateUpDown = false;
+            aiming.isRotateLeftRight = false;
+            aiming.isControlPower = false;
+            if (roll == ButtonRoll.shoot)
             {
+                //PhotonManager.Instance.isFireCheck = true;
+                //손떼면 손을뗏다는것을 알리는 불값을 전송한다 다른사용자에게
                 PhotonManager.Instance.Call_SendShootValue(PhotonManager.Instance.isFireCheck, PhotonManager.Instance.lange);
+
             }
         }
     }

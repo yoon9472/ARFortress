@@ -155,7 +155,7 @@ public class StoreManager : MonoBehaviour
         SceneManager.LoadScene("03.Lobby");
     }
 
-    protected void UpdateItemPanel(List<CatalogItem> itemList) 
+    public void UpdateItemPanel(List<CatalogItem> itemList) 
     {
          for(int i =0 ; i <itemList.Count; i++)
          {
@@ -176,7 +176,7 @@ public class StoreManager : MonoBehaviour
     }
    
     //자식들 없애는 곳!
-    protected void DestroyChildObj()
+    public void DestroyChildObj()
     {
         Debug.Log("자식 오브젝트 삭제 시작");
         for (int i =0; i < itemPrefabParentTransform.childCount; i++)
