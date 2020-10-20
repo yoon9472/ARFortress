@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+/// <summary>
+/// 캐릭터를 움직이는 클래스
+/// </summary>
 public class VirtualJoystick : MonoBehaviour
 {
 
@@ -29,7 +32,6 @@ public class VirtualJoystick : MonoBehaviour
     // 드래그
     public void Drag(BaseEventData _Data)
     {
-        NetWork.Get.isInput= true;
         PointerEventData Data = _Data as PointerEventData;
         Vector3 Pos = Data.position;
 
@@ -45,10 +47,16 @@ public class VirtualJoystick : MonoBehaviour
         // 거리가 반지름보다 커지면 조이스틱을 반지름의 크기만큼만 이동.
         else
             Stick.position = StickFirstPos + JoyVec * Radius;
-        if (NetWork.Get.isMaster == true)
+
+        if (PhotonManager.Instance.isMaster == true) //제어권이 있는 방장일때만 컨트롤러의 값을 동기화시킨다
         {
-            NetWork.Get.z = JoyVec.y;//전방 움직임값
-            NetWork.Get.x = JoyVec.x;//좌우 움직임값
+            PhotonManager.Instance.isInput = true;
+            PhotonManager.Instance.z = JoyVec.y;//전방 움직임값
+            PhotonManager.Instance.x = JoyVec.x;//좌우 움직임값
+        }
+        else
+        {
+            Debug.Log("턴이 아님");
         }
     }
 
@@ -56,8 +64,13 @@ public class VirtualJoystick : MonoBehaviour
     public void DragEnd()
     {
         Stick.position = StickFirstPos; // 스틱을 원래의 위치로.
-        JoyVec = Vector3.zero;          // 방향을 0으로.
-        NetWork.Get.isInput =false;
+        if(PhotonManager.Instance.isMaster==true)//제어권 있는 방장이면 스틱놓았을때 값을 동기화한다
+        {
+            JoyVec = Vector3.zero;          // 방향을 0으로.
+            PhotonManager.Instance.z = JoyVec.y;//전방 움직임값
+            PhotonManager.Instance.x = JoyVec.x;//좌우 움직임값
+            PhotonManager.Instance.isInput =false;
+        }
     }
 
     //void Update()

@@ -13,6 +13,7 @@ public class Aiming : MonoBehaviour
     public float y;//y 축 기준 좌우 회전을 위한 값
     public bool isRotateUpDown = false; //위아래 버튼을 눌렀는지
     public bool isRotateLeftRight = false; //좌우 버튼을 눌렀는지
+    public bool isControlPower = false;
 
     private void Start()
     {
@@ -21,30 +22,49 @@ public class Aiming : MonoBehaviour
     }
     private void Update()
     {
-        if(NetWork.Get.isMaster == true)
+        if(PhotonManager.Instance.isMaster == true)
         {
+            if(isControlPower == true)
+            {
+
+            }
+
             if(isRotateUpDown == true)
             {
                 //위아래 회전중일때는 회전중인 불값과 방향에 대한 정보를 포톤으로 넘겨준다
-                NetWork.Get.isRotateUpDown = true;
-                NetWork.Get.rotateX = x;
+                PhotonManager.Instance.isRotateUpDown = true;
+                PhotonManager.Instance.rotateX = x;
             }
             else
             {
                 //회전중이 아니일때 불값을 동기화한다
-                NetWork.Get.isRotateUpDown = false;
+                PhotonManager.Instance.isRotateUpDown = false;
             }
 
             if(isRotateLeftRight == true)
             {
                 //좌우 회전중일때는 회전중인 불값과 방향에 대한 정보를 포톤으로 넘겨준다
-                NetWork.Get.isRotateLeftRight = true;
-                NetWork.Get.rotateY = y;
+                PhotonManager.Instance.isRotateLeftRight = true;
+                PhotonManager.Instance.rotateY = y;
             }
             else
             {
                 //회전중이 아닐때 불값을 동기화한다
-                NetWork.Get.isRotateLeftRight = false;
+                PhotonManager.Instance.isRotateLeftRight = false;
+            }
+
+            if(isControlPower == true)
+            {
+                //제어권 있는 마스터 클라이언트일때 게이지가 올라간다
+                if((PhotonManager.Instance.lange <DataManager.Instance.weaponlange)&&(PhotonManager.Instance.isMaster == true))
+                {
+                    //게이지를 올린다
+                PhotonManager.Instance.lange += 3*Time.deltaTime;
+                }
+            }
+            else
+            {
+
             }
         }
 

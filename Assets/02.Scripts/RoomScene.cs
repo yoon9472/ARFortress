@@ -6,11 +6,11 @@ public class RoomScene : MonoBehaviour
 {
     public void StartGame()
     {
-        NetWork.Get.StartGame();
+        PhotonManager.Instance.StartGame();
     }
     public void ToLobby()
     {
         //SceneManager.LoadScene("03.Lobby");
-        NetWork.Get.LeaveRoom();
+        PhotonManager.Instance.LeaveRoom();
     }
 }

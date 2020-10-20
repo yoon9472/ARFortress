@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public class Slot : MonoBehaviour
 {
+    protected DBManager dbManager;
     //이 스크립트는 Panel_Leg,Panel_Weapon,Panel_Body 의 PartsSlot 안의 Slot 안에 각각 붙어있음.
     //슬롯 테두리안의 로봇이미지 img
     public Image img;
@@ -28,11 +29,12 @@ public class Slot : MonoBehaviour
     public Transform objectPivot;
     void Start()
     {
+        dbManager = DBManager.GetInstance();
         activeSlot = false;
         //인벤토리에 아이템이 들어와 있으면 아이템의 버튼 활성화 ( Default 상태의 잠금 해제)
-        for (int i = 0; i < GameManager.Get.ownedItem_List.Count; i++)
+        for (int i = 0; i < DataManager.Instance.ownedItem_List.Count; i++)
         {
-            if (itemName == GameManager.Get.ownedItem_List[i])
+            if (itemName == DataManager.Instance.ownedItem_List[i])
             {
                 //버튼 활성화 시키기  활성화 되면 잠금이미지의 알파값 을 0으로 (투명하게)
                 activeSlot = true;
@@ -63,15 +65,15 @@ public class Slot : MonoBehaviour
             //무기 리스트일때
             if (itemType == 0)
             {
-                for (int i = 0; i < GameManager.Get.weaponInfo_List.Count; i++)
+                for (int i = 0; i < DataManager.Instance.weaponInfo_List.Count; i++)
                 {
-                    if (itemName == GameManager.Get.weaponInfo_List[i].partName)
+                    if (itemName == DataManager.Instance.weaponInfo_List[i].partName)
                     {
-                        textRoot.transform.GetChild(0).GetComponent<Text>().text = "<color=#99ff99>Name : </color>" + GameManager.Get.weaponInfo_List[i].partName;
-                        textRoot.transform.GetChild(1).GetComponent<Text>().text = "<color=#80ff80>Type : </color>" + GameManager.Get.weaponInfo_List[i].weapontype;
-                        textRoot.transform.GetChild(2).GetComponent<Text>().text = "<color=#66ff66>Weight : </color>" + GameManager.Get.weaponInfo_List[i].weight.ToString();
-                        textRoot.transform.GetChild(3).GetComponent<Text>().text = "<color=#4dff4d>Attack : </color>" + GameManager.Get.weaponInfo_List[i].attack.ToString();
-                        textRoot.transform.GetChild(4).GetComponent<Text>().text = "<color=#33ff33>Range : </color>" + GameManager.Get.weaponInfo_List[i].lange.ToString();
+                        textRoot.transform.GetChild(0).GetComponent<Text>().text = "<color=#99ff99>Name : </color>" + DataManager.Instance.weaponInfo_List[i].partName;
+                        textRoot.transform.GetChild(1).GetComponent<Text>().text = "<color=#80ff80>Type : </color>" + DataManager.Instance.weaponInfo_List[i].weapontype;
+                        textRoot.transform.GetChild(2).GetComponent<Text>().text = "<color=#66ff66>Weight : </color>" + DataManager.Instance.weaponInfo_List[i].weight.ToString();
+                        textRoot.transform.GetChild(3).GetComponent<Text>().text = "<color=#4dff4d>Attack : </color>" + DataManager.Instance.weaponInfo_List[i].attack.ToString();
+                        textRoot.transform.GetChild(4).GetComponent<Text>().text = "<color=#33ff33>Range : </color>" + DataManager.Instance.weaponInfo_List[i].lange.ToString();
                     }
 
 
@@ -80,29 +82,28 @@ public class Slot : MonoBehaviour
             //바디 일때
             else if (itemType == 1)
             {
-                for (int i = 0; i < GameManager.Get.bodyInfo_List.Count; i++)
+                for (int i = 0; i < DataManager.Instance.bodyInfo_List.Count; i++)
                 {
-                    if (itemName == GameManager.Get.bodyInfo_List[i].partName)
+                    if (itemName == DataManager.Instance.bodyInfo_List[i].partName)
                     {
-                        textRoot.transform.GetChild(0).GetComponent<Text>().text = "<color=#99ff99>Name : </color>" + GameManager.Get.bodyInfo_List[i].partName;
-                        textRoot.transform.GetChild(1).GetComponent<Text>().text = "<color=#80ff80>Type : </color>" + GameManager.Get.bodyInfo_List[i].bodytype;
-                        textRoot.transform.GetChild(2).GetComponent<Text>().text = "<color=#66ff66>Weight : </color>" + GameManager.Get.bodyInfo_List[i].weight.ToString();
-                        textRoot.transform.GetChild(3).GetComponent<Text>().text = "<color=#4dff4d>HP : </color>" + GameManager.Get.bodyInfo_List[i].hp.ToString();
-                        textRoot.transform.GetChild(4).GetComponent<Text>().text = "<color=#33ff33>Armor : </color>" + GameManager.Get.bodyInfo_List[i].amor.ToString();
+                        textRoot.transform.GetChild(0).GetComponent<Text>().text = "<color=#99ff99>Name : </color>" + DataManager.Instance.bodyInfo_List[i].partName;
+                        textRoot.transform.GetChild(1).GetComponent<Text>().text = "<color=#80ff80>Type : </color>" + DataManager.Instance.bodyInfo_List[i].bodytype;
+                        textRoot.transform.GetChild(2).GetComponent<Text>().text = "<color=#66ff66>Weight : </color>" + DataManager.Instance.bodyInfo_List[i].weight.ToString();
+                        textRoot.transform.GetChild(3).GetComponent<Text>().text = "<color=#4dff4d>HP : </color>" + DataManager.Instance.bodyInfo_List[i].hp.ToString();
+                        textRoot.transform.GetChild(4).GetComponent<Text>().text = "<color=#33ff33>Armor : </color>" + DataManager.Instance.bodyInfo_List[i].amor.ToString();
                     }
                 }
             }
             //다리 일때
             else
             {
-                for (int i = 0; i < GameManager.Get.legInfo_List.Count; i++)
+                for (int i = 0; i < DataManager.Instance.legInfo_List.Count; i++)
                 {
-                    if (itemName == GameManager.Get.legInfo_List[i].partName)
+                    if (itemName == DataManager.Instance.legInfo_List[i].partName)
                     {
-                        textRoot.transform.GetChild(0).GetComponent<Text>().text = "<color=#99ff99>Name : </color>" + GameManager.Get.legInfo_List[i].partName;
-                        textRoot.transform.GetChild(1).GetComponent<Text>().text = "<color=#80ff80>Load : </color>" + GameManager.Get.legInfo_List[i].totalweight.ToString();
-                        textRoot.transform.GetChild(2).GetComponent<Text>().text = "<color=#66ff66>Speed : </color>" + GameManager.Get.legInfo_List[i].speed.ToString();
-                        textRoot.transform.GetChild(3).GetComponent<Text>().text = "<color=#4dff4d>Armor : </color>" + GameManager.Get.legInfo_List[i].amor.ToString();
+                        textRoot.transform.GetChild(0).GetComponent<Text>().text = "<color=#99ff99>Name : </color>" + DataManager.Instance.legInfo_List[i].partName;
+                        textRoot.transform.GetChild(1).GetComponent<Text>().text = "<color=#80ff80>Load : </color>" + DataManager.Instance.legInfo_List[i].totalweight.ToString();
+                        textRoot.transform.GetChild(2).GetComponent<Text>().text = "<color=#66ff66>Speed : </color>" + DataManager.Instance.legInfo_List[i].speed.ToString();
                     }
                 }
             }
@@ -124,31 +125,31 @@ public class Slot : MonoBehaviour
         if(itemType ==2 )
         {
             //이미 생성된 다리가 있으면 파괴한다.
-            if (GameManager.Get.selectLeg != null)
+            if (DataManager.Instance.selectLeg != null)
             {
-                Destroy(GameManager.Get.selectLeg);
+                Destroy(DataManager.Instance.selectLeg);
             }
-            for(int i=0; i < GameManager.Get.legPartsArr.Length; i++)
+            for(int i=0; i < DataManager.Instance.legPartsArr.Length; i++)
             {
                 //이름과 일치하는 부품을 찾는다
-                if(itemName == GameManager.Get.legPartsArr[i].name)
+                if(itemName == DataManager.Instance.legPartsArr[i].name)
                 {
                     //다리를 생성한다.
-                   GameManager.Get.selectLeg =Instantiate(GameManager.Get.legPartsArr[i], objectPivot.transform.position, Quaternion.identity);
+                   DataManager.Instance.selectLeg =Instantiate(DataManager.Instance.legPartsArr[i], objectPivot.transform.position, Quaternion.identity);
                     //선택한 다리의 이름을 저장한다 DB에 올릴 이름
-                    GameManager.Get.userinfo.selectedLeg = GameManager.Get.legPartsArr[i].name;
+                    DataManager.Instance.userinfo.selectedLeg = DataManager.Instance.legPartsArr[i].name;
                     //변경된 프리팹도 기억한다.
-                    GameManager.Get.legPrefab = GameManager.Get.legPartsArr[i];
+                    DataManager.Instance.legPrefab = DataManager.Instance.legPartsArr[i];
                     //다리를 생성했는데 몸통이 이미 있다면?
-                    if (GameManager.Get.selectBody !=null)
+                    if (DataManager.Instance.selectBody !=null)
                     {
                         //몸통의 위치는 다리의 높이에 따라 다시 설정한다.
-                        GameManager.Get.selectBody.transform.position = GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position;
+                        DataManager.Instance.selectBody.transform.position = DataManager.Instance.selectLeg.GetComponent<LegParts>().bodyPos.transform.position;
                         //만약 선택된 무기도 있다면?
-                        if(GameManager.Get.selectWeapon !=null)
+                        if(DataManager.Instance.selectWeapon !=null)
                         {
                             //무기의 위치는 다시 조정된 몸통의 위치에 따라 새로 조정한다.
-                            GameManager.Get.selectWeapon.transform.position = GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position;
+                            DataManager.Instance.selectWeapon.transform.position = DataManager.Instance.selectBody.GetComponent<BodyParts>().weaponPos.transform.position;
                         }
                     }
                 }
@@ -157,32 +158,32 @@ public class Slot : MonoBehaviour
         else if(itemType ==1)
         {
             //몸통 만 선택시 예외처리
-            if (GameManager.Get.selectLeg == null)
+            if (DataManager.Instance.selectLeg == null)
             {
                 Debug.Log("Please choose the Leg parts first.");
             }
             else
             {
-                if (GameManager.Get.selectBody != null)
+                if (DataManager.Instance.selectBody != null)
                 {
-                    Destroy(GameManager.Get.selectBody);
+                    Destroy(DataManager.Instance.selectBody);
                 }
-                for (int i = 0; i < GameManager.Get.bodyPartsArr.Length; i++)
+                for (int i = 0; i < DataManager.Instance.bodyPartsArr.Length; i++)
                 {
                     //이름 과 일치하는 몸통을 찾는다.
-                    if (itemName == GameManager.Get.bodyPartsArr[i].name)
+                    if (itemName == DataManager.Instance.bodyPartsArr[i].name)
                     {
                         //몸통을 생성한다
-                        GameManager.Get.selectBody = Instantiate(GameManager.Get.bodyPartsArr[i], GameManager.Get.selectLeg.GetComponent<LegParts>().bodyPos.transform.position, Quaternion.identity);
+                        DataManager.Instance.selectBody = Instantiate(DataManager.Instance.bodyPartsArr[i], DataManager.Instance.selectLeg.GetComponent<LegParts>().bodyPos.transform.position, Quaternion.identity);
                         //선택한 몸통의 이름을 담아놓는다 DB 저장용
-                        GameManager.Get.userinfo.selectedBody = GameManager.Get.bodyPartsArr[i].name;
+                        DataManager.Instance.userinfo.selectedBody = DataManager.Instance.bodyPartsArr[i].name;
                         //변경된 프리팹을 기억한다.
-                        GameManager.Get.bodyPrefab = GameManager.Get.bodyPartsArr[i];
+                        DataManager.Instance.bodyPrefab = DataManager.Instance.bodyPartsArr[i];
                         //몸통을 생성했는데 이미 생성된 무기가 있다면?
-                        if (GameManager.Get.selectWeapon != null)
+                        if (DataManager.Instance.selectWeapon != null)
                         {
                             //새로 생긴 몸통의 위치에 따라 무기의 위치도 재조정한다.
-                            GameManager.Get.selectWeapon.transform.position = GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position;
+                            DataManager.Instance.selectWeapon.transform.position = DataManager.Instance.selectBody.GetComponent<BodyParts>().weaponPos.transform.position;
                         }
                     }
                 }
@@ -191,31 +192,31 @@ public class Slot : MonoBehaviour
         else
         {
             //무기만 선택시 예외처리
-            if (GameManager.Get.selectBody == null)
+            if (DataManager.Instance.selectBody == null)
             {
                 Debug.Log("Please choose the Body parts first.");
             }
             else
             {
-                if (GameManager.Get.selectWeapon != null)
+                if (DataManager.Instance.selectWeapon != null)
                 {
-                    Destroy(GameManager.Get.selectWeapon);
+                    Destroy(DataManager.Instance.selectWeapon);
                 }
-                for (int i = 0; i < GameManager.Get.weaponPartsArr.Length; i++)
+                for (int i = 0; i < DataManager.Instance.weaponPartsArr.Length; i++)
                 {
-                    if (itemName == GameManager.Get.weaponPartsArr[i].name)
+                    if (itemName == DataManager.Instance.weaponPartsArr[i].name)
                     {
-                        GameManager.Get.selectWeapon = Instantiate(GameManager.Get.weaponPartsArr[i], GameManager.Get.selectBody.GetComponent<BodyParts>().weaponPos.transform.position, Quaternion.identity);
+                        DataManager.Instance.selectWeapon = Instantiate(DataManager.Instance.weaponPartsArr[i], DataManager.Instance.selectBody.GetComponent<BodyParts>().weaponPos.transform.position, Quaternion.identity);
                         //선택한 무기의 이름을 담아놓은다 DB 저장용
-                        GameManager.Get.userinfo.selectedWeapon = GameManager.Get.weaponPartsArr[i].name;
+                        DataManager.Instance.userinfo.selectedWeapon = DataManager.Instance.weaponPartsArr[i].name;
                         //변경된 프리팹으로 기억한다.
-                        GameManager.Get.weaponPrefab = GameManager.Get.weaponPartsArr[i];
+                        DataManager.Instance.weaponPrefab = DataManager.Instance.weaponPartsArr[i];
                     }
                 }
             }
         }
-        GameManager.Get.CurrentStats();
-        GameManager.Get.Stats();
+        dbManager.CurrentStats();
+        dbManager.Stats();
     }
 
 }

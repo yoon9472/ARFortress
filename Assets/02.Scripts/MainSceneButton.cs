@@ -5,13 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class MainSceneButton : MonoBehaviour
 {
+    //protected DataManager.Instance DataManager.Instance;
+    protected DBManager dbManager;
     public GameObject option;
     public GameObject exit;
     public GameObject nickName;
     // Start is called before the first frame update
     void Start()
     {
-        if(GameManager.Get.userinfo.firstLogin == true)
+        //dbManager = DBManager.GetInstance();
+        //DataManager.Instance = DataManager.Instance.GetInstance();
+
+        if(DataManager.Instance.userinfo.firstLogin == true)
         {
             nickName.SetActive(true);
         }
@@ -57,14 +62,14 @@ public class MainSceneButton : MonoBehaviour
     public void ToPlayGame()
     {
         //로봇 조립된 상태인지 체크하고
-        if(GameManager.Get.beforeLeg !=null && GameManager.Get.beforeBody !=null && GameManager.Get.beforeWeapon !=null)
+        if(DataManager.Instance.beforeLeg !=null && DataManager.Instance.beforeBody !=null && DataManager.Instance.beforeWeapon !=null)
         {
         SceneManager.LoadScene("04.MakeRoom");
         }
         else
         {
             //선택이 안되어 있다면 씬이동막고 로봇 조립하라는 메세지
-            GameManager.Get.Msg = "Build a robot in LAB";
+            DataManager.Instance.Msg = "Build a robot in LAB";
         }
 
     }

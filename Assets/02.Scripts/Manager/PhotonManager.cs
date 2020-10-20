@@ -10,12 +10,35 @@ using Hashtable = ExitGames.Client.Photon.Hashtable;
 public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
 {
     protected static PhotonManager instance = null;
+    //------------------------------------------
+    public static PhotonManager Instance
+    {
+        get
+        {
+            if (null == instance)
+            {
+                return null;
+            }
+            return instance;
+        }
+    }
+    //-------------------------------------------
     private void Awake()
     {
-        instance = this;
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        PhotonNetwork.AutomaticallySyncScene = true;
+        DontDestroyOnLoad(this.gameObject);
     }
     public static PhotonManager GetInstance()
     {
+        Debug.Log("PhotonManager 인스턴스 가져오기");
         if(instance == null)
         {
             GameObject obj = new GameObject();
@@ -38,7 +61,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     public bool isMaster = false;//방장인지 확인
     public bool finalCheck = false;//퍼미션 완료되면 true로 바뀜.
     public GameObject robtObj;//로봇객체가될 프리팹
-    public GameObject testBot;//테스트용 로봇
+    //public GameObject testBot;//테스트용 로봇
     public int nowTurn; //현재 턴
     //public string anchorId;
     //public bool receiveId = false;//클라우드 앵커 아이디를 받았는지 체크
@@ -56,6 +79,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     public float rotateY;//y 축 회전을 위한값
     public bool isRotateUpDown = false;//x축 회전하고 있는지
     public bool isRotateLeftRight = false;//y축 회전하고 있는지
+    public float lange; //미사일 게이지
+    public bool isFireCheck = false;
+    public bool firstAnchor = false;//최초 앵커가 생성되었는지 체크
     //public string[] anchorIdArr;//앵커의 주소를 담을 배열
     private void Start()
     {
@@ -95,25 +121,27 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     /// <param name="masterClientPlayer"></param>
     public void Call_ChangeMasterClient()
     {
-
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+        if (PhotonNetwork.IsMasterClient == true)//메소드 호출자가 마스터 클라이언트면?
         {
-            //룸 사용자 배열에서 마스터 클라이언트가 몇번째 인덱스인지 찾는다
-            if (PhotonNetwork.PlayerList[i].IsMasterClient == true)
+            for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
             {
-                masterIndex = i;
-                Debug.Log("현재 마스터 클라이언트의 인덱스: " + i);
-                Debug.Log("현재 마스터 클라이언트의 엑터 넘버" + PhotonNetwork.PlayerList[i].ActorNumber);
+                //룸 사용자 배열에서 마스터 클라이언트가 몇번째 인덱스인지 찾는다
+                if (PhotonNetwork.PlayerList[i].IsMasterClient == true)
+                {
+                    masterIndex = i;
+                    Debug.Log("현재 마스터 클라이언트의 인덱스: " + i);
+                    Debug.Log("현재 마스터 클라이언트의 엑터 넘버" + PhotonNetwork.PlayerList[i].ActorNumber);
+                }
             }
-        }
-        if (masterIndex + 1 == PhotonNetwork.PlayerList.Length)
-        {
-            masterIndex = 0;
-            ChangeMasterClient(PhotonNetwork.PlayerList[masterIndex]);
-        }
-        else
-        {
-            ChangeMasterClient(PhotonNetwork.PlayerList[masterIndex + 1]);
+            if (masterIndex + 1 == PhotonNetwork.PlayerList.Length)
+            {
+                masterIndex = 0;
+                ChangeMasterClient(PhotonNetwork.PlayerList[masterIndex]);
+            }
+            else
+            {
+                ChangeMasterClient(PhotonNetwork.PlayerList[masterIndex + 1]);
+            }
         }
     }
     public void ChangeMasterClient(Photon.Realtime.Player masterClientPlayer)
@@ -122,6 +150,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             PhotonNetwork.SetMasterClient(masterClientPlayer);
             Debug.Log("새로운 마스터 클라이언트의 엑터 넘버" + masterClientPlayer.ActorNumber);
+            //nowTurn을 방장의 엑터 넘버로 바꿔준다
+            Call_ChangeTurn(masterClientPlayer.ActorNumber);
         }
     }
     #endregion
@@ -315,6 +345,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     public void LeaveRoom()
     {
         Debug.Log("룸에서 퇴장중..");
+        firstAnchor = false;
         //방에서 퇴장하기 전에 cp["roomMember"] 과 cp["actors"] 에서 내정보 제거한다.
         for (int i = 0; i < userArr.Length; i++)
         {
@@ -381,12 +412,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             stream.SendNext(z);
             stream.SendNext(x);
-            stream.SendNext(myOrder);
+            //stream.SendNext(myOrder);
             stream.SendNext(isInput);
             stream.SendNext(rotateX);
             stream.SendNext(rotateY);
             stream.SendNext(isRotateUpDown);
             stream.SendNext(isRotateLeftRight);
+            //stream.SendNext(lange);
         }
 
         //클론이 통신을 받는 
@@ -394,12 +426,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             z = (float)stream.ReceiveNext();
             x = (float)stream.ReceiveNext();
-            nowTurn = (int)stream.ReceiveNext();
+            //nowTurn = (int)stream.ReceiveNext();
             isInput = (bool)stream.ReceiveNext();
             rotateX = (float)stream.ReceiveNext();
             rotateY = (float)stream.ReceiveNext();
             isRotateUpDown = (bool)stream.ReceiveNext();
             isRotateLeftRight = (bool)stream.ReceiveNext();
+            //lange = (float)stream.ReceiveNext();
         }
     }
     #endregion
@@ -522,7 +555,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log("나의 입장 순서는 = " + myOrder);
         Debug.Log("생성된 앵커의 숫자" + hostingResultList.Count);
         //플레이 생성 명령이 방장으로 부터 떨어지면 내 로봇을 생성하고 이명령을 다른사용자에게도 내 로봇을 이위치에 생성해라 라고 명령을 전달
-        Call_MakeMyRobot(myOrder, GameManager.Get.beforeLeg.name, GameManager.Get.beforeBody.name, GameManager.Get.beforeWeapon.name);
+        Call_MakeMyRobot(myOrder, DataManager.Instance.beforeLeg.name, DataManager.Instance.beforeBody.name, DataManager.Instance.beforeWeapon.name);
         //Call_MakeTestBot(myOrder);
     }
     #endregion
@@ -550,24 +583,62 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         player.GetComponent<Player>().actnum = actnum;
     }
     #endregion
-
-    #region 테스트용 봇 생성
     /// <summary>
-    /// 테스트 봇 생성을 요구하는 알피씨 함수
+    /// 불값을 다른 사용자에게 보낸다
     /// </summary>
-    /// <param name="actnum"></param>
-    public void Call_MakeTestBot(int actnum)
+    /// <param name="check"></param>
+    public void Call_SendShootValue(bool check,float _lange)
     {
-
-        photonView.RPC("MakeTestBot", RpcTarget.All, actnum);
+        photonView.RPC("SendBoolValue", RpcTarget.All, check,_lange);
     }
     [PunRPC]
-    public void MakeTestBot(int actnum)
+    public void SendShootValue(bool check,float _lange)
     {
-        Debug.Log(actnum + "번 유저의 테스트 봇을 생성하라고 요청옴");
-        Instantiate(testBot, hostingResultList[actnum + 1].Result.Anchor.transform.position, Quaternion.identity);
+        isFireCheck = check;
+        lange = _lange;
     }
-    #endregion
+    /// <summary>
+    /// arcoreManager에서 firstAnchor 불값을 변경하기위한 rpc
+    /// </summary>
+    public void Call_MakeFirstAnchor()
+    {
+        photonView.RPC("MakeFirstAnchor", RpcTarget.All);
+    }
+    [PunRPC]
+    public void MakeFirstAnchor()
+    {
+        firstAnchor = true;
+    }
+    /// <summary>
+    /// 턴을 변경했다는 것을 알리는 함수 턴변경시에 호출
+    /// </summary>
+    /// <param name="num"></param>
+    public void Call_ChangeTurn(int num)
+    {
+        photonView.RPC("ChangeTurn", RpcTarget.All, num);
+    }
+    [PunRPC]
+    public void ChangeTurn(int num)
+    {
+        nowTurn = num;
+    }
+    //#region 테스트용 봇 생성
+    ///// <summary>
+    ///// 테스트 봇 생성을 요구하는 알피씨 함수
+    ///// </summary>
+    ///// <param name="actnum"></param>
+    //public void Call_MakeTestBot(int actnum)
+    //{
+
+    //    photonView.RPC("MakeTestBot", RpcTarget.All, actnum);
+    //}
+    //[PunRPC]
+    //public void MakeTestBot(int actnum)
+    //{
+    //    Debug.Log(actnum + "번 유저의 테스트 봇을 생성하라고 요청옴");
+    //    Instantiate(testBot, hostingResultList[actnum + 1].Result.Anchor.transform.position, Quaternion.identity);
+    //}
+    //#endregion
 
 
 }

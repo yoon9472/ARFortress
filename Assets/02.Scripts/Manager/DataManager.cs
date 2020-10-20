@@ -6,21 +6,44 @@ using PlayFab.ClientModels;
 public class DataManager : MonoBehaviour
 {
     protected static DataManager instance = null;
-    private void Awake()
+    //--------------------------------임시 추가
+    public static DataManager Instance
     {
-        instance = this;
+        get
+        {
+            if (null == instance)
+            {
+                return null;
+            }
+            return instance;
+        }
     }
-    public static DataManager GetInstance()
+    //------------------------------------------------
+    private void Awake()
     {
         if(instance == null)
         {
-            GameObject obj = new GameObject();
-            obj.name = "DataManager";
-            instance = obj.AddComponent<DataManager>();
+            instance = this;
         }
-        return instance;
+        else
+        {
+            Destroy(this.gameObject);
+        }
+        DontDestroyOnLoad(this.gameObject);
+    }
+    public static DataManager GetInstance()
+    {
+           if (instance == null)
+            {
+                GameObject obj = new GameObject();
+                obj.name = "DataManager";
+                instance = obj.AddComponent<DataManager>();
+            }
+            return instance;
     }
 
+
+    public int myMoney;//현재 내가 가진돈
     public List<CatalogItem> itemList = new List<CatalogItem>();
     //무기 리스트
     public List<CatalogItem> weaponList = new List<CatalogItem>();
@@ -101,7 +124,6 @@ public class DataManager : MonoBehaviour
 
     [Header("메세지")]
     public string Msg;
-
     void Start()
     {
         

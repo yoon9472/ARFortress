@@ -24,11 +24,11 @@ public class ShowState : MonoBehaviour
     {
         
     }
-
+    
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.Get.isloadOver == true)
+        if(DataManager.Instance.isloadOver == true)
         {
             state1_1.color = Color.red;
         }
@@ -36,7 +36,7 @@ public class ShowState : MonoBehaviour
         {
             state1_1.color = Color.white;
         }
-        if(GameManager.Get.istypeNoeSame == true)
+        if(DataManager.Instance.istypeNoeSame == true)
         {
             state2_2.color = Color.red;
         }
@@ -45,19 +45,19 @@ public class ShowState : MonoBehaviour
             state2_2.color = Color.white;
         }
 
-        state1_1.text = (GameManager.Get.bodyweight + GameManager.Get.weaponweight).ToString();//몸+무기 무게
-        state2_1.text = GameManager.Get.legtotalweight.ToString();//다리 하중량
-        state1_2.text = GameManager.Get.bodytype;//몸통 타입
-        state2_2.text = GameManager.Get.weapontype;//무기 타입
-        state1_3.text = GameManager.Get.bodyhp.ToString();
+        state1_1.text = (DataManager.Instance.bodyweight + DataManager.Instance.weaponweight).ToString();//몸+무기 무게
+        state2_1.text = DataManager.Instance.legtotalweight.ToString();//다리 하중량
+        state1_2.text = DataManager.Instance.bodytype;//몸통 타입
+        state2_2.text = DataManager.Instance.weapontype;//무기 타입
+        state1_3.text = DataManager.Instance.bodyhp.ToString();
         state2_3.text = " ";
-        state1_4.text = (GameManager.Get.legamor + GameManager.Get.bodyamor).ToString();
+        state1_4.text = (DataManager.Instance.legamor + DataManager.Instance.bodyamor).ToString();
         state2_4.text = " ";
-        state1_5.text = GameManager.Get.legspeed.ToString();
+        state1_5.text = DataManager.Instance.legspeed.ToString();
         state2_5.text = " ";
-        state1_6.text = GameManager.Get.weaponattack.ToString();
+        state1_6.text = DataManager.Instance.weaponattack.ToString();
         state2_6.text = " ";
-        state1_7.text = GameManager.Get.weaponlange.ToString();
+        state1_7.text = DataManager.Instance.weaponlange.ToString();
         state2_7.text = " ";
     }
 }

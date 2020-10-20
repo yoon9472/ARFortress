@@ -5,6 +5,7 @@
 
     public class PrefabPanel : MonoBehaviour
     {
+    //protected DataManager dataManager = null;
     public Text title;
     public Text introduction;
     public GameObject buttonText;
@@ -23,6 +24,7 @@
     // Start is called before the first frame update
     void Start()
     {
+        //dataManager = DataManager.GetInstance();
         // cost1 = buttonText.GetComponentInChildren<Text>();
         // title.text = displayname;
         // introduction.text = description;
@@ -53,18 +55,18 @@
             if (cost1 == null) cost1 = buttonText.GetComponentInChildren<Text>();
             cost1.text = data.cost;
 
-            for(int j =0; j < GameManager.Get.imgArr.Length; j++)
+            for(int j =0; j < DataManager.Instance.imgArr.Length; j++)
             {
-                if(GameManager.Get.imgArr[j].name == data.displayName)
+                if(DataManager.Instance.imgArr[j].name == data.displayName)
                 {
-                    image.sprite = GameManager.Get.imgArr[j];
+                    image.sprite = DataManager.Instance.imgArr[j];
                 }
             }
 
             
-            for(int i=0; i<GameManager.Get.ownedItem_List.Count;i++)
+            for(int i=0; i< DataManager.Instance.ownedItem_List.Count;i++)
             {
-                if(GameManager.Get.ownedItem_List[i] == data.displayName)
+                if(DataManager.Instance.ownedItem_List[i] == data.displayName)
                 {
                     canBuy = false;
                     cost1.text = "Owned";
@@ -81,7 +83,7 @@
             Debug.Log("이미 사신 아이템입니다.");
             return;
         }
-        else if (NetWork.Get.myMoney < int.Parse(cost1.text))
+        else if (DataManager.Instance.myMoney < int.Parse(cost1.text))
         {
             Debug.Log("돈이 부족합니다.");
             Instantiate(noCoin, new Vector3(0,0,0), Quaternion.identity);

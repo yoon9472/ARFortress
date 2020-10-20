@@ -6,45 +6,46 @@ public class TestBall : MonoBehaviour
 {
     public bool isFire = false;
     public Vector3 dir;//포신이 향하고 있는 방향
-    public int speed;// 속도
-    public float angle;//각도
+    public float speed;// 속도
+    //public float angle;//각도
     public float gravity;
     public float vertical;
     public Vector3 nowPos;
     public Vector3 lastPos;
-    [Header("토네이도")]
-    public bool isTonado = false;
-    public GameObject tonado;
-    public Tonado tonadoinfo;
+    //[Header("토네이도")]
+    //public bool isTonado = false;
+    //public GameObject tonado;
+    //public Tonado tonadoinfo;
     public void Start()
     {
 
-        gravity = 10;
+        gravity = 10*0.05f;
         nowPos = transform.position;
         lastPos = transform.position;
     }
     void Update()
     {
-        if (isTonado == false)
-        {
-            //토네이토를 안 만났을때 움직음
-            Paravola();
-        }
-        else
-        {
+        //if (isTonado == false)
+        //{
+        //    //토네이토를 안 만났을때 움직음
+           Paravola();
+        //}
+        //else
+        //{
             //토네이도를 만났을떄 움직임
-            MoveTonado();
-        }
+           // MoveTonado();
+        //}
     }
     private void FixedUpdate()
     {
-        CheckPos();
+        //CheckPos();
     }
     public void Paravola()
     {
         vertical += gravity * Time.deltaTime;
         transform.position += dir * speed * Time.deltaTime;
         transform.position += Vector3.down * vertical * Time.deltaTime;
+        CheckPos();
     }
     /// <summary>
     /// Fixed Update문에서 사용
@@ -72,15 +73,15 @@ public class TestBall : MonoBehaviour
         }
         if(other.CompareTag("Tonado"))
         {
-            tonadoinfo = other.GetComponent<Tonado>();
-            isTonado = true;//토네이도를 만났다.
+            //tonadoinfo = other.GetComponent<Tonado>();
+            //isTonado = true;//토네이도를 만났다.
         }
     }
     public void OnTriggerStay(Collider other)
     {
         if(other.CompareTag("Tonado"))
         {
-            tonado = other.gameObject;
+            //tonado = other.gameObject;
         }
     }
     //탄이 회오리를 만나면?
@@ -88,25 +89,25 @@ public class TestBall : MonoBehaviour
     //회전하면서 토네이도의 높이까지 올라간다.
     //토네이토의 움직임데로 움직인다.
     //토네이도의 중심을 기준으로 회전하면서 올라간다.
-    public void MoveTonado()
-    {
+    //public void MoveTonado()
+    //{
        
-        //토네이도의 최고 높이까지 도달했는가?
-        if(transform.position.y < tonadoinfo.tonadoHigh.position.y)
-        {
-            //이동
-            transform.position += Vector3.up * tonadoinfo.tonadoSpeed * Time.deltaTime;
-            transform.RotateAround(tonadoinfo.tonadoCenter.position, Vector3.down, 700 * Time.deltaTime);
-        }
-        else
-        {
-            //발사
-            dir = tonado.GetComponent<Tonado>().tonadoEdge.transform.forward;
-            speed = 15;
-            //탄이 발사되면서 중력이 이미 가속되있어서 다시 위로 쏘면 이전에 누적된 중력때문에 위로 쏴도 올라가지 않는다.
-            //다시 쏘는 순간 새로 수직값(중력값)적용되었던거를 0으로 해서 새로 쏘는것처럼 한다.
-            vertical = 0;
-            isTonado = false;
-        }
-    }
+    //    //토네이도의 최고 높이까지 도달했는가?
+    //    if(transform.position.y < tonadoinfo.tonadoHigh.position.y)
+    //    {
+    //        //이동
+    //        transform.position += Vector3.up * tonadoinfo.tonadoSpeed * Time.deltaTime;
+    //        transform.RotateAround(tonadoinfo.tonadoCenter.position, Vector3.down, 700 * Time.deltaTime);
+    //    }
+    //    else
+    //    {
+    //        //발사
+    //        dir = tonado.GetComponent<Tonado>().tonadoEdge.transform.forward;
+    //        speed = 15;
+    //        //탄이 발사되면서 중력이 이미 가속되있어서 다시 위로 쏘면 이전에 누적된 중력때문에 위로 쏴도 올라가지 않는다.
+    //        //다시 쏘는 순간 새로 수직값(중력값)적용되었던거를 0으로 해서 새로 쏘는것처럼 한다.
+    //        vertical = 0;
+    //        isTonado = false;
+    //    }
+    //}
 }
