@@ -67,26 +67,12 @@ public class StoreManager : MonoBehaviour
         //NetWork.Get.GetMyMoney()는 현재 돈을 반환해준다
         //씬처음들어와서 내돈 표시해줘야하니 한번 표시해준다
         SetUsermoney(dbManager.GetMyMoney());
-        OnClickedAllItem();//처음에 all 아이템 띄워야 되기 때문에 여기에 넣음!
+        OnOffButton();//맨 처음 scrollvalue가 0이기 때문에 오른쪽 버튼 0으루 만들어줘야지,
     }
     // Update is called once per frame
     void Update()
     {
-        if(scrollbar.value == 0)
-        {
-            leftBtnObj.SetActive(false);
-            rightBtnObj.SetActive(true);
-        }
-        else if(scrollbar.value == 1)
-        {
-            leftBtnObj.SetActive(true);
-            rightBtnObj.SetActive(false);
-        }
-        else
-        {
-            leftBtnObj.SetActive(true);
-            rightBtnObj.SetActive(true);
-        }
+        
     }
     public void OnClickedRightBtn()
     {
@@ -102,53 +88,34 @@ public class StoreManager : MonoBehaviour
     {
         scrollbar.value = 0;
     }
+    public void ChangingScrollValue()
+    {
+        scrollbar.onValueChanged.AddListener((value) => { OnOffButton(); });
+    }
+    void OnOffButton()
+    {
+        if (scrollbar.value == 0)
+        {
+            leftBtnObj.SetActive(false);
+            rightBtnObj.SetActive(true);
+        }
+        else if (scrollbar.value == 1)
+        {
+            leftBtnObj.SetActive(true);
+            rightBtnObj.SetActive(false);
+        }
+        else
+        {
+            leftBtnObj.SetActive(true);
+            rightBtnObj.SetActive(true);
+        }
+    }
     //매개변수로 돈을 넘겨주면 스트링으로 바꿔서 텍스트로 표시해준다
     public void SetUsermoney(int currentMoney)
     {
         //if (userMoneyText == null) userMoneyText = mymoney.GetComponentInChildren<Text>();
         userMoneyText.text = currentMoney.ToString();
     }
-    //checknumber에 따른 이미지 바꿈!
-    void CheckImage(int k)
-    {
-        switch(k)
-        {
-            case 1 :
-                Debug.Log("all에 highlight");
-                allButton.GetComponent<Image>().sprite = highlightImage;
-                weaponButton.GetComponent<Image>().sprite = normalImage;
-                upperButton.GetComponent<Image>().sprite = normalImage;
-                lowerButton.GetComponent<Image>().sprite = normalImage;
-                ResetScroll();
-            break;
-            case 2 :
-                Debug.Log("weapon에 highlight");
-                allButton.GetComponent<Image>().sprite = normalImage;
-                weaponButton.GetComponent<Image>().sprite = highlightImage;
-                upperButton.GetComponent<Image>().sprite = normalImage;
-                lowerButton.GetComponent<Image>().sprite = normalImage;
-                ResetScroll();
-            break;
-            case 3 :
-                Debug.Log("body에 highlight");
-                allButton.GetComponent<Image>().sprite = normalImage;
-                weaponButton.GetComponent<Image>().sprite = normalImage;
-                upperButton.GetComponent<Image>().sprite = highlightImage;
-                lowerButton.GetComponent<Image>().sprite = normalImage;
-                ResetScroll();
-            break;
-            case 4 :
-                Debug.Log("leg에 highlight");
-                allButton.GetComponent<Image>().sprite = normalImage;
-                weaponButton.GetComponent<Image>().sprite = normalImage;
-                upperButton.GetComponent<Image>().sprite = normalImage;
-                lowerButton.GetComponent<Image>().sprite = highlightImage;
-                ResetScroll();
-            break;
-        
-        }
-    }
-
     //뒤로가기 버튼 넣음 됨!
     public void OnClickedBackButton()
     {
@@ -182,90 +149,6 @@ public class StoreManager : MonoBehaviour
         for (int i =0; i < itemPrefabParentTransform.childCount; i++)
         {
             Destroy(itemPrefabParentTransform.GetChild(i).gameObject);
-        }
-    }
-    //all 버튼에 넣는 것!
-    public void OnClickedAllItem()
-    {
-        if(checkNumber == 1)
-        {
-            Debug.Log("중복 불가.");
-            return;
-        }
-        Debug.Log("all아이템 나올차례.");
-        DestroyChildObj();
-        UpdateItemPanel(dataManager.itemList);
-        checkNumber = allNumber;
-        CheckImage(checkNumber);
-    }
-    //weapon 버튼에 넣는 것!
-    public void OnClickedWeaponItem()
-    {
-        if(checkNumber == 2)
-        {
-            Debug.Log("중복 불가.");
-            return;
-        }
-        Debug.Log("weapon아이템 나올차례.");
-        DestroyChildObj();
-        UpdateItemPanel(dataManager.weaponList);
-        checkNumber = weaponNumber;
-        CheckImage(checkNumber);
-    }
-    //upperbody버튼에 넣는 것!
-    public void OnClickedBodyItem()
-    {
-        if(checkNumber == 3)
-        {
-            Debug.Log("중복 불가.");
-            return;
-        }
-        Debug.Log("body아이템 나올차례.");
-        DestroyChildObj();
-        UpdateItemPanel(dataManager.bodyList);
-        checkNumber = bodyNumber;
-        CheckImage(checkNumber);
-    }
-    //lowerbody에 넣는 것!
-    public void OnClickedLegItem()
-    {
-        if(checkNumber == 4)
-        {
-            Debug.Log("중복 불가.");
-            return;
-        }
-        Debug.Log("leg아이템 나올차례.");
-        DestroyChildObj();
-        UpdateItemPanel(dataManager.legList);
-        checkNumber = legNumber;
-        CheckImage(checkNumber);
-    }
-    public void AllItem(bool all)
-    {
-        if(all == true)
-        {
-            Debug.Log("all아이템 나올차례.");
-            DestroyChildObj();
-            UpdateItemPanel(dataManager.itemList);
-            allButton.GetComponent<Image>().sprite = highlightImage;
-        }
-        else
-        {
-            allButton.GetComponent<Image>().sprite = normalImage;
-        }
-    }
-    public void WeaponItem(bool weapon)
-    {
-        if(weapon == true)
-        {
-            Debug.Log("weapon아이템 나올차례.");
-            DestroyChildObj();
-            UpdateItemPanel(dataManager.weaponList);
-            weaponButton.GetComponent<Image>().sprite = highlightImage;
-        }
-        else
-        {
-            weaponButton.GetComponent<Image>().sprite = normalImage;
         }
     }
 }
