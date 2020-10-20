@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using Google.Protobuf.WellKnownTypes;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,81 +13,88 @@ public class CustomToggleGroup : ToggleGroup
         그렇다면 ㅇㅅㅇ 여기서 스위치문을 쓰자!
         스토어 매니저에서는 if else문을 쓰고 될 것 같음.
     */
-    [SerializeField]
-    protected Image allButtonImage;
-    [SerializeField]
-    protected Image weaponButtonImage;
-    [SerializeField]
-    protected Image bodyButtonImage;
-    [SerializeField]
-    protected Image legButtonImage;
+
     [SerializeField]
     protected Sprite highlightImage;
     [SerializeField]
     protected Sprite normalImage;
     [SerializeField]
     protected StoreManager sm;
-    // Start is called before the first frame update
+    [SerializeField]
+    protected Toggle allToggle;
+    [SerializeField]
+    protected Toggle weaponToggle;
+    [SerializeField]
+    protected Toggle bodyToggle;
+    [SerializeField]
+    protected Toggle legToggle;
 
+    // Start is called before the first frame update
+    protected override void Start()
+    {
+        ForChangingPanel("all");
+    }
 
     // Update is called once per frame
     void Update()
     {
     }
     
-    public void ForChangingPanel(int a)
-    {//스위치문을 만들 것 임.
-        switch(a)
-        {
-            case 0:
-                //all을 눌렀을 때!
-                OffAllToggle();
-                m_Toggles[0].isOn = true;
-                m_Toggles[0].image.sprite = highlightImage;
-                sm.UpdateItemPanel(DataManager.Instance.itemList);
-                sm.ResetScroll();
-                break;
-            case 1:
-                //weapon을 눌렀을 때!
-                OffAllToggle();
-                m_Toggles[1].isOn = true;
-                m_Toggles[1].image.sprite = highlightImage;
-                sm.UpdateItemPanel(DataManager.Instance.weaponList);
-                sm.ResetScroll();
-                break;
-            case 2:
-                //body을 눌렀을 때!
-                OffAllToggle();
-                m_Toggles[2].isOn = true;
-                m_Toggles[2].image.sprite = highlightImage;
-                sm.UpdateItemPanel(DataManager.Instance.bodyList);
-                sm.ResetScroll();
-                break;
-            case 3:
-                //leg을 눌렀을 때!
-                OffAllToggle();
-                m_Toggles[3].isOn = true;
-                m_Toggles[3].image.sprite = highlightImage;
-                sm.UpdateItemPanel(DataManager.Instance.legList);
-                break;
-        }
-    }
-    
-    protected void OffAllToggle()
+    public void ForChangingPanel(string checkClicked)
     {
-        for(int i =0; i< m_Toggles.Count; i++)
+        Debug.Log("ㅇㅅㅇ");
+        //if문 4개를 만들것임
+        if(checkClicked == "all")
         {
-            m_Toggles[i].isOn = false;
-            m_Toggles[i].GetComponent<Image>().sprite = normalImage;
+            sm.DestroyChildObj();
+            allToggle.image.sprite = highlightImage;
+            sm.UpdateItemPanel(DataManager.Instance.itemList);
+            sm.ResetScroll();
         }
-        sm.DestroyChildObj();
+        else if (checkClicked != "all")
+        {
+            allToggle.image.sprite = normalImage;
+        }
+        if (checkClicked == "weapon")
+        {
+            sm.DestroyChildObj();
+            weaponToggle.image.sprite = highlightImage;
+            sm.UpdateItemPanel(DataManager.Instance.weaponList);
+            sm.ResetScroll();
+        }
+        else if(checkClicked != "weapon")
+        {
+            weaponToggle.image.sprite = normalImage;
+        }
+        if (checkClicked == "body")
+        {
+            sm.DestroyChildObj();
+            bodyToggle.image.sprite = highlightImage;
+            sm.UpdateItemPanel(DataManager.Instance.bodyList);
+            sm.ResetScroll();
+        }
+        else if (checkClicked != "body")
+        {
+            bodyToggle.image.sprite = normalImage;
+        }
+        if (checkClicked == "leg")
+        {
+            sm.DestroyChildObj();
+            legToggle.image.sprite = highlightImage;
+            sm.UpdateItemPanel(DataManager.Instance.legList);
+            sm.ResetScroll();
+        }
+        else if (checkClicked != "leg")
+        {
+            legToggle.image.sprite = normalImage;
+        }
     }
-    
+
     public void RecognizeChangingToggleState()
     {
-        m_Toggles[0].onValueChanged.AddListener((value) => { ForChangingPanel(0); });
-        m_Toggles[1].onValueChanged.AddListener((value) => { ForChangingPanel(1); });
-        m_Toggles[2].onValueChanged.AddListener((value) => { ForChangingPanel(2); });
-        m_Toggles[3].onValueChanged.AddListener((value) => { ForChangingPanel(3); });
+        allToggle.onValueChanged.AddListener((value) => { ForChangingPanel("all"); });
+        weaponToggle.onValueChanged.AddListener((value) => { ForChangingPanel("weapon"); });
+        bodyToggle.onValueChanged.AddListener((value) => { ForChangingPanel("body"); });
+        legToggle.onValueChanged.AddListener((value) => { ForChangingPanel("leg"); });
     }
 }

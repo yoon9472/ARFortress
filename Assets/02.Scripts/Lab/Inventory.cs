@@ -17,22 +17,15 @@ public class Inventory : MonoBehaviour
     public GameObject weaponBtn ;
     public Sprite highlightImage;
     public Sprite normalImage;
-
-    public Button button;
     
     //시작시 레그 인벤토리가 켜져있으므로 Leg 메뉴를 Selected 상태로 시작. 
     public bool buttonDown;
-    private void Awake()
-    {
-        
-    }
+    
     void Start()
     {
         //시작할때 curritem에 다리 인벤토리를 담아둠 - 인벤토리 켠상태로 시작시 curritem에 안담겨서 아래코드 대로할시 버그생김
         //[09.28] 피드백 -  시작할떄 default 인벤토리 [먼저 조립되야하는 다리부분을] 켜놔야 좋을것 같다고 해서 수정
-        currItem = inventory[2];
-        inventory[2].SetActive(true);
-        checkImage(2);
+        PanelButton("leg");
     }
 /*    public void SelectedButton()
     {
@@ -44,7 +37,7 @@ public class Inventory : MonoBehaviour
     }
     // Leg, Weapon , body 해당 메뉴마다 Onclick 시 해당 인벤토리 활성화 해놓음
     // inventory[0] = Weapon , [1] = Body [2] = leg   curritem = 현재 선택된 인벤토리
-    public void Inven0Open()
+    /*public void Inven0Open()
     {
         if(currItem != null)
         {
@@ -76,7 +69,7 @@ public class Inventory : MonoBehaviour
         inventory[2].SetActive(true);
         currItem = inventory[2];
         checkImage(2);
-    }
+    }*/
     public void Inven0Close()
     {
         inventory[0].SetActive(false);
@@ -94,7 +87,7 @@ public class Inventory : MonoBehaviour
     {
         SceneManager.LoadScene("03.Lobby");
     }
-    
+    /*
     //여기는 이제 토글 넣어주려고 하는 부분
     void checkImage(int k)
     {
@@ -118,13 +111,53 @@ public class Inventory : MonoBehaviour
                 legBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
             break;
         }
-    }
-    public void TestOnEnable()
+    }*/
+    public void OnButtonClicked()
     {
-        button.onClick.AddListener(Alpha);
+        weaponBtn.GetComponent<Button>().onClick.AddListener(() => { PanelButton("weapon"); });
+        bodyBtn.GetComponent<Button>().onClick.AddListener(() => { PanelButton("body"); });
+        legBtn.GetComponent<Button>().onClick.AddListener(() => { PanelButton("leg"); });
+
     }
-    void Alpha()
+    void PanelButton(string checkButton)
     {
-        Debug.Log("이것은 ONCLICK 시험하는 곳입니다.");
+        if (currItem != null)
+        {
+            Debug.Log("ㅇㅇㅇ");
+            currItem.SetActive(false);
+            currItem = null;
+        }
+        if (checkButton == "weapon")
+        {
+            weaponBtn.GetComponent<UnityEngine.UI.Image>().sprite = highlightImage;
+            inventory[0].SetActive(true);
+            currItem = inventory[0];
+        }
+        else if(checkButton != "weapon")
+        {
+            weaponBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
+
+        }
+        if (checkButton == "body")
+        {
+            bodyBtn.GetComponent<UnityEngine.UI.Image>().sprite = highlightImage;
+            inventory[1].SetActive(true);
+            currItem = inventory[1];
+        }
+        else if (checkButton != "body")
+        {
+            bodyBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
+
+        }
+        if (checkButton == "leg")
+        {
+            legBtn.GetComponent<UnityEngine.UI.Image>().sprite = highlightImage;
+            inventory[2].SetActive(true);
+            currItem = inventory[2];
+        }
+        else if (checkButton != "leg")
+        {
+            legBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
+        }
     }
 }
