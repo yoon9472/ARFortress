@@ -33,7 +33,7 @@ public class CustomToggleGroup : ToggleGroup
     void Update()
     {
     }
-
+    
     public void ForChangingPanel(int a)
     {//스위치문을 만들 것 임.
         switch(a)
@@ -71,6 +71,7 @@ public class CustomToggleGroup : ToggleGroup
                 break;
         }
     }
+    
     protected void OffAllToggle()
     {
         for(int i =0; i< m_Toggles.Count; i++)
@@ -79,5 +80,13 @@ public class CustomToggleGroup : ToggleGroup
             m_Toggles[i].GetComponent<Image>().sprite = normalImage;
         }
         sm.DestroyChildObj();
+    }
+    
+    public void RecognizeChangingToggleState()
+    {
+        m_Toggles[0].onValueChanged.AddListener((value) => { ForChangingPanel(0); });
+        m_Toggles[1].onValueChanged.AddListener((value) => { ForChangingPanel(1); });
+        m_Toggles[2].onValueChanged.AddListener((value) => { ForChangingPanel(2); });
+        m_Toggles[3].onValueChanged.AddListener((value) => { ForChangingPanel(3); });
     }
 }

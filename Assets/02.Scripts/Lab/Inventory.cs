@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
+//using UnityEngine.UIElements;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
@@ -17,9 +17,15 @@ public class Inventory : MonoBehaviour
     public GameObject weaponBtn ;
     public Sprite highlightImage;
     public Sprite normalImage;
+
+    public Button button;
     
     //시작시 레그 인벤토리가 켜져있으므로 Leg 메뉴를 Selected 상태로 시작. 
-    public bool buttonDown; 
+    public bool buttonDown;
+    private void Awake()
+    {
+        
+    }
     void Start()
     {
         //시작할때 curritem에 다리 인벤토리를 담아둠 - 인벤토리 켠상태로 시작시 curritem에 안담겨서 아래코드 대로할시 버그생김
@@ -112,5 +118,13 @@ public class Inventory : MonoBehaviour
                 legBtn.GetComponent<UnityEngine.UI.Image>().sprite = normalImage;
             break;
         }
+    }
+    public void TestOnEnable()
+    {
+        button.onClick.AddListener(Alpha);
+    }
+    void Alpha()
+    {
+        Debug.Log("이것은 ONCLICK 시험하는 곳입니다.");
     }
 }
