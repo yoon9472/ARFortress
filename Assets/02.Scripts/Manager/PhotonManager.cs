@@ -17,11 +17,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         get
         {
-            if (null == instance)
-            {
-                return null;
-            }
-            return instance;
+                return instance;
         }
     }
     //-------------------------------------------
@@ -38,7 +34,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         PhotonNetwork.AutomaticallySyncScene = true;
         DontDestroyOnLoad(this.gameObject);
     }
-    public static PhotonManager GetInstance()
+    /*public static PhotonManager GetInstance()
     {
         Debug.Log("PhotonManager 인스턴스 가져오기");
         if(instance == null)
@@ -49,7 +45,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
             instance = obj.AddComponent<PhotonManager>();
         }
         return instance;
-    }
+    }*/
 
     [Header("포톤 관련 변수")]
     public int masterIndex;//마스터 클라이언트 인덱스
@@ -99,22 +95,13 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     }
     private void Update()
     {
-        if (inRoom == true)
+        if (inRoom)
         {
-            if (PhotonNetwork.IsMasterClient == true)
-            {
-                isMaster = true;
-            }
-            else
-            {
-                isMaster = false;
-            }
-        }
-        if (inRoom == true)
-        {   //방에 입장했을때 현재 방의 유저수를 업데이트 시킨다.
+            isMaster = PhotonNetwork.IsMasterClient;
+            //방에 입장했을때 현재 방의 유저수를 업데이트 시킨다.
             localPlayer = PhotonNetwork.CurrentRoom.PlayerCount;
         }
-    }
+}
     #region 마스터 클라이언트 교체 Call_ChangeMasterClient()
     /// <summary>
     /// 마스터 클라이언트 변경을 요구하기위함 
@@ -123,19 +110,19 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     /// <param name="masterClientPlayer"></param>
     public void Call_ChangeMasterClient()
     {
-        if (PhotonNetwork.IsMasterClient == true)//메소드 호출자가 마스터 클라이언트면?
+        if (PhotonNetwork.IsMasterClient)//메소드 호출자가 마스터 클라이언트면? 방장만 이 것을 들어오게 하려는 것임.
         {
             for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
             {
                 //룸 사용자 배열에서 마스터 클라이언트가 몇번째 인덱스인지 찾는다
-                if (PhotonNetwork.PlayerList[i].IsMasterClient == true)
+                if (PhotonNetwork.PlayerList[i].IsMasterClient)
                 {
                     masterIndex = i;
                     Debug.Log("현재 마스터 클라이언트의 인덱스: " + i);
                     Debug.Log("현재 마스터 클라이언트의 엑터 넘버" + PhotonNetwork.PlayerList[i].ActorNumber);
                 }
             }
-            if (masterIndex + 1 == PhotonNetwork.PlayerList.Length)
+            if ((masterIndex + 1)== PhotonNetwork.PlayerList.Length)
             {
                 masterIndex = 0;
                 ChangeMasterClient(masterIndex);

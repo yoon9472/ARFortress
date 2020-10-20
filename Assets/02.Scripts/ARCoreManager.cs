@@ -55,7 +55,7 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
         else
         {
             checkMasterText.text = "내 엑터 넘버" + PhotonManager.Instance.myOrder.ToString() + " 현재턴은" + PhotonManager.Instance.nowTurn.ToString();
-        }
+        }//지울 예정
         
         if (Input.touchCount==0)
         {

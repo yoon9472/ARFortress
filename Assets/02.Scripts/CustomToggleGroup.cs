@@ -32,7 +32,7 @@ public class CustomToggleGroup : ToggleGroup
     // Start is called before the first frame update
     protected override void Start()
     {
-        ForChangingPanel("all");
+        //ForChangingPanel("all");
     }
 
     // Update is called once per frame
@@ -47,46 +47,50 @@ public class CustomToggleGroup : ToggleGroup
         if(checkClicked == "all")
         {
             sm.DestroyChildObj();
-            allToggle.image.sprite = highlightImage;
+            //allToggle.image.sprite = highlightImage;
             sm.UpdateItemPanel(DataManager.Instance.itemList);
             sm.ResetScroll();
         }
-        else if (checkClicked != "all")
-        {
-            allToggle.image.sprite = normalImage;
-        }
-        if (checkClicked == "weapon")
+        //else if(checkClicked != "all")
+        //{
+        //    allToggle.image.sprite = normalImage;
+        //}
+        else if (checkClicked == "weapon")
         {
             sm.DestroyChildObj();
-            weaponToggle.image.sprite = highlightImage;
+            //weaponToggle.image.sprite = highlightImage;
             sm.UpdateItemPanel(DataManager.Instance.weaponList);
             sm.ResetScroll();
         }
-        else if(checkClicked != "weapon")
-        {
-            weaponToggle.image.sprite = normalImage;
-        }
-        if (checkClicked == "body")
+        //else if(checkClicked != "weapon")
+        //{
+        //    weaponToggle.image.sprite = normalImage;
+        //}
+        else if (checkClicked == "body")
         {
             sm.DestroyChildObj();
-            bodyToggle.image.sprite = highlightImage;
+            //bodyToggle.image.sprite = highlightImage;
             sm.UpdateItemPanel(DataManager.Instance.bodyList);
             sm.ResetScroll();
         }
-        else if (checkClicked != "body")
-        {
-            bodyToggle.image.sprite = normalImage;
-        }
-        if (checkClicked == "leg")
+        //else if (checkClicked != "body")
+        //{
+        //    bodyToggle.image.sprite = normalImage;
+        //}
+        else if (checkClicked == "leg")
         {
             sm.DestroyChildObj();
-            legToggle.image.sprite = highlightImage;
+            //legToggle.image.sprite = highlightImage;
             sm.UpdateItemPanel(DataManager.Instance.legList);
             sm.ResetScroll();
         }
-        else if (checkClicked != "leg")
+        //else if (checkClicked != "leg")
+        //{
+        //    legToggle.image.sprite = normalImage;
+        //}
+        else
         {
-            legToggle.image.sprite = normalImage;
+            Debug.Log("음 4개 외의 값");
         }
     }
 

@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using PlayFab.GroupsModels;
+﻿using UnityEngine;
 using PlayFab.ClientModels;
 using PlayFab;
 using System;
@@ -11,6 +8,9 @@ using GooglePlayGames.BasicApi;
 #endif
 public class LoginManager : MonoBehaviour
 {
+    /*게임 오브젝트에 붙일 필요가 없을 때에는 monobehaviour를 상속 받을 필요가 없다.
+     하지만 awake 만 어떻게 처리할 수 있다면 monobehaviour를 할 필요가 없을 수 있다.
+     */
     protected static LoginManager instance =null;
     protected DataManager dataManager;
     protected DBManager dbManager;

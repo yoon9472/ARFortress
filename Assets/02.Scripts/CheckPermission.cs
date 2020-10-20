@@ -76,10 +76,10 @@ public class CheckPermission : MonoBehaviour
         Debug.Log("애들아 접근권한 없다잖아! 빨리 따내와!");
         //여기서 권한 요청 시작 ( 우리 것 부터 권한 요청 시작을 하자. 그 다음에 안드로이드에서 자동 권한 요청을 하도록 )
         //이것은 우리 권한 요청 한다고 창을 띄워주는 것.
-        forRequestPermission.gameObject.SetActive(true);
-        yield return new WaitUntil(()=>btnCheck);//이것은 btncheck가 true값을 받을 때까지 기다리겠다고 하는 것임. false값일때까지면 waitwhile임.
         while (PhotonManager.Instance.finalCheck == false)
         {
+            if(btnCheck == false )forRequestPermission.gameObject.SetActive(true);
+            yield return new WaitUntil(()=>btnCheck);//이것은 btncheck가 true값을 받을 때까지 기다리겠다고 하는 것임. false값일때까지면 waitwhile임.
             Debug.Log(timeCheck);    
             if(cameraCheck==false)
             {

@@ -5,6 +5,7 @@ using UnityEngine.Audio;
 
 public class SoundManager : MonoBehaviour
 {
+
     private static SoundManager instance = null;
     private void Awake()
     {
@@ -31,4 +32,5 @@ public class SoundManager : MonoBehaviour
      그럼 일단 오디오 소스들을 public으로 선언을 해서 여기서 모든 값들을 받는 것이 1번이다.
      그 다음은 
      */
+
 }
