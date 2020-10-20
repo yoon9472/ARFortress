@@ -8,9 +8,11 @@ public class ForBuying : MonoBehaviour
     public int price1;
     public GameObject panel;
     public GameObject completeBuy;
+    protected DBManager dbManager;
     // Start is called before the first frame update
     void Start()
     {
+        dbManager = DBManager.GetInstance();
     }
     // Update is called once per frame
     void Update()
@@ -20,7 +22,7 @@ public class ForBuying : MonoBehaviour
     {
         //구입을 위한 코드
         Debug.Log("이 아이템을 구매합니다.");
-        NetWork.Get.BuyItem("Store", itemId1 ,"GD", price1);
+        dbManager.BuyItem("Store", itemId1 ,"GD", price1);
         //구입 후 중복 구매 방지를 위한 코드
         panel.GetComponent<PrefabPanel>().canBuy = false;
         panel.GetComponent<PrefabPanel>().cost1.text = "OWNED";
