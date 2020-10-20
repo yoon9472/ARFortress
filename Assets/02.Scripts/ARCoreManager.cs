@@ -50,11 +50,11 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
             resolveCnt.text = "앵커 리졸브한 플레이어수: "+PhotonManager.Instance.readyCnt.ToString();
             nowPlayer.text = "현재 방에 입장한 플레이어수: " + PhotonManager.Instance.localPlayer.ToString();
             nowPower.text = "현재 게이지 : " + PhotonManager.Instance.lange.ToString();
-            checkMasterText.text = "마스터";
+            checkMasterText.text = "내 액터 넘버"+PhotonManager.Instance.myOrder.ToString()+"현재턴은"+PhotonManager.Instance.nowTurn.ToString();
         }
         else
         {
-            checkMasterText.text = "마스터아님";
+            checkMasterText.text = "내 엑터 넘버" + PhotonManager.Instance.myOrder.ToString() + " 현재턴은" + PhotonManager.Instance.nowTurn.ToString();
         }
         
         if (Input.touchCount==0)

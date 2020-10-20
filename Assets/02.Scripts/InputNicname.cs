@@ -5,13 +5,14 @@ using UnityEngine.UI;
 
 public class InputNicname : MonoBehaviour
 {
+    protected DBManager dbManager;
     // Start is called before the first frame update
     public InputField inputname;
     public GameObject errormsg;
     public GameObject completemsg;
     void Start()
     {
-        
+        dbManager = DBManager.GetInstance();
     }
 
     // Update is called once per frame
@@ -29,11 +30,11 @@ public class InputNicname : MonoBehaviour
     public IEnumerator ModifyUserName()
     {
         //닉네임을 수정하는 함수를 호출한다.
-        NetWork.Get.ModifyDisplayName(inputname.text);
+        dbManager.ModifyDisplayName(inputname.text);
         //변경후 콜백으로 실패후 성공이 넘어 올때까지 기다린다.
-        yield return new WaitUntil(() => NetWork.Get.modifyOk == true||NetWork.Get.modifyFail == true);
+        yield return new WaitUntil(() => dbManager.modifyOk == true|| dbManager.modifyFail == true);
         //넘어온 결과에 따라 메세지를 띠워준다.
-        if(NetWork.Get.modifyOk == true)
+        if(dbManager.modifyOk == true)
         {
             //변경 성공 메세지
           completemsg.SetActive(true);
@@ -42,7 +43,7 @@ public class InputNicname : MonoBehaviour
             gameObject.SetActive(false);
         }
 
-       if(NetWork.Get.modifyFail == true)
+       if(dbManager.modifyFail == true)
        {
             //변경 실패시 메세지
             errormsg.SetActive(true);

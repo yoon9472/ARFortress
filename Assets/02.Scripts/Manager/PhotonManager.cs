@@ -7,6 +7,8 @@ using GoogleARCore;
 using GoogleARCore.CrossPlatform;
 using UnityEngine.SceneManagement;
 using Hashtable = ExitGames.Client.Photon.Hashtable;
+using Photon.Pun.UtilityScripts;
+
 public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
 {
     protected static PhotonManager instance = null;
@@ -53,7 +55,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     public int masterIndex;//마스터 클라이언트 인덱스
     public string[] userArr = new string[4]; //유저 이름을 저장하기위한 배열
     public bool[] userReady = new bool[4];//룸안에 유저가 게임 가능한 상태인지 여부 체크 false면 턴이 안돌아 온다(죽은 유저혹은 나간유저)
-    public int myOrder = 99;// 내 입장 순서 체크
+    public int myOrder = 99;// 내 입장 순서 체크 포톤의 엑터 넘버를 부여함
     public bool inIntro = true;//시작은 인트로부터 니까 true로
     public bool inLogin = false; //로그인 창 상태
     public bool inLobby = false;//로비 입장  상태
@@ -136,22 +138,27 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
             if (masterIndex + 1 == PhotonNetwork.PlayerList.Length)
             {
                 masterIndex = 0;
-                ChangeMasterClient(PhotonNetwork.PlayerList[masterIndex]);
+                ChangeMasterClient(masterIndex);
             }
             else
             {
-                ChangeMasterClient(PhotonNetwork.PlayerList[masterIndex + 1]);
+                ChangeMasterClient(masterIndex + 1);
             }
         }
     }
-    public void ChangeMasterClient(Photon.Realtime.Player masterClientPlayer)
+    /// <summary>
+    /// index = 제어권을 가질 마스터 플레이어가 PlayerLisf에서 몇번째 인덱스인지의 값
+    /// </summary>
+    /// <param name="index"></param>
+    public void ChangeMasterClient(int index)
     {
         if (inRoom == true)
         {
-            PhotonNetwork.SetMasterClient(masterClientPlayer);
-            Debug.Log("새로운 마스터 클라이언트의 엑터 넘버" + masterClientPlayer.ActorNumber);
+            PhotonNetwork.SetMasterClient(PhotonNetwork.PlayerList[index]);
+            Debug.Log("현재 마스터 플레이어의 인덱스 " + index);
+            Debug.Log("새로운 마스터 클라이언트의 엑터 넘버" + PhotonNetwork.PlayerList[index].ActorNumber);
             //nowTurn을 방장의 엑터 넘버로 바꿔준다
-            Call_ChangeTurn(masterClientPlayer.ActorNumber);
+            Call_ChangeTurn(PhotonNetwork.PlayerList[index].ActorNumber);
         }
     }
     #endregion
@@ -323,7 +330,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
             //배열 크기만큼 반목문을 돌아서 배열에서 empty를찾고 내이름과 엑터 넘버 추가
             if (userArr[i] == "empty")
             {
-                myOrder = i;
+                //myOrder = i;
+                nowTurn = PhotonNetwork.PlayerList[0].ActorNumber;
+                myOrder = PhotonNetwork.LocalPlayer.ActorNumber;//엑터넘버를 순서로
                 userArr[i] = "testUser";//플레이어의 이름 Playfab에서 받아온 DisplayName을 넣을 예정
                 userReady[i] = true;
                 break;
@@ -568,9 +577,20 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     /// <param name="leg"></param>
     /// <param name="body"></param>
     /// <param name="weapon"></param>
+    protected int posnum;
     public void Call_MakeMyRobot(int actnum, string leg, string body, string weapon)
     {
-        photonView.RPC("MakeMyRobot", RpcTarget.All, actnum, leg, body, weapon);
+        
+        for(int i=0;i <PhotonNetwork.PlayerList.Length;i++)
+        {
+            if(PhotonNetwork.PlayerList[i].ActorNumber == actnum)
+            {
+                posnum = i;
+            }
+        }
+        //actnum ->num
+        //배열에서 내가 몇번째 인덱스인지 찾아서 매개변수로 넘김
+        photonView.RPC("MakeMyRobot", RpcTarget.All, posnum, leg, body, weapon);
     }
 
     [PunRPC]
@@ -580,16 +600,17 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         player.GetComponent<Player>().legname = leg;
         player.GetComponent<Player>().bodyname = body;
         player.GetComponent<Player>().weaponname = weapon;
-        player.GetComponent<Player>().actnum = actnum;
+        player.GetComponent<Player>().actnum = PhotonNetwork.PlayerList[actnum].ActorNumber;
+        Debug.Log((actnum+1)+"플레이어 로봇 엑터 넘버" + PhotonNetwork.PlayerList[actnum].ActorNumber);
     }
     #endregion
     /// <summary>
-    /// 불값을 다른 사용자에게 보낸다
+    /// 불값 파워게이지를 다른 사용자에게 보낸다
     /// </summary>
     /// <param name="check"></param>
     public void Call_SendShootValue(bool check,float _lange)
     {
-        photonView.RPC("SendBoolValue", RpcTarget.All, check,_lange);
+        photonView.RPC("SendShootValue", RpcTarget.All, check,_lange);
     }
     [PunRPC]
     public void SendShootValue(bool check,float _lange)
@@ -620,7 +641,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     [PunRPC]
     public void ChangeTurn(int num)
     {
-        nowTurn = num;
+        //포톤 플레이어 배열에서 몇번 인덱스 플레이어의 턴인가
+        nowTurn = num;//입장순서는 0번부터니까 엑터 넘버는 1부터시작이므로 1을빼준다
     }
     //#region 테스트용 봇 생성
     ///// <summary>

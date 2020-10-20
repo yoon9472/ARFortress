@@ -1447,7 +1447,7 @@ MonoBehaviour:
   Group: 0
   prefixField: -1
   Synchronization: 3
-  OwnershipTransfer: 0
+  OwnershipTransfer: 1
   ObservedComponents:
   - {fileID: 1559272412}
   viewIdField: 1
@@ -1492,6 +1492,9 @@ MonoBehaviour:
   rotateY: 0
   isRotateUpDown: 0
   isRotateLeftRight: 0
+  lange: 0
+  isFireCheck: 0
+  firstAnchor: 0
 --- !u!1 &1689635099
 GameObject:
   m_ObjectHideFlags: 0
