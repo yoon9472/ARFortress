@@ -12,6 +12,8 @@ public class TestBall : MonoBehaviour
     public float vertical;
     public Vector3 nowPos;
     public Vector3 lastPos;
+    [SerializeField]
+    protected Rigidbody rb;
     //[Header("토네이도")]
     //public bool isTonado = false;
     //public GameObject tonado;
@@ -67,15 +69,21 @@ public class TestBall : MonoBehaviour
     }
     public void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Ground"))
-        {
-        Destroy(this.gameObject);
-        }
-        if(other.CompareTag("Tonado"))
-        {
-            //tonadoinfo = other.GetComponent<Tonado>();
-            //isTonado = true;//토네이도를 만났다.
-        }
+        //if(other.CompareTag("Ground"))
+        //{
+        //Destroy(this.gameObject);
+        //}
+        //if(other.CompareTag("Tonado"))
+        //{
+        //    //tonadoinfo = other.GetComponent<Tonado>();
+        //    //isTonado = true;//토네이도를 만났다.
+        //}
+        rb.isKinematic = false;
+        rb.useGravity = true;
+    }
+    public void nCollisionEnter(Collision collision)
+    {
+        rb.useGravity = true;
     }
     public void OnTriggerStay(Collider other)
     {

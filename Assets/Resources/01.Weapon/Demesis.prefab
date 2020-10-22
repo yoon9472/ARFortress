@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1187683122216889898}
   m_Layer: 8
   m_Name: WeaponUpDown
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -91,7 +91,7 @@ GameObject:
   - component: {fileID: 4196701966243660881}
   m_Layer: 8
   m_Name: Mount_Weapon_top
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 4196701966243660883}
   m_Layer: 8
   m_Name: Mount_backpack
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -154,7 +154,7 @@ GameObject:
   - component: {fileID: 4196701966241760951}
   m_Layer: 8
   m_Name: Cockpit_Gun_2x_Geom
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -232,7 +232,7 @@ GameObject:
   - component: {fileID: -2528352484772435266}
   m_Layer: 8
   m_Name: Demesis
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -272,7 +272,6 @@ MonoBehaviour:
   weaponUpDownTransform: {fileID: 7530646947960154999}
   firePos1: {fileID: 354721731622043328}
   firePos2: {fileID: 0}
-  bullet: {fileID: 3323546278945309997, guid: d134d5f668a2a8147af95bd6e61f5392, type: 3}
 --- !u!1 &4196701966243764349
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,7 +283,7 @@ GameObject:
   - component: {fileID: 4196701966243660893}
   m_Layer: 8
   m_Name: Mount_Weapon_R
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -316,7 +315,7 @@ GameObject:
   - component: {fileID: 4196701966243660895}
   m_Layer: 8
   m_Name: Mount_Weapon_L
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -349,7 +348,7 @@ GameObject:
   - component: {fileID: 3256088106766700282}
   m_Layer: 8
   m_Name: FirePos
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -544,6 +543,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: cbe626afcfb68814194fc158684d1e6b, type: 3}
+      propertyPath: m_TagString
+      value: Weapon
+      objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: cbe626afcfb68814194fc158684d1e6b, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -598,6 +601,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: 329aea7e1c70d514887ed1ff90f020e4, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 329aea7e1c70d514887ed1ff90f020e4, type: 3}
+      propertyPath: m_TagString
+      value: Weapon
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: 329aea7e1c70d514887ed1ff90f020e4, type: 3}
       propertyPath: m_Layer

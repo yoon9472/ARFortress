@@ -13,7 +13,7 @@ using System.Collections;
 public class ARCoreManager: MonoBehaviourPunCallbacks
 {
     
-    Camera ARCamera;
+    //Camera ARCamera;
     //public GameObject centerObject;
     //public Text text;
     public GameObject firstTouch;
@@ -35,15 +35,18 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
     protected Text checkMasterText;
     [SerializeField]
     protected Text nowPower;
+
     private void Start()
     {
+       
         DistanceFromCenter = 0.5f;
-        ARCamera = GameObject.Find("First Person Camera").GetComponent<Camera>();
+        //ARCamera = GameObject.Find("First Person Camera").GetComponent<Camera>();
 
     }
 
     private void Update()
     {
+
         if(PhotonManager.Instance.isMaster == true)
         {
             idreceiveCnt.text = "앵커 아이디 전달받은 플레이어수: "+PhotonManager.Instance.receiveCnt.ToString();
@@ -277,4 +280,5 @@ public class ARCoreManager: MonoBehaviourPunCallbacks
             PhotonManager.Instance.Call_ChangeMasterClient();
         }
     }
+
 }

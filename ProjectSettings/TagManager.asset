@@ -6,6 +6,10 @@ TagManager:
   tags:
   - Ground
   - Tonado
+  - MaterialWrap
+  - ThePenguin
+  - Andy
+  - Weapon
   layers:
   - Default
   - TransparentFX

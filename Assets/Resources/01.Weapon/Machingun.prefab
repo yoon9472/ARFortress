@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 972491183764363435}
   m_Layer: 8
   m_Name: WeaponUpDown
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 2095468538093747714}
   m_Layer: 8
   m_Name: FirePos
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -173,7 +173,7 @@ GameObject:
   - component: {fileID: 6355820459831585123}
   m_Layer: 8
   m_Name: Geom_Shoulders_med_shield_upgrade
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -251,7 +251,7 @@ GameObject:
   - component: {fileID: -4895353192112197686}
   m_Layer: 8
   m_Name: Machingun
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -290,7 +290,6 @@ MonoBehaviour:
   weaponUpDownTransform: {fileID: 4052425072006280059}
   firePos1: {fileID: 4634033023291759467}
   firePos2: {fileID: 33738182961418963}
-  bullet: {fileID: 3323546278945309997, guid: d134d5f668a2a8147af95bd6e61f5392, type: 3}
 --- !u!1 &6355820459829327781
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,7 +301,7 @@ GameObject:
   - component: {fileID: 6355820459829685125}
   m_Layer: 8
   m_Name: Mount_Shoulder_rockets_lvl1_L
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -333,7 +332,7 @@ GameObject:
   - component: {fileID: 6355820459829685127}
   m_Layer: 8
   m_Name: Mount_cockpit
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -364,7 +363,7 @@ GameObject:
   - component: {fileID: 6355820459829685129}
   m_Layer: 8
   m_Name: Mount_Weapon_L
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -396,7 +395,7 @@ GameObject:
   - component: {fileID: 6355820459829685131}
   m_Layer: 8
   m_Name: Mount_Shoulder_rockets_lvl1_R
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -426,7 +425,7 @@ GameObject:
   - component: {fileID: 6355820459829685135}
   m_Layer: 8
   m_Name: Mount_Weapon_R
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -460,7 +459,7 @@ GameObject:
   - component: {fileID: 3567569588889853834}
   m_Layer: 8
   m_Name: FirePos (1)
-  m_TagString: Untagged
+  m_TagString: Weapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -611,6 +610,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: ed721c78f11b8064e87cae08d871e548, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: ed721c78f11b8064e87cae08d871e548, type: 3}
+      propertyPath: m_TagString
+      value: Weapon
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: ed721c78f11b8064e87cae08d871e548, type: 3}
       propertyPath: m_Layer
@@ -796,6 +799,10 @@ PrefabInstance:
     - target: {fileID: 100000, guid: faf9c6eee50e9bf45b45ade92e02fcc8, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: faf9c6eee50e9bf45b45ade92e02fcc8, type: 3}
+      propertyPath: m_TagString
+      value: Weapon
       objectReference: {fileID: 0}
     - target: {fileID: 100002, guid: faf9c6eee50e9bf45b45ade92e02fcc8, type: 3}
       propertyPath: m_Layer

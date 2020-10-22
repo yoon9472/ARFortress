@@ -10,6 +10,8 @@ public class Player : MonoBehaviourPunCallbacks
 {
     [SerializeField]
     protected GameObject bullet;//날아갈 미사일
+    [SerializeField]
+    protected GameObject depthMissile; //뎁스 API 적용 미사일
     public GameObject isMine;
     public string legname;//다리 이름
     public string bodyname;//몸체 이름
@@ -83,7 +85,8 @@ public class Player : MonoBehaviourPunCallbacks
             if(PhotonManager.Instance.isFireCheck == true)
             {
                 PhotonManager.Instance.isFireCheck = false;
-                FireBullet(PhotonManager.Instance.lange);
+                //FireBullet(PhotonManager.Instance.lange); //그냥 총알
+                FireMissile(PhotonManager.Instance.lange); //뎁스 적용해본것
             }
         }
     }
@@ -149,6 +152,26 @@ public class Player : MonoBehaviourPunCallbacks
             GameObject obj = Instantiate(bullet, firePos2.transform.position, Quaternion.identity);
             obj.GetComponent<TestBall>().dir = firePos2.transform.forward;
             obj.GetComponent<TestBall>().speed = lange*0.05f;
+        }
+        PhotonManager.Instance.lange = 0; //쏘고나서 게이지 초기화
+    }
+
+    public void FireMissile(float lange)
+    {
+        Transform firePos1 = weaponObj.GetComponent<WeaponParts>().ReturnFirePos1();
+        Transform firePos2 = weaponObj.GetComponent<WeaponParts>().ReturnFirePos2();
+        if (firePos1 != null)
+        {
+            GameObject obj = Instantiate(depthMissile, firePos1.transform.position, Quaternion.identity);
+            obj.GetComponent<MissileShoot>().dir = firePos1.transform.forward;
+            obj.GetComponent<MissileShoot>().speed = lange * 0.05f;
+        }
+
+        if (firePos2 != null)
+        {
+            GameObject obj = Instantiate(depthMissile, firePos2.transform.position, Quaternion.identity);
+            obj.GetComponent<MissileShoot>().dir = firePos2.transform.forward;
+            obj.GetComponent<MissileShoot>().speed = lange * 0.05f;
         }
         PhotonManager.Instance.lange = 0; //쏘고나서 게이지 초기화
     }

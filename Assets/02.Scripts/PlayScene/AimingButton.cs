@@ -69,7 +69,7 @@ public class AimingButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandle
                 PhotonManager.Instance.isFireCheck = true;
                 //손떼면 손을뗏다는것을 알리는 불값을 전송한다 다른사용자에게
                 PhotonManager.Instance.Call_SendShootValue(PhotonManager.Instance.isFireCheck, PhotonManager.Instance.lange);
-
+                
             }
         }
     }

@@ -80,7 +80,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     public float lange; //미사일 게이지
     public bool isFireCheck = false;
     public bool firstAnchor = false;//최초 앵커가 생성되었는지 체크
-    //public string[] anchorIdArr;//앵커의 주소를 담을 배열
+                                    //public string[] anchorIdArr;//앵커의 주소를 담을 배열
+
     private void Start()
     {
         if (inIntro == true)//인트로 상태에서 시작하고 연결안되있으면->처음 시작이면
@@ -578,6 +579,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         //actnum ->num
         //배열에서 내가 몇번째 인덱스인지 찾아서 매개변수로 넘김
         photonView.RPC("MakeMyRobot", RpcTarget.All, posnum, leg, body, weapon);
+        
     }
 
     [PunRPC]

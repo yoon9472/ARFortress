@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   bullet: {fileID: 3323546278945309997, guid: d134d5f668a2a8147af95bd6e61f5392, type: 3}
+  depthMissile: {fileID: 1916279172640256695, guid: 6da3b0231c7c3324a90c79b7912fdbf3,
+    type: 3}
   isMine: {fileID: 2322934123645662235}
   legname: 
   bodyname: 
@@ -55,6 +57,7 @@ MonoBehaviour:
   amor: 0
   speed: 0
   lange: 0
+  isFireCheck: 0
 --- !u!1001 &2322004287684784337
 PrefabInstance:
   m_ObjectHideFlags: 0
