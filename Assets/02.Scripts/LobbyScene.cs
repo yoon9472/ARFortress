@@ -11,6 +11,7 @@ public class LobbyScene : MonoBehaviour
     public InputField roomName;//입력받을 필드
     private void Start()
     {
+        
         //photonManager = PhotonManager.Instance();
     }
     /// <summary>
