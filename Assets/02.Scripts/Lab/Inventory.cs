@@ -20,7 +20,7 @@ public class Inventory : MonoBehaviour
     
     //시작시 레그 인벤토리가 켜져있으므로 Leg 메뉴를 Selected 상태로 시작. 
     public bool buttonDown;
-    
+
     void Start()
     {
         //시작할때 curritem에 다리 인벤토리를 담아둠 - 인벤토리 켠상태로 시작시 curritem에 안담겨서 아래코드 대로할시 버그생김

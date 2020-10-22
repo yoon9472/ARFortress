@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
+//using UnityEngine.UIElements;
 
 public class CustomToggleGroup : ToggleGroup
 {
@@ -32,6 +34,11 @@ public class CustomToggleGroup : ToggleGroup
     // Start is called before the first frame update
     protected override void Start()
     {
+        allToggle.onValueChanged.AddListener((value) => { ForChangingPanel("all"); });
+        weaponToggle.onValueChanged.AddListener((value) => { ForChangingPanel("weapon"); });
+        bodyToggle.onValueChanged.AddListener((value) => { ForChangingPanel("body"); });
+        legToggle.onValueChanged.AddListener((value) => { ForChangingPanel("leg"); });
+        allToggle.isOn = true;
         //ForChangingPanel("all");
     }
 
@@ -92,13 +99,17 @@ public class CustomToggleGroup : ToggleGroup
         {
             Debug.Log("음 4개 외의 값");
         }
+        // allToggle.onValueChanged.RemoveAllListeners();
+        // weaponToggle.onValueChanged.RemoveAllListeners();
+        // bodyToggle.onValueChanged.RemoveAllListeners();
+        // legToggle.onValueChanged.RemoveAllListeners();
     }
 
-    public void RecognizeChangingToggleState()
+    /*public void RecognizeChangingToggleState()
     {
-        allToggle.onValueChanged.AddListener((value) => { ForChangingPanel("all"); });
-        weaponToggle.onValueChanged.AddListener((value) => { ForChangingPanel("weapon"); });
-        bodyToggle.onValueChanged.AddListener((value) => { ForChangingPanel("body"); });
-        legToggle.onValueChanged.AddListener((value) => { ForChangingPanel("leg"); });
-    }
+        // allToggle.onValueChanged.AddListener((value) => { ForChangingPanel("all"); });
+        // weaponToggle.onValueChanged.AddListener((value) => { ForChangingPanel("weapon"); });
+        // bodyToggle.onValueChanged.AddListener((value) => { ForChangingPanel("body"); });
+        // legToggle.onValueChanged.AddListener((value) => { ForChangingPanel("leg"); });
+    }*/
 }

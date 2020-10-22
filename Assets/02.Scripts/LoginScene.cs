@@ -28,6 +28,5 @@ public class LoginScene : MonoBehaviour
         loginManager.TestLogin();//에디터에서 구글로그인 빼고 테스트용 커스텀 아이디로 플레이팹 로그인되게 해놓음
         //NetWork.Get.JoinLobby();
 #endif
-
     }
 }

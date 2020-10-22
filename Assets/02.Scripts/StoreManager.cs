@@ -20,21 +20,10 @@ public class StoreManager : MonoBehaviour
     protected Transform itemPrefabParentTransform;
     
     //이것은 버튼을 누르면 중복을 줄이기 위한 변수들
-    protected int allNumber=1;
-    protected int weaponNumber=2;
-    protected int bodyNumber=3;
-    protected int legNumber=4;
+    public int allNumber=1;
+    public int otherNumber=2;
     public int checkNumber = 0;// 중복 버튼 눌러서 리소스 줄이기 위해서 이것을 넣음!
     
-    //이것은 버튼이 선택되면 선택 되어있도록 하기 위한 변수
-    public GameObject allButton;
-    public GameObject weaponButton;
-    public GameObject upperButton;
-    public GameObject lowerButton;
-
-    public Sprite highlightImage;
-    public Sprite normalImage;
-
     //내 돈 표시.
     //public GameObject mymoney;
     [SerializeField]
@@ -43,6 +32,7 @@ public class StoreManager : MonoBehaviour
     //스크롤바 value값 0으로 만들기
     [SerializeField]
     protected Scrollbar scrollbar;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -68,6 +58,7 @@ public class StoreManager : MonoBehaviour
         //씬처음들어와서 내돈 표시해줘야하니 한번 표시해준다
         SetUsermoney(dbManager.GetMyMoney());
         OnOffButton();//맨 처음 scrollvalue가 0이기 때문에 오른쪽 버튼 0으루 만들어줘야지,
+        scrollbar.onValueChanged.AddListener((value) => { OnOffButton(); });
     }
     // Update is called once per frame
     void Update()
@@ -90,7 +81,7 @@ public class StoreManager : MonoBehaviour
     }
     public void ChangingScrollValue()
     {
-        scrollbar.onValueChanged.AddListener((value) => { OnOffButton(); });
+        
     }
     void OnOffButton()
     {

@@ -10,12 +10,14 @@ public class MainSceneButton : MonoBehaviour
     public GameObject option;
     public GameObject exit;
     public GameObject nickName;
+    protected SoundManager soundManager = null;
     // Start is called before the first frame update
     void Start()
     {
+        soundManager = SoundManager.GetInstance();
+        soundManager.SetBgmClip("lobby");
         //dbManager = DBManager.GetInstance();
         //DataManager.Instance = DataManager.Instance.GetInstance();
-
         if(DataManager.Instance.userinfo.firstLogin == true)
         {
             nickName.SetActive(true);
@@ -47,6 +49,7 @@ public class MainSceneButton : MonoBehaviour
     /// </summary>
     public void ToLab()
     {
+        soundManager.SetBgmClip("lab");
         SceneManager.LoadScene("TestLabUI");
     }
     /// <summary>
@@ -54,6 +57,7 @@ public class MainSceneButton : MonoBehaviour
     /// </summary>
     public void ToStore()
     {
+        soundManager.SetBgmClip("store");
         SceneManager.LoadScene("TestStore");
     }
     /// <summary>
@@ -64,7 +68,8 @@ public class MainSceneButton : MonoBehaviour
         //로봇 조립된 상태인지 체크하고
         if(DataManager.Instance.beforeLeg !=null && DataManager.Instance.beforeBody !=null && DataManager.Instance.beforeWeapon !=null)
         {
-        SceneManager.LoadScene("04.MakeRoom");
+            SceneManager.LoadScene("04.MakeRoom");
+            soundManager.SetBgmClip("makeRoom");
         }
         else
         {
