@@ -1410,7 +1410,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   x: 0
   y: 0
-  cube: {fileID: 102957500}
+  isRotateUpDown: 0
+  isRotateLeftRight: 0
+  isControlPower: 0
 --- !u!1 &1668081113
 GameObject:
   m_ObjectHideFlags: 0

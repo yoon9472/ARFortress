@@ -46,10 +46,10 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         }
         return instance;
     }*/
-
+    DataManager dataManager;
     [Header("포톤 관련 변수")]
     public int masterIndex;//마스터 클라이언트 인덱스
-    public string[] userArr = new string[4]; //유저 이름을 저장하기위한 배열
+    public int[] userArr = new int[4]; //유저 이름을 저장하기위한 배열
     public bool[] userReady = new bool[4];//룸안에 유저가 게임 가능한 상태인지 여부 체크 false면 턴이 안돌아 온다(죽은 유저혹은 나간유저)
     public int myOrder = 99;// 내 입장 순서 체크 포톤의 엑터 넘버를 부여함
     public bool inIntro = true;//시작은 인트로부터 니까 true로
@@ -81,9 +81,14 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     public bool isFireCheck = false;
     public bool firstAnchor = false;//최초 앵커가 생성되었는지 체크
                                     //public string[] anchorIdArr;//앵커의 주소를 담을 배열
-
+    public delegate void SendMyInfo(int admissionOrder, string nickName, string legName, string bodyName, string weaponName);
+    public SendMyInfo sendMyInfo;
+    public delegate void DeleteMyInfo(int admissionOrder);
+    public DeleteMyInfo deleteMyInfo;
+    public int slotOrder; //몇번째 슬롯에 내 정보가 표시되야 하는가?
     private void Start()
     {
+        dataManager = DataManager.Instance;
         if (inIntro == true)//인트로 상태에서 시작하고 연결안되있으면->처음 시작이면
         {
             inIntro = false;
@@ -226,7 +231,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         //룸에 입장해서 사용할 배열들과 값들은 로비로 입장했을때 초기화가 되게한다.
         for (int i = 0; i < userArr.Length; i++)
         {
-            userArr[i] = "empty";
+            userArr[i] = 0;
         }
         if (inLobby == true)
         {
@@ -312,17 +317,19 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         //룸에 입장 성공하면 자신의 엑터 넘버 저장
         myOrder = PhotonNetwork.LocalPlayer.ActorNumber;
         Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties; //현재 방의 커스텀 프로퍼티를 받아서 cp에 담음
-        userArr = (string[])cp["roomMember"]; //룸의 커스텀 프로퍼티 roomMember를 useArr에 덮어씌운다
+        userArr = (int[])cp["roomMember"]; //룸의 커스텀 프로퍼티 roomMember를 useArr에 덮어씌운다
+
         for (int i = 0; i < userArr.Length; i++)
         {
-            //배열 크기만큼 반목문을 돌아서 배열에서 empty를찾고 내이름과 엑터 넘버 추가
-            if (userArr[i] == "empty")
+            //배열 크기만큼 반목문을 돌아서 배열에서 0 를찾고 내이름과 엑터 넘버 추가
+            if (userArr[i] == 0)
             {
                 //myOrder = i;
                 nowTurn = PhotonNetwork.PlayerList[0].ActorNumber;
                 myOrder = PhotonNetwork.LocalPlayer.ActorNumber;//엑터넘버를 순서로
-                userArr[i] = "testUser";//플레이어의 이름 Playfab에서 받아온 DisplayName을 넣을 예정
+                userArr[i] = myOrder;//엑터넘버를 넣을 예정
                 userReady[i] = true;
+                slotOrder = i;
                 break;
             }
         }
@@ -332,6 +339,22 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         {
             SceneManager.LoadScene("05.Room");
         }
+       
+    }
+    #endregion
+
+    #region OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer) 다른 사용자가 룸에 들어왔을때 호출
+    /// <summary>
+    /// 다른 사용자가 룸에 들어왔을때 호출
+    /// </summary>
+    /// <param name="newPlayer"></param>
+    public override void OnPlayerEnteredRoom(Photon.Realtime.Player newPlayer)
+    {
+        //새로운 플레이어가 룸에 입장할때마다 콜백되는 함수이다
+        //새로운 유저가 방에 들어올때마다 내정보를 몇번 슬롯에 표시해줘야할지 쏴준다
+        //다른 플레이어가 씬전화되서 자신의 정보를 쏴줄때까지 대기후 내 정보를 날린
+        //Call_SendMyInfoInWaitingRoom(slotOrder, dataManager.userinfo.nickName, dataManager.userinfo.selectedLeg,
+        //    dataManager.userinfo.selectedBody, dataManager.userinfo.selectedWeapon);
     }
     #endregion
 
@@ -346,14 +369,15 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         //방에서 퇴장하기 전에 cp["roomMember"] 과 cp["actors"] 에서 내정보 제거한다.
         for (int i = 0; i < userArr.Length; i++)
         {
-            if (userArr[i] == name)
+            if (userArr[i] == myOrder)
             {
-                userArr[i] = "empty";
+                userArr[i] = 0;
                 userReady[i] = false;
             }
         }
         //변경된 배열을 방사용자에게 RPC로 변경하도록 명령하고
         photonView.RPC("UpdateRoomCustomProperty", RpcTarget.All, userArr, userReady);
+        Call_DeleteMyInfoWaitingRoom(slotOrder);// 룸에서 나가면 대기방에서 슬롯의 정보도 비워준다
         //퇴장
         PhotonNetwork.LeaveRoom();//방퇴장 ->로비로 돌아감
         //SceneManager.LoadScene("03.Lobby");
@@ -377,7 +401,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     #region 룸에 입장했을때 룸커스텀 프로퍼티 변경을위해 호출됨 OnJoinedRoom에서 호출되는 RPC
     //룸에 입장해서 커스텀 프로퍼티 변경을 요청하는 함수
     [PunRPC]
-    public void UpdateRoomCustomProperty(string[] Arr,  bool[] userready)
+    public void UpdateRoomCustomProperty(int[] Arr,  bool[] userready)
     {
         //RPC로 업데이트된 커스텀 프로퍼티를 다른유저에게도 뿌린다
         Hashtable cp = PhotonNetwork.CurrentRoom.CustomProperties; //현재 방의 커스텀 프로퍼티를 받아서 CP에 담음
@@ -593,6 +617,8 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         Debug.Log((actnum+1)+"플레이어 로봇 엑터 넘버" + PhotonNetwork.PlayerList[actnum].ActorNumber);
     }
     #endregion
+
+    #region Call_SendShootValue(bool check,float _lange) 마사일 발사시 나의 게이지 정보를 다른사용자에게 동기화
     /// <summary>
     /// 불값 파워게이지를 다른 사용자에게 보낸다
     /// </summary>
@@ -607,6 +633,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         isFireCheck = check;
         lange = _lange;
     }
+    #endregion
+
+    #region 중심앵커가 생겼음을 룸안 사용자들에게 알림 Call_MakeFirstAnchor()
     /// <summary>
     /// arcoreManager에서 firstAnchor 불값을 변경하기위한 rpc
     /// </summary>
@@ -619,6 +648,9 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         firstAnchor = true;
     }
+    #endregion
+
+    #region Call_ChangeTurn(int num) 변경된 턴을 다른사용자들에게도 알려줌 Call_ChangeMasterClient()에서 마지막에 호출
     /// <summary>
     /// 턴을 변경했다는 것을 알리는 함수 턴변경시에 호출
     /// </summary>
@@ -633,6 +665,93 @@ public class PhotonManager : MonoBehaviourPunCallbacks, IPunObservable
         //포톤 플레이어 배열에서 몇번 인덱스 플레이어의 턴인가
         nowTurn = num;//입장순서는 0번부터니까 엑터 넘버는 1부터시작이므로 1을빼준다
     }
+    #endregion
+
+    #region Call_SendMyInfoInWaitingRoom 델리게이트를 호출함 룸입장시 나의 정보를 다른사람에게도 룸 로비에서 보여주기위함
+    /// <summary>
+    /// 내정보를 룸입장시에 다른 사용자에게 보내는 RPC
+    /// </summary>
+    /// <param name="admissionOrder"></param>
+    /// <param name="nickName"></param>
+    /// <param name="legName"></param>
+    /// <param name="bodyName"></param>
+    /// <param name="weaponName"></param>
+    public void Call_SendMyInfoInWaitingRoom(int admissionOrder, string nickName, string legName, string bodyName, string weaponName)
+    {
+        Debug.Log("Call_SendMyInfoInWaitingRoom RPC 호출");
+        //내정보를 다른 사람들한테 뿌림
+        photonView.RPC("SendMyInfoInWaitingRoom", RpcTarget.All, admissionOrder, nickName, legName, bodyName, weaponName);
+        //내 정보는 뿌렸으니 너네 정보를 줘라
+        Call_RequestOtherUsersInfo();
+    }
+    [PunRPC]
+    public void SendMyInfoInWaitingRoom(int admissionOrder, string nickName, string legName, string bodyName, string weaponName)
+    {
+        Debug.Log(admissionOrder+"번째의 정보를 전달 받음");
+        if(sendMyInfo !=null)
+        {
+        sendMyInfo(admissionOrder, nickName, legName, bodyName, weaponName);
+        }
+        else
+        {
+            Debug.Log("sendMyInfo ==null");
+        }
+       
+    }
+    /// <summary>
+    /// 다른사람에게 요청을 보냄
+    /// </summary>
+    public void Call_RequestOtherUsersInfo()
+    {
+        Debug.Log("다른 사용자의 정보를 요청하였다");
+        photonView.RPC("RequestOtherUsersInfo", RpcTarget.Others);
+    }
+    [PunRPC]
+    public void RequestOtherUsersInfo()
+    {
+        Debug.Log("내정보를 보내달라는 요청이 왔다");
+        photonView.RPC("RespondForRequest", RpcTarget.Others, slotOrder, dataManager.userinfo.nickName,
+            dataManager.userinfo.selectedLeg, dataManager.userinfo.selectedBody, dataManager.userinfo.selectedWeapon);
+    }
+    //내정보를 요청 했으니 응답하고 날려준다
+    [PunRPC]
+    public void RespondForRequest(int admissionOrder, string nickName, string legName, string bodyName, string weaponName)
+    {
+        Debug.Log("요청에 응답해 내정보를 보낸다");
+        if (sendMyInfo != null)
+        {
+            sendMyInfo(admissionOrder, nickName, legName, bodyName, weaponName);
+        }
+        else
+        {
+            Debug.Log("sendMyInfo ==null");
+        }
+    }
+    #endregion
+
+    #region Call_DeleteMyInfoWaitingRoom(int admissionOrder) 대기방에서 나갈때 대기방에서 내정보를 지우도록 하는것
+    /// <summary>
+    /// 룸에서 퇴장시에 나의 정보를 없에고 다른 사람의 화면에도 적용되도록 delegate 호출
+    /// deleteMyInfo는 RoomScene에서 연결되어 있음 내용은 RoomScene.cs 120 번째 줄
+    /// </summary>
+    /// <param name="admissionOrder"></param>
+    public void Call_DeleteMyInfoWaitingRoom(int admissionOrder)
+    {
+        photonView.RPC("DeleteMyInfoWaitingRoom", RpcTarget.All, admissionOrder);
+    }
+    [PunRPC]
+    public void DeleteMyInfoWaitingRoom(int admissionOrder)
+    {
+        if(deleteMyInfo !=null)
+        {
+            deleteMyInfo(admissionOrder);
+        }
+        else
+        {
+            Debug.Log("deleteMyInfo ==null");
+        }
+    }
+    #endregion
     //#region 테스트용 봇 생성
     ///// <summary>
     ///// 테스트 봇 생성을 요구하는 알피씨 함수

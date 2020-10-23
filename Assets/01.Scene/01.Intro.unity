@@ -735,6 +735,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0bcc48ec1da26834abd0bbe64fea6342, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgmSourceVolume: 0
+  effectSourceVolume: 0
   introLoginSceneClip: {fileID: 8300000, guid: 15790b72a4500fb4dadb1fe80730b98e, type: 3}
   lobbySceneClip: {fileID: 8300000, guid: 3545b3b0d0fc19d47a33525883fd6c33, type: 3}
   makeAndReadyRoomSceneClip: {fileID: 8300000, guid: 3917df1a5e76b9c42bdc098001d1938e,
@@ -1421,11 +1423,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   masterIndex: 0
-  userArr:
-  - 
-  - 
-  - 
-  - 
+  userArr: 00000000000000000000000000000000
   userReady: 00000000
   myOrder: 99
   inIntro: 1
@@ -1450,6 +1448,7 @@ MonoBehaviour:
   lange: 0
   isFireCheck: 0
   firstAnchor: 0
+  slotOrder: 0
 --- !u!1 &1689635099
 GameObject:
   m_ObjectHideFlags: 0
