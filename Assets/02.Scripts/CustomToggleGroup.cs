@@ -50,13 +50,15 @@ public class CustomToggleGroup : ToggleGroup
     public void ForChangingPanel(string checkClicked)
     {
         Debug.Log("ㅇㅅㅇ");
+        sm.DestroyChildObj();
+        sm.ResetScroll();
         //if문 4개를 만들것임
-        if(checkClicked == "all")
+        if (checkClicked == "all")
         {
-            sm.DestroyChildObj();
+            //sm.DestroyChildObj();
             //allToggle.image.sprite = highlightImage;
             sm.UpdateItemPanel(DataManager.Instance.itemList);
-            sm.ResetScroll();
+            //sm.ResetScroll();
         }
         //else if(checkClicked != "all")
         //{
@@ -64,10 +66,10 @@ public class CustomToggleGroup : ToggleGroup
         //}
         else if (checkClicked == "weapon")
         {
-            sm.DestroyChildObj();
+            //sm.DestroyChildObj();
             //weaponToggle.image.sprite = highlightImage;
             sm.UpdateItemPanel(DataManager.Instance.weaponList);
-            sm.ResetScroll();
+            //sm.ResetScroll();
         }
         //else if(checkClicked != "weapon")
         //{
@@ -75,10 +77,10 @@ public class CustomToggleGroup : ToggleGroup
         //}
         else if (checkClicked == "body")
         {
-            sm.DestroyChildObj();
+            //sm.DestroyChildObj();
             //bodyToggle.image.sprite = highlightImage;
             sm.UpdateItemPanel(DataManager.Instance.bodyList);
-            sm.ResetScroll();
+            //sm.ResetScroll();
         }
         //else if (checkClicked != "body")
         //{
@@ -86,10 +88,10 @@ public class CustomToggleGroup : ToggleGroup
         //}
         else if (checkClicked == "leg")
         {
-            sm.DestroyChildObj();
+            //sm.DestroyChildObj();
             //legToggle.image.sprite = highlightImage;
             sm.UpdateItemPanel(DataManager.Instance.legList);
-            sm.ResetScroll();
+            //sm.ResetScroll();
         }
         //else if (checkClicked != "leg")
         //{
@@ -104,7 +106,6 @@ public class CustomToggleGroup : ToggleGroup
         // bodyToggle.onValueChanged.RemoveAllListeners();
         // legToggle.onValueChanged.RemoveAllListeners();
     }
-
     /*public void RecognizeChangingToggleState()
     {
         // allToggle.onValueChanged.AddListener((value) => { ForChangingPanel("all"); });

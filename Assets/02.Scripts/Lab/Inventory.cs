@@ -25,6 +25,9 @@ public class Inventory : MonoBehaviour
     {
         //시작할때 curritem에 다리 인벤토리를 담아둠 - 인벤토리 켠상태로 시작시 curritem에 안담겨서 아래코드 대로할시 버그생김
         //[09.28] 피드백 -  시작할떄 default 인벤토리 [먼저 조립되야하는 다리부분을] 켜놔야 좋을것 같다고 해서 수정
+        weaponBtn.GetComponent<Button>().onClick.AddListener(() => { PanelButton("weapon"); });
+        bodyBtn.GetComponent<Button>().onClick.AddListener(() => { PanelButton("body"); });
+        legBtn.GetComponent<Button>().onClick.AddListener(() => { PanelButton("leg"); });
         PanelButton("leg");
     }
 /*    public void SelectedButton()
@@ -112,13 +115,7 @@ public class Inventory : MonoBehaviour
             break;
         }
     }*/
-    public void OnButtonClicked()
-    {
-        weaponBtn.GetComponent<Button>().onClick.AddListener(() => { PanelButton("weapon"); });
-        bodyBtn.GetComponent<Button>().onClick.AddListener(() => { PanelButton("body"); });
-        legBtn.GetComponent<Button>().onClick.AddListener(() => { PanelButton("leg"); });
-
-    }
+    
     void PanelButton(string checkButton)
     {
         if (currItem != null)
